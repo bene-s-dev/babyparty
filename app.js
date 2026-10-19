@@ -248,6 +248,7 @@
     scratchCanvasMid: document.getElementById('scratchCanvasMid'),
     scratchCanvasTop: document.getElementById('scratchCanvasTop'),
     countdownLockOverlay: document.getElementById('countdownLockOverlay'),
+    postRevealSection: document.getElementById('postRevealSection'),
     
     // Revealed Details
     revealedGenderBadge: document.getElementById('revealedGenderBadge'),
@@ -692,9 +693,14 @@
     }
 
     if (step === 2) {
+      clearInterval(STATE.countdownInterval);
+      STATE.countdownRunning = false;
       updatePollUI();
     } else if (step === 3) {
       setupRevealPage();
+    } else {
+      clearInterval(STATE.countdownInterval);
+      STATE.countdownRunning = false;
     }
 
     refreshIcons();
@@ -831,14 +837,15 @@
     elements.countdownLockOverlay.classList.remove('unlocked');
     elements.scratchCanvasTop.classList.remove('revealed-out', 'unlocked');
     elements.scratchCanvasMid.classList.remove('revealed-out', 'unlocked');
+    if (elements.postRevealSection) elements.postRevealSection.classList.remove('visible');
 
     drawScratchCardFoil();
 
     STATE.countdownTimeLeft = STATE.countdownDuration;
-    elements.timerSecs.textContent = String(STATE.countdownTimeLeft).padStart(2, '0');
-    elements.countdownStatusLabel.textContent = t('countdownLabel');
-
     refreshIcons();
+
+    // Automatically start the 10s suspense countdown immediately upon arrival
+    startCountdown(10);
   }
 
   function applyActualGenderTheme() {
@@ -871,9 +878,11 @@
   }
 
   function initPage3() {
-    elements.btnStartSuspenseCountdown.addEventListener('click', () => {
-      startCountdown(10);
-    });
+    if (elements.btnStartSuspenseCountdown) {
+      elements.btnStartSuspenseCountdown.addEventListener('click', () => {
+        startCountdown(10);
+      });
+    }
 
     elements.btnDevSkipCountdown.addEventListener('click', () => {
       skipCountdownForDev();
@@ -1023,11 +1032,11 @@
     ctxTop.strokeRect(20, 20, w - 40, h - 40);
 
     const cx = w / 2;
-    const cy = h / 2 - 20;
+    const cy = h / 2 - 28;
 
     // Wax seal emblem
     ctxTop.beginPath();
-    ctxTop.arc(cx, cy, 38, 0, Math.PI * 2);
+    ctxTop.arc(cx, cy, 32, 0, Math.PI * 2);
     ctxTop.fillStyle = 'rgba(255, 255, 255, 0.06)';
     ctxTop.fill();
     ctxTop.strokeStyle = 'rgba(255, 255, 255, 0.18)';
@@ -1036,23 +1045,23 @@
 
     ctxTop.fillStyle = '#ffffff';
     ctxTop.beginPath();
-    ctxTop.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctxTop.arc(cx, cy, 3.5, 0, Math.PI * 2);
     ctxTop.fill();
 
     // Top foil typography
-    ctxTop.font = '600 13px "Plus Jakarta Sans", sans-serif';
-    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctxTop.font = '600 12px "Plus Jakarta Sans", sans-serif';
+    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.72)';
     ctxTop.textAlign = 'center';
     ctxTop.textBaseline = 'middle';
-    ctxTop.fillText(t('foilSecret'), cx, cy + 65);
+    ctxTop.fillText(t('foilSecret'), cx, cy + 50);
 
-    ctxTop.font = '400 12px "Plus Jakarta Sans", sans-serif';
-    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.42)';
-    ctxTop.fillText(t('foilSecretSub'), cx, cy + 88);
+    ctxTop.font = '400 11px "Plus Jakarta Sans", sans-serif';
+    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.44)';
+    ctxTop.fillText(t('foilSecretSub'), cx, cy + 70);
 
-    ctxTop.font = '500 11px "Plus Jakarta Sans", sans-serif';
-    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.75)';
-    ctxTop.fillText(t('foilRubbel'), cx, cy + 130);
+    ctxTop.font = '600 11px "Plus Jakarta Sans", sans-serif';
+    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctxTop.fillText(t('foilRubbel'), cx, cy + 104);
   }
 
   function setupMultiLayerScratchEvents() {
@@ -1189,6 +1198,10 @@
     // Fade out both foil layers smoothly
     elements.scratchCanvasTop.classList.add('revealed-out');
     elements.scratchCanvasMid.classList.add('revealed-out');
+
+    if (elements.postRevealSection) {
+      elements.postRevealSection.classList.add('visible');
+    }
 
     audio.playFanfare();
     fireCelebrationConfetti();
@@ -1405,15 +1418,10 @@
     elements.setGenderBoy.classList.toggle('active', STATE.actualGender === 'boy');
   }
 
-  // ==================== TOAST HELPER ====================
-  let toastTimeout;
+  // ==================== TOAST HELPER (DISABLED PER USER REQUEST) ====================
   function showToast(msg) {
-    clearTimeout(toastTimeout);
-    elements.toastBubble.textContent = msg;
-    elements.toastBubble.classList.add('show');
-    toastTimeout = setTimeout(() => {
-      elements.toastBubble.classList.remove('show');
-    }, 2400);
+    // Toast messages disabled per user request
+    return;
   }
 
   // ==================== RESPONSIVE LAYOUT & SCRATCH RESIZE ====================

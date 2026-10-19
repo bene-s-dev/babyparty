@@ -64,24 +64,6 @@
         </button>
       </div>
 
-      <!-- Stepper Indicator -->
-      <nav class="stepper-bar" id="stepperIndicator" aria-label="Fortschritt">
-        <div class="step-item active" data-step="1">
-          <span class="step-dot"></span>
-          <span class="step-text" data-i18n="stepStart">Start</span>
-        </div>
-        <div class="step-divider" id="stepLine1"></div>
-        <div class="step-item" data-step="2">
-          <span class="step-dot"></span>
-          <span class="step-text" data-i18n="stepGuess">Tippen</span>
-        </div>
-        <div class="step-divider" id="stepLine2"></div>
-        <div class="step-item" data-step="3">
-          <span class="step-dot"></span>
-          <span class="step-text" data-i18n="stepReveal">Reveal</span>
-        </div>
-      </nav>
-
       <!-- Main Viewport -->
       <main class="main-container">
 
@@ -120,7 +102,7 @@
             </div>
           </div>
 
-          <button type="button" class="action-btn" id="btnToStep2">
+          <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-5" id="btnToStep2">
             <span id="btnToStep2Text" data-i18n="btnToStep2">Weiter zur Abstimmung</span>
             <i data-lucide="arrow-right" class="icon-btn"></i>
           </button>
@@ -190,7 +172,7 @@
           </div>
         </div>
 
-        <button type="button" class="action-btn stagger-item stagger-6" id="btnToStep3" disabled>
+        <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-6" id="btnToStep3" disabled>
           <span data-i18n="btnToStep3">Tipp bestätigen & zum Reveal</span>
           <i data-lucide="arrow-right" class="icon-btn"></i>
         </button>
@@ -211,51 +193,28 @@
           Die Enthüllung beginnt in Kürze.
         </p>
 
-        <!-- Countdown Block -->
+        <!-- Compact Suspense Countdown -->
         <div class="countdown-module stagger-item stagger-3" id="countdownSection">
-          <div class="countdown-header-row">
-            <i data-lucide="timer" class="icon-sm"></i>
-            <span id="countdownStatusLabel" data-i18n="countdownLabel">Countdown</span>
-          </div>
-
-          <div class="countdown-digits-row" id="timerGrid">
-            <div class="digit-box">
-              <span class="digit-val" id="timerDays">00</span>
-              <span class="digit-unit" data-i18n="unitDays">Tage</span>
+          <div class="countdown-compact-row">
+            <div class="countdown-label-group">
+              <i data-lucide="timer" class="icon-sm"></i>
+              <span id="countdownStatusLabel" data-i18n="countdownLabel">Spannung steigt...</span>
             </div>
-            <span class="digit-sep">:</span>
-            <div class="digit-box">
-              <span class="digit-val" id="timerHours">00</span>
-              <span class="digit-unit" data-i18n="unitHours">Std</span>
-            </div>
-            <span class="digit-sep">:</span>
-            <div class="digit-box">
-              <span class="digit-val" id="timerMins">00</span>
-              <span class="digit-unit" data-i18n="unitMins">Min</span>
-            </div>
-            <span class="digit-sep">:</span>
-            <div class="digit-box active-sec">
+            <div class="countdown-chip active-sec">
               <span class="digit-val" id="timerSecs">10</span>
-              <span class="digit-unit" data-i18n="unitSecs">Sek</span>
+              <span class="digit-unit" data-i18n="unitSecs">s</span>
             </div>
           </div>
-
-          <div class="countdown-buttons">
-            <button type="button" class="btn-subtle-countdown" id="btnStartSuspenseCountdown">
-              <i data-lucide="play" class="icon-sm"></i>
-              <span data-i18n="btnStartCountdown">10s Countdown starten</span>
-            </button>
-            <button type="button" class="dev-inline-btn dev-only-element" id="btnDevSkipCountdown">
-              <i data-lucide="zap" class="icon-xs"></i>
-              <span data-i18n="btnDevSkip">Entwickler: Countdown überspringen</span>
-            </button>
-          </div>
+          <button type="button" class="dev-inline-btn dev-only-element" id="btnDevSkipCountdown">
+            <i data-lucide="zap" class="icon-xs"></i>
+            <span data-i18n="btnDevSkip">Entwickler: Countdown überspringen</span>
+          </button>
         </div>
 
         <!-- Scratch Container with Multi-Layer Foil -->
         <div class="scratch-canvas-container stagger-item stagger-4" id="scratchCardWrapper">
           
-          <!-- Underneath Reveal Card -->
+          <!-- Underneath Reveal Card (Pure announcement without cramped buttons) -->
           <div class="underlying-card" id="revealedUnderlay">
             <div class="reveal-content-inner">
               <div class="reveal-eyebrow" data-i18n="revealEyebrow">Offizielle Verkündung</div>
@@ -270,31 +229,6 @@
               <p class="revealed-quote-text" id="revealedQuote">
                 „Wir können es kaum erwarten, dich in die Arme zu schließen.“
               </p>
-
-              <!-- Guest intuition result -->
-              <div class="intuition-result" id="userMatchResult">
-                <i data-lucide="award" class="result-icon" id="matchIcon"></i>
-                <div class="result-details">
-                  <strong id="matchTitle">Richtig getippt!</strong>
-                  <span id="matchSubtitle">Deine Intuition hat gestimmt.</span>
-                </div>
-              </div>
-
-              <!-- Action buttons -->
-              <div class="reveal-action-buttons">
-                <button type="button" class="action-btn-secondary" id="btnConfettiAgain">
-                  <i data-lucide="sparkles" class="icon-sm"></i>
-                  <span data-i18n="btnConfetti">Mehr Konfetti</span>
-                </button>
-                <button type="button" class="action-btn-secondary" id="btnShareResult">
-                  <i data-lucide="share-2" class="icon-sm"></i>
-                  <span data-i18n="btnShare">Teilen</span>
-                </button>
-                <button type="button" class="action-btn-secondary" id="btnRestartGuess">
-                  <i data-lucide="rotate-ccw" class="icon-sm"></i>
-                  <span data-i18n="btnRestart">Neu starten</span>
-                </button>
-              </div>
             </div>
           </div>
 
@@ -311,6 +245,35 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- Post-Reveal Details & Action Buttons -->
+        <div class="post-reveal-section" id="postRevealSection">
+          <!-- Guest intuition result -->
+          <div class="intuition-result" id="userMatchResult">
+            <i data-lucide="award" class="result-icon" id="matchIcon"></i>
+            <div class="result-details">
+              <strong id="matchTitle">Richtig getippt!</strong>
+              <span id="matchSubtitle">Deine Intuition hat gestimmt.</span>
+            </div>
+          </div>
+
+          <!-- Beautiful, well-spaced action buttons -->
+          <div class="reveal-action-buttons">
+            <button type="button" class="btn-reveal-action primary-confetti gradient-btn-primary" id="btnConfettiAgain">
+              <i data-lucide="sparkles" class="icon-sm"></i>
+              <span data-i18n="btnConfetti">Mehr Konfetti</span>
+            </button>
+            <button type="button" class="btn-reveal-action secondary-share gradient-btn-subtle" id="btnShareResult">
+              <i data-lucide="share-2" class="icon-sm"></i>
+              <span data-i18n="btnShare">Teilen</span>
+            </button>
+          </div>
+
+          <button type="button" class="btn-reveal-restart" id="btnRestartGuess">
+            <i data-lucide="rotate-ccw" class="icon-sm"></i>
+            <span data-i18n="btnRestart">Neu starten</span>
+          </button>
         </div>
       </div>
     </section>
@@ -356,7 +319,7 @@
         </div>
 
         <div class="config-field">
-          <button type="button" class="btn-reset" id="btnResetAllVotes">
+          <button type="button" class="btn-reset gradient-btn-danger" id="btnResetAllVotes">
             <i data-lucide="trash-2" class="icon-xs"></i>
             <span data-i18n="btnReset">Stimmen & Fortschritt zurücksetzen</span>
           </button>
@@ -368,9 +331,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Toast Message -->
-  <div class="minimal-toast" id="toastBubble"></div>
 
   <script src="app.js"></script>
 </body>
