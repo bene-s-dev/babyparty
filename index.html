@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Baby Shower • Gender Reveal</title>
+  <meta name="description" content="Feiere mit uns die Babyshower! Gib deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal mit interaktiver Rubbelkarte!">
+  <meta name="theme-color" content="#faf8f5">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bene-s-dev.github.io/babyparty/">
+  <meta property="og:title" content="Baby Shower • Gender Reveal">
+  <meta property="og:description" content="Feiere mit uns die Babyshower! Gib deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal mit interaktiver Rubbelkarte!">
+  <meta property="og:image" content="og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Baby Shower • Gender Reveal">
+  <meta name="twitter:description" content="Feiere mit uns die Babyshower! Gib deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal!">
+  <meta name="twitter:image" content="og-image.jpg">
+  
+  <!-- Google Fonts: Editorial Serif + Clean Modern Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Slow-Motion Video Background with 7s Crossfade Loop -->
+  <div class="video-container" id="videoContainer">
+    <video id="bgVideoA" class="bg-vid active-vid" autoplay muted playsinline poster="preview_frame.jpg">
+      <source src="video_bg.mp4" type="video/mp4">
+      <source src="7799990-uhd_2160_3840_25fps.mp4" type="video/mp4">
+    </video>
+    <video id="bgVideoB" class="bg-vid" muted playsinline poster="preview_frame.jpg">
+      <source src="video_bg.mp4" type="video/mp4">
+      <source src="7799990-uhd_2160_3840_25fps.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- Scaling Container Viewport -->
+  <div class="app-viewport">
+    <div class="scaling-container" id="scalingContainer">
+
+      <!-- Hidden Developer Toolbar (Toggled by clicking 'Willkommen' 5 times) -->
+      <div class="dev-floating-bar" id="devFloatingBar">
+        <button class="dev-header-btn" id="devQuickBtn" title="Entwickler: Countdown überspringen">
+          <i data-lucide="zap" class="icon-sm"></i>
+          <span>Dev Skip Countdown</span>
+        </button>
+        <button class="dev-header-btn" id="openSettingsBtn" title="Entwickler-Einstellungen">
+          <i data-lucide="sliders-horizontal" class="icon-sm"></i>
+          <span>Optionen</span>
+        </button>
+      </div>
+
+      <!-- Stepper Indicator -->
+      <nav class="stepper-bar" id="stepperIndicator" aria-label="Fortschritt">
+        <div class="step-item active" data-step="1">
+          <span class="step-dot"></span>
+          <span class="step-text" data-i18n="stepStart">Start</span>
+        </div>
+        <div class="step-divider" id="stepLine1"></div>
+        <div class="step-item" data-step="2">
+          <span class="step-dot"></span>
+          <span class="step-text" data-i18n="stepGuess">Tippen</span>
+        </div>
+        <div class="step-divider" id="stepLine2"></div>
+        <div class="step-item" data-step="3">
+          <span class="step-dot"></span>
+          <span class="step-text" data-i18n="stepReveal">Reveal</span>
+        </div>
+      </nav>
+
+      <!-- Main Viewport -->
+      <main class="main-container">
+
+    <!-- ==================== SEITE 1: STARTSEITE ==================== -->
+    <section class="page-view active" id="page1">
+      <div class="minimal-card">
+        <h1 class="editorial-title stagger-item stagger-1" id="heroTitle">
+          Willkommen zur <span class="highlight-text">Babyshower</span>
+        </h1>
+        <p class="editorial-subtitle stagger-item stagger-2" id="heroSubtitle" data-i18n="heroSubtitle">
+          Ein neues Kapitel beginnt. Trage deinen Namen ein und teile deine Vorahnung mit uns.
+        </p>
+
+        <form class="clean-form stagger-item stagger-3" id="nameForm" onsubmit="return false;">
+          <div class="form-group">
+            <label for="userNameInput" class="form-label" id="nameLabel" data-i18n="nameLabel">Dein Name</label>
+            <div class="input-container">
+              <i data-lucide="user" class="input-leading-icon"></i>
+              <input 
+                type="text" 
+                id="userNameInput" 
+                placeholder="Vor- oder Nachname..." 
+                autocomplete="name" 
+                maxlength="30"
+                required
+              >
+            </div>
+          </div>
+
+          <!-- Sprachumschalter direkt unter der Namensangabe -->
+          <div class="language-selector-row">
+            <span class="language-label" id="langLabel" data-i18n="langLabel">Sprache:</span>
+            <div class="lang-toggle-group" role="group" aria-label="Sprachauswahl">
+              <button type="button" class="lang-btn" id="langBtnDe" data-lang="de">DE</button>
+              <button type="button" class="lang-btn" id="langBtnEn" data-lang="en">EN</button>
+            </div>
+          </div>
+
+          <button type="button" class="action-btn" id="btnToStep2">
+            <span id="btnToStep2Text" data-i18n="btnToStep2">Weiter zur Abstimmung</span>
+            <i data-lucide="arrow-right" class="icon-btn"></i>
+          </button>
+        </form>
+
+        <div class="live-counter-pill stagger-item stagger-4">
+          <span class="counter-dot"></span>
+          <span id="guestCountPill">31 Gäste nehmen bereits teil</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SEITE 2: RATE-SEITE ==================== -->
+    <section class="page-view" id="page2">
+      <div class="minimal-card">
+        <button class="back-text-btn stagger-item stagger-1" id="btnBackToStep1">
+          <i data-lucide="arrow-left" class="icon-sm"></i>
+          <span data-i18n="btnBack">Zurück</span>
+        </button>
+
+        <div class="user-greeting-tag stagger-item stagger-2">
+          <span id="greetingPrefix">Hallo, </span><strong id="displayGuestName">Gast</strong>
+        </div>
+
+        <h2 class="editorial-heading stagger-item stagger-2" data-i18n="guessHeading">Was ist dein Tipp?</h2>
+        <p class="editorial-subtitle stagger-item stagger-3" data-i18n="guessSubtitle">Wähle deine Intuition:</p>
+
+        <!-- Dual Choice Grid -->
+        <div class="dual-choice-grid stagger-item stagger-4">
+          <!-- Junge -->
+          <button type="button" class="gender-choice-card boy-card" id="btnPickBoy" data-choice="boy">
+            <div class="card-status-indicator">
+              <i data-lucide="check" class="check-icon"></i>
+            </div>
+            <div class="gender-icon-wrapper boy-wash">
+              <i data-lucide="compass" class="gender-symbol-icon"></i>
+            </div>
+            <div class="gender-meta">
+              <h3 class="gender-name" data-i18n="boyLabel">Junge</h3>
+            </div>
+          </button>
+
+          <!-- Mädchen -->
+          <button type="button" class="gender-choice-card girl-card" id="btnPickGirl" data-choice="girl">
+            <div class="card-status-indicator">
+              <i data-lucide="check" class="check-icon"></i>
+            </div>
+            <div class="gender-icon-wrapper girl-wash">
+              <i data-lucide="heart" class="gender-symbol-icon"></i>
+            </div>
+            <div class="gender-meta">
+              <h3 class="gender-name" data-i18n="girlLabel">Mädchen</h3>
+            </div>
+          </button>
+        </div>
+
+        <!-- Live Votes Statistics Bar -->
+        <div class="poll-summary-box stagger-item stagger-5">
+          <div class="poll-labels">
+            <span class="boy-stat"><span data-i18n="boyLabel">Junge</span> <strong id="boyPercent">47%</strong></span>
+            <span class="poll-total-info" id="pollTotalText">31 Stimmen</span>
+            <span class="girl-stat"><span data-i18n="girlLabel">Mädchen</span> <strong id="girlPercent">53%</strong></span>
+          </div>
+          <div class="poll-track">
+            <div class="poll-fill-boy" id="pollBarBoy" style="width: 47%;"></div>
+            <div class="poll-fill-girl" id="pollBarGirl" style="width: 53%;"></div>
+          </div>
+        </div>
+
+        <button type="button" class="action-btn stagger-item stagger-6" id="btnToStep3" disabled>
+          <span data-i18n="btnToStep3">Tipp bestätigen & zum Reveal</span>
+          <i data-lucide="arrow-right" class="icon-btn"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== SEITE 3: REVEAL & SCRATCH ==================== -->
+    <section class="page-view" id="page3">
+      <div class="minimal-card reveal-viewport-card">
+        
+        <div class="selected-summary-chip stagger-item stagger-1" id="userGuessSummary">
+          <span data-i18n="userGuessLabel">Dein Tipp:</span>
+          <strong id="userSummaryBadge">Junge</strong>
+        </div>
+
+        <h2 class="editorial-heading stagger-item stagger-2" data-i18n="revealHeading">Das Gender Reveal</h2>
+        <p class="editorial-subtitle stagger-item stagger-2" id="revealSubheading" data-i18n="revealSubtitle">
+          Die Enthüllung beginnt in Kürze.
+        </p>
+
+        <!-- Countdown Block -->
+        <div class="countdown-module stagger-item stagger-3" id="countdownSection">
+          <div class="countdown-header-row">
+            <i data-lucide="timer" class="icon-sm"></i>
+            <span id="countdownStatusLabel" data-i18n="countdownLabel">Countdown</span>
+          </div>
+
+          <div class="countdown-digits-row" id="timerGrid">
+            <div class="digit-box">
+              <span class="digit-val" id="timerDays">00</span>
+              <span class="digit-unit" data-i18n="unitDays">Tage</span>
+            </div>
+            <span class="digit-sep">:</span>
+            <div class="digit-box">
+              <span class="digit-val" id="timerHours">00</span>
+              <span class="digit-unit" data-i18n="unitHours">Std</span>
+            </div>
+            <span class="digit-sep">:</span>
+            <div class="digit-box">
+              <span class="digit-val" id="timerMins">00</span>
+              <span class="digit-unit" data-i18n="unitMins">Min</span>
+            </div>
+            <span class="digit-sep">:</span>
+            <div class="digit-box active-sec">
+              <span class="digit-val" id="timerSecs">10</span>
+              <span class="digit-unit" data-i18n="unitSecs">Sek</span>
+            </div>
+          </div>
+
+          <div class="countdown-buttons">
+            <button type="button" class="btn-subtle-countdown" id="btnStartSuspenseCountdown">
+              <i data-lucide="play" class="icon-sm"></i>
+              <span data-i18n="btnStartCountdown">10s Countdown starten</span>
+            </button>
+            <button type="button" class="dev-inline-btn dev-only-element" id="btnDevSkipCountdown">
+              <i data-lucide="zap" class="icon-xs"></i>
+              <span data-i18n="btnDevSkip">Entwickler: Countdown überspringen</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scratch Prompt -->
+        <div class="scratch-guidance stagger-item stagger-4" id="scratchInstructionBox">
+          <i data-lucide="sparkles" class="icon-md guidance-icon"></i>
+          <div class="guidance-text">
+            <strong data-i18n="scratchTitle">Karte frei rubbeln</strong>
+            <span data-i18n="scratchSub">Wische über die Karte, um das Geschlecht aufzudecken</span>
+          </div>
+          <span class="progress-indicator" id="scratchProgressPill">0%</span>
+        </div>
+
+        <!-- Scratch Container with Multi-Layer Foil -->
+        <div class="scratch-canvas-container stagger-item stagger-4" id="scratchCardWrapper">
+          
+          <!-- Underneath Reveal Card -->
+          <div class="underlying-card" id="revealedUnderlay">
+            <div class="reveal-content-inner">
+              <div class="reveal-eyebrow" data-i18n="revealEyebrow">Offizielle Verkündung</div>
+
+              <span class="reveal-prefix" data-i18n="revealPrefix">Es wird ein...</span>
+              
+              <div class="revealed-badge" id="revealedGenderBadge">
+                <i data-lucide="heart" class="reveal-badge-icon" id="revealedIcon"></i>
+                <h3 class="revealed-headline" id="revealedGenderTitle">MÄDCHEN</h3>
+              </div>
+
+              <p class="revealed-quote-text" id="revealedQuote">
+                „Wir können es kaum erwarten, dich in die Arme zu schließen.“
+              </p>
+
+              <!-- Guest intuition result -->
+              <div class="intuition-result" id="userMatchResult">
+                <i data-lucide="award" class="result-icon" id="matchIcon"></i>
+                <div class="result-details">
+                  <strong id="matchTitle">Richtig getippt!</strong>
+                  <span id="matchSubtitle">Deine Intuition hat gestimmt.</span>
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="reveal-action-buttons">
+                <button type="button" class="action-btn-secondary" id="btnConfettiAgain">
+                  <i data-lucide="sparkles" class="icon-sm"></i>
+                  <span data-i18n="btnConfetti">Mehr Konfetti</span>
+                </button>
+                <button type="button" class="action-btn-secondary" id="btnShareResult">
+                  <i data-lucide="share-2" class="icon-sm"></i>
+                  <span data-i18n="btnShare">Teilen</span>
+                </button>
+                <button type="button" class="action-btn-secondary" id="btnRestartGuess">
+                  <i data-lucide="rotate-ccw" class="icon-sm"></i>
+                  <span data-i18n="btnRestart">Neu starten</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Layer Scratch Canvas: Layer 1 (Middle Shimmer) and Layer 2 (Top Charcoal) -->
+          <canvas id="scratchCanvasMid" class="scratch-canvas-layer" width="440" height="420"></canvas>
+          <canvas id="scratchCanvasTop" class="scratch-canvas-layer" width="440" height="420"></canvas>
+
+          <!-- Lock state before countdown completes -->
+          <div class="scratch-lock-barrier" id="countdownLockOverlay">
+            <div class="barrier-card">
+              <i data-lucide="lock" class="barrier-icon"></i>
+              <strong class="barrier-title" data-i18n="barrierTitle">Noch verdeckt</strong>
+              <span class="barrier-text" data-i18n="barrierText">Starte den Countdown oder überspringe ihn im Entwickler-Modus.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Minimalist Settings Modal -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="settingsTitle">Einstellungen</h3>
+        <button type="button" class="modal-close" id="closeSettingsBtn">
+          <i data-lucide="x" class="icon-sm"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="config-field">
+          <label class="config-label" data-i18n="settingGenderLabel">Tatsächliches Geschlecht für den Reveal</label>
+          <div class="toggle-switch-group">
+            <button type="button" class="toggle-option active" id="setGenderGirl" data-gender="girl">
+              <i data-lucide="heart" class="icon-xs"></i>
+              <span data-i18n="girlLabel">Mädchen</span>
+            </button>
+            <button type="button" class="toggle-option" id="setGenderBoy" data-gender="boy">
+              <i data-lucide="compass" class="icon-xs"></i>
+              <span data-i18n="boyLabel">Junge</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="config-field">
+          <label class="config-label" data-i18n="settingJumpLabel">Entwickler-Direktsprung</label>
+          <div class="jump-actions">
+            <button type="button" class="jump-btn" id="devJumpPage1"><span data-i18n="page">Seite</span> 1</button>
+            <button type="button" class="jump-btn" id="devJumpPage2"><span data-i18n="page">Seite</span> 2</button>
+            <button type="button" class="jump-btn" id="devJumpPage3"><span data-i18n="page">Seite</span> 3</button>
+          </div>
+        </div>
+
+        <div class="config-field">
+          <button type="button" class="btn-reset" id="btnResetAllVotes">
+            <i data-lucide="trash-2" class="icon-xs"></i>
+            <span data-i18n="btnReset">Stimmen & Fortschritt zurücksetzen</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="action-btn" id="saveSettingsBtn" data-i18n="btnDone">Fertig</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Message -->
+  <div class="minimal-toast" id="toastBubble"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
