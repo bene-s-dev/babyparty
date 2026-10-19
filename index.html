@@ -68,13 +68,14 @@
       <main class="main-container">
 
     <!-- ==================== SEITE 1: STARTSEITE ==================== -->
-    <section class="page-view active" id="page1">
+    <section class="page-view active video-intro-pending" id="page1">
       <div class="minimal-card">
-        <h1 class="editorial-title stagger-item stagger-1" id="heroTitle">
-          Willkommen zur <span class="highlight-text">Babyshower</span>
+        <h1 class="editorial-title" id="heroTitle">
+          <span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word" style="--w-idx: 1;">zur</span>
+          <span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Babyshower</span>
         </h1>
         <p class="editorial-subtitle stagger-item stagger-2" id="heroSubtitle" data-i18n="heroSubtitle">
-          Ein neues Kapitel beginnt. Trage deinen Namen ein und teile deine Vorahnung mit uns.
+          Ein neues Kapitel beginnt. Trage deinen Namen ein und feier mit uns.
         </p>
 
         <form class="clean-form stagger-item stagger-3" id="nameForm" onsubmit="return false;">
@@ -85,7 +86,7 @@
               <input 
                 type="text" 
                 id="userNameInput" 
-                placeholder="Vor- oder Nachname..." 
+                placeholder="" 
                 autocomplete="name" 
                 maxlength="30"
                 required
@@ -102,8 +103,8 @@
             </div>
           </div>
 
-          <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-5" id="btnToStep2">
-            <span id="btnToStep2Text" data-i18n="btnToStep2">Weiter zur Abstimmung</span>
+          <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-5 is-disabled" id="btnToStep2" aria-disabled="true">
+            <span id="btnToStep2Text" data-i18n="btnToStep2">Weiter</span>
             <i data-lucide="arrow-right" class="icon-btn"></i>
           </button>
         </form>
@@ -118,19 +119,13 @@
     <!-- ==================== SEITE 2: RATE-SEITE ==================== -->
     <section class="page-view" id="page2">
       <div class="minimal-card">
-        <div class="page2-top-bar stagger-item stagger-1">
-          <button class="back-text-btn" id="btnBackToStep1">
-            <i data-lucide="arrow-left" class="icon-sm"></i>
-            <span data-i18n="btnBack">Zurück</span>
-          </button>
-          <div class="user-greeting-tag">
-            <span id="greetingPrefix">Hallo, </span><strong id="displayGuestName">Gast</strong>
-          </div>
-          <div class="top-bar-placeholder" aria-hidden="true"></div>
-        </div>
-
-        <h2 class="editorial-heading stagger-item stagger-2" data-i18n="guessHeading">Was ist dein Tipp?</h2>
-        <p class="editorial-subtitle stagger-item stagger-3" data-i18n="guessSubtitle">Wähle deine Intuition:</p>
+        <h2 class="editorial-heading" id="guessHeading">
+          <span class="title-word" style="--w-idx: 0;">Was</span>
+          <span class="title-word" style="--w-idx: 1;">ist</span>
+          <span class="title-word" style="--w-idx: 2;">dein</span>
+          <span class="title-word highlight-word" style="--w-idx: 3;">Tipp?</span>
+        </h2>
+        <p class="editorial-subtitle stagger-item stagger-2" data-i18n="guessSubtitle">Wähle deine Intuition:</p>
 
         <!-- Dual Choice Grid -->
         <div class="dual-choice-grid stagger-item stagger-4">
@@ -140,7 +135,11 @@
               <i data-lucide="check" class="check-icon"></i>
             </div>
             <div class="gender-icon-wrapper boy-wash">
-              <i data-lucide="compass" class="gender-symbol-icon"></i>
+              <svg viewBox="0 0 24 24" class="gender-symbol-icon" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="10" cy="14" r="5"></circle>
+                <line x1="13.6" y1="10.4" x2="19.5" y2="4.5"></line>
+                <polyline points="14.5 4.5 19.5 4.5 19.5 9.5"></polyline>
+              </svg>
             </div>
             <div class="gender-meta">
               <h3 class="gender-name" data-i18n="boyLabel">Junge</h3>
@@ -153,7 +152,11 @@
               <i data-lucide="check" class="check-icon"></i>
             </div>
             <div class="gender-icon-wrapper girl-wash">
-              <i data-lucide="heart" class="gender-symbol-icon"></i>
+              <svg viewBox="0 0 24 24" class="gender-symbol-icon" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="9" r="5"></circle>
+                <line x1="12" y1="14" x2="12" y2="21"></line>
+                <line x1="9" y1="17.5" x2="15" y2="17.5"></line>
+              </svg>
             </div>
             <div class="gender-meta">
               <h3 class="gender-name" data-i18n="girlLabel">Mädchen</h3>
@@ -174,8 +177,8 @@
           </div>
         </div>
 
-        <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-6" id="btnToStep3" disabled>
-          <span data-i18n="btnToStep3">Tipp bestätigen & zum Reveal</span>
+        <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-6 is-disabled" id="btnToStep3" aria-disabled="true">
+          <span data-i18n="btnToStep3">Weiter</span>
           <i data-lucide="arrow-right" class="icon-btn"></i>
         </button>
       </div>
@@ -185,13 +188,18 @@
     <section class="page-view" id="page3">
       <div class="minimal-card reveal-viewport-card">
         
-        <div class="selected-summary-chip stagger-item stagger-1" id="userGuessSummary">
-          <span data-i18n="userGuessLabel">Dein Tipp:</span>
+        <h2 class="editorial-heading" id="revealHeading">
+          <span class="title-word" style="--w-idx: 0;">Das</span>
+          <span class="title-word" style="--w-idx: 1;">Gender</span>
+          <span class="title-word" style="--w-idx: 2;">Reveal</span>
+        </h2>
+
+        <div class="selected-summary-chip stagger-item stagger-2" id="userGuessSummary">
+          <span data-i18n="userGuessLabel">Dein Team:</span>
           <strong id="userSummaryBadge">Junge</strong>
         </div>
 
-        <h2 class="editorial-heading stagger-item stagger-2" data-i18n="revealHeading">Das Gender Reveal</h2>
-        <p class="editorial-subtitle stagger-item stagger-2" id="revealSubheading" data-i18n="revealSubtitle">
+        <p class="editorial-subtitle stagger-item stagger-3" id="revealSubheading" data-i18n="revealSubtitle">
           Die Enthüllung beginnt in Kürze.
         </p>
 
@@ -224,7 +232,13 @@
               <span class="reveal-prefix" data-i18n="revealPrefix">Es wird ein...</span>
               
               <div class="revealed-badge" id="revealedGenderBadge">
-                <i data-lucide="heart" class="reveal-badge-icon" id="revealedIcon"></i>
+                <span class="reveal-badge-icon" id="revealedIcon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="9" r="5"></circle>
+                    <line x1="12" y1="14" x2="12" y2="21"></line>
+                    <line x1="9" y1="17.5" x2="15" y2="17.5"></line>
+                  </svg>
+                </span>
                 <h3 class="revealed-headline" id="revealedGenderTitle">MÄDCHEN</h3>
               </div>
 
@@ -237,13 +251,13 @@
           <!-- Multi-Layer Scratch Canvas: Layer 1 (Middle Shimmer) and Layer 2 (Top Charcoal) -->
           <canvas id="scratchCanvasMid" class="scratch-canvas-layer" width="440" height="420"></canvas>
           <canvas id="scratchCanvasTop" class="scratch-canvas-layer" width="440" height="420"></canvas>
+          <canvas id="scratchSparklesCanvas" class="scratch-sparkles-layer" width="440" height="420"></canvas>
 
           <!-- Lock state before countdown completes -->
           <div class="scratch-lock-barrier" id="countdownLockOverlay">
             <div class="barrier-card">
               <i data-lucide="lock" class="barrier-icon"></i>
               <strong class="barrier-title" data-i18n="barrierTitle">Countdown läuft...</strong>
-              <span class="barrier-text" data-i18n="barrierText">In wenigen Sekunden wird die Rubbelkarte freigeschaltet!</span>
             </div>
           </div>
 
@@ -283,7 +297,10 @@
 </div>
 </div>
 
-  <!-- Confetti Canvas -->
+  <!-- Ambient Background Stars Canvas (z-index: 5, behind cards) -->
+  <canvas id="bgStarsCanvas"></canvas>
+
+  <!-- Foreground Confetti & Bursts Canvas (z-index: 100) -->
   <canvas id="confettiCanvas"></canvas>
 
   <!-- Minimalist Settings Modal -->
@@ -301,11 +318,19 @@
           <label class="config-label" data-i18n="settingGenderLabel">Tatsächliches Geschlecht für den Reveal</label>
           <div class="toggle-switch-group">
             <button type="button" class="toggle-option active" id="setGenderGirl" data-gender="girl">
-              <i data-lucide="heart" class="icon-xs"></i>
+              <svg viewBox="0 0 24 24" class="icon-xs" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="9" r="5"></circle>
+                <line x1="12" y1="14" x2="12" y2="21"></line>
+                <line x1="9" y1="17.5" x2="15" y2="17.5"></line>
+              </svg>
               <span data-i18n="girlLabel">Mädchen</span>
             </button>
             <button type="button" class="toggle-option" id="setGenderBoy" data-gender="boy">
-              <i data-lucide="compass" class="icon-xs"></i>
+              <svg viewBox="0 0 24 24" class="icon-xs" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="10" cy="14" r="5"></circle>
+                <line x1="13.6" y1="10.4" x2="19.5" y2="4.5"></line>
+                <polyline points="14.5 4.5 19.5 4.5 19.5 9.5"></polyline>
+              </svg>
               <span data-i18n="boyLabel">Junge</span>
             </button>
           </div>
@@ -329,7 +354,35 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="action-btn" id="saveSettingsBtn" data-i18n="btnDone">Fertig</button>
+        <button type="button" class="action-btn gradient-btn-primary" id="saveSettingsBtn" data-i18n="btnDone">Fertig</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Card Sharing Modal -->
+  <div class="modal-backdrop" id="storyModal">
+    <div class="modal-window story-modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="storyModalTitle">Story-Karte teilen</h3>
+        <button type="button" class="modal-close" id="closeStoryModalBtn">
+          <i data-lucide="x" class="icon-sm"></i>
+        </button>
+      </div>
+
+      <div class="modal-body story-modal-body">
+        <div class="story-preview-wrapper">
+          <canvas id="storyCardCanvas" width="1080" height="1350" class="story-card-canvas"></canvas>
+        </div>
+        <div class="story-modal-actions">
+          <button type="button" class="action-btn gradient-btn-primary" id="btnDownloadStoryImage">
+            <i data-lucide="download" class="icon-sm"></i>
+            <span data-i18n="btnDownloadStory">Bild speichern</span>
+          </button>
+          <button type="button" class="btn-subtle-story" id="btnShareStoryNative">
+            <i data-lucide="share-2" class="icon-sm"></i>
+            <span data-i18n="btnShareDirect">Teilen (WhatsApp / Story)</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
