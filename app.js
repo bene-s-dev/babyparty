@@ -53,8 +53,8 @@
       foilSecretSub: 'Das Geschlecht ist hier verborgen',
       foilRubbel: 'KARTE FREI RUBBELN',
       foilMidText: 'FAST ENTHÜLLT...',
-      barrierTitle: 'Noch verdeckt',
-      barrierText: 'Starte den Countdown oder überspringe ihn im Entwickler-Modus.',
+      barrierTitle: 'Countdown läuft...',
+      barrierText: 'In wenigen Sekunden wird die Rubbelkarte freigeschaltet!',
       revealEyebrow: 'Offizielle Verkündung',
       revealPrefix: 'Es wird ein...',
       girlTitle: 'MÄDCHEN',
@@ -122,8 +122,8 @@
       foilSecretSub: 'The baby’s gender is hidden here',
       foilRubbel: 'SCRATCH TO REVEAL',
       foilMidText: 'ALMOST REVEALED...',
-      barrierTitle: 'Locked',
-      barrierText: 'Start the countdown or skip it in developer mode.',
+      barrierTitle: 'Countdown in progress...',
+      barrierText: 'The scratch card will be unlocked in just a few seconds!',
       revealEyebrow: 'Official Announcement',
       revealPrefix: 'It’s a...',
       girlTitle: 'GIRL',
@@ -840,6 +840,9 @@
     if (elements.postRevealSection) elements.postRevealSection.classList.remove('visible');
 
     drawScratchCardFoil();
+    requestAnimationFrame(() => {
+      drawScratchCardFoil();
+    });
 
     STATE.countdownTimeLeft = STATE.countdownDuration;
     refreshIcons();
@@ -926,7 +929,7 @@
     if (STATE.countdownRunning) return;
     STATE.countdownRunning = true;
     STATE.countdownTimeLeft = seconds;
-    elements.btnStartSuspenseCountdown.disabled = true;
+    if (elements.btnStartSuspenseCountdown) elements.btnStartSuspenseCountdown.disabled = true;
 
     audio.playClick();
     elements.countdownStatusLabel.textContent = (STATE.lang === 'de') ? 'Spannung steigt' : 'Suspense builds';
@@ -940,7 +943,7 @@
       if (STATE.countdownTimeLeft <= 0) {
         clearInterval(STATE.countdownInterval);
         STATE.countdownRunning = false;
-        elements.btnStartSuspenseCountdown.disabled = false;
+        if (elements.btnStartSuspenseCountdown) elements.btnStartSuspenseCountdown.disabled = false;
         unlockScratchCard();
       }
     }, 1000);
@@ -951,9 +954,12 @@
     STATE.countdownRunning = false;
     STATE.countdownTimeLeft = 0;
     elements.timerSecs.textContent = '00';
-    elements.btnStartSuspenseCountdown.disabled = false;
-    showToast(t('toastDevSkip'));
-    unlockScratchCard();
+    if (elements.btnStartSuspenseCountdown) elements.btnStartSuspenseCountdown.disabled = false;
+    if (STATE.isCardUnlocked) {
+      triggerGenderReveal();
+    } else {
+      unlockScratchCard();
+    }
   }
 
   function unlockScratchCard() {
@@ -975,8 +981,9 @@
     const midCanvas = elements.scratchCanvasMid;
     if (!topCanvas || !midCanvas) return;
 
-    const w = topCanvas.width = midCanvas.width = topCanvas.offsetWidth || 400;
-    const h = topCanvas.height = midCanvas.height = topCanvas.offsetHeight || 370;
+    const wrapper = elements.scratchCardWrapper;
+    const w = topCanvas.width = midCanvas.width = (topCanvas.offsetWidth || (wrapper ? wrapper.offsetWidth : 0) || 400);
+    const h = topCanvas.height = midCanvas.height = (topCanvas.offsetHeight || (wrapper ? wrapper.offsetHeight : 0) || 225);
 
     // --- LAYER 1: MIDDLE PEARLESCENT FOIL (Beneath Top Layer) ---
     const ctxMid = midCanvas.getContext('2d');
@@ -1032,11 +1039,11 @@
     ctxTop.strokeRect(20, 20, w - 40, h - 40);
 
     const cx = w / 2;
-    const cy = h / 2 - 28;
+    const cy = Math.max(46, Math.round(h * 0.32));
 
     // Wax seal emblem
     ctxTop.beginPath();
-    ctxTop.arc(cx, cy, 32, 0, Math.PI * 2);
+    ctxTop.arc(cx, cy, 28, 0, Math.PI * 2);
     ctxTop.fillStyle = 'rgba(255, 255, 255, 0.06)';
     ctxTop.fill();
     ctxTop.strokeStyle = 'rgba(255, 255, 255, 0.18)';
@@ -1045,23 +1052,23 @@
 
     ctxTop.fillStyle = '#ffffff';
     ctxTop.beginPath();
-    ctxTop.arc(cx, cy, 3.5, 0, Math.PI * 2);
+    ctxTop.arc(cx, cy, 3, 0, Math.PI * 2);
     ctxTop.fill();
 
     // Top foil typography
     ctxTop.font = '600 12px "Plus Jakarta Sans", sans-serif';
-    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.72)';
+    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.85)';
     ctxTop.textAlign = 'center';
     ctxTop.textBaseline = 'middle';
-    ctxTop.fillText(t('foilSecret'), cx, cy + 50);
+    ctxTop.fillText(t('foilSecret'), cx, cy + 42);
 
     ctxTop.font = '400 11px "Plus Jakarta Sans", sans-serif';
-    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.44)';
-    ctxTop.fillText(t('foilSecretSub'), cx, cy + 70);
+    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.55)';
+    ctxTop.fillText(t('foilSecretSub'), cx, cy + 60);
 
     ctxTop.font = '600 11px "Plus Jakarta Sans", sans-serif';
-    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.85)';
-    ctxTop.fillText(t('foilRubbel'), cx, cy + 104);
+    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.90)';
+    ctxTop.fillText(t('foilRubbel'), cx, cy + 88);
   }
 
   function setupMultiLayerScratchEvents() {
@@ -1182,8 +1189,8 @@
 
       const percent = Math.min(100, Math.round((transparentCount / totalSampled) * 100));
 
-      // Threshold: Once ~38% of the middle layer is scraped away, the gender is clearly visible!
-      if (percent >= 38) {
+      // Threshold: Once ~28% of the middle layer is scraped away, the gender is clearly visible!
+      if (percent >= 28) {
         triggerGenderReveal();
       }
     } catch (e) {

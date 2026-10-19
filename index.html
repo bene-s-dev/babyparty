@@ -118,13 +118,15 @@
     <!-- ==================== SEITE 2: RATE-SEITE ==================== -->
     <section class="page-view" id="page2">
       <div class="minimal-card">
-        <button class="back-text-btn stagger-item stagger-1" id="btnBackToStep1">
-          <i data-lucide="arrow-left" class="icon-sm"></i>
-          <span data-i18n="btnBack">Zurück</span>
-        </button>
-
-        <div class="user-greeting-tag stagger-item stagger-2">
-          <span id="greetingPrefix">Hallo, </span><strong id="displayGuestName">Gast</strong>
+        <div class="page2-top-bar stagger-item stagger-1">
+          <button class="back-text-btn" id="btnBackToStep1">
+            <i data-lucide="arrow-left" class="icon-sm"></i>
+            <span data-i18n="btnBack">Zurück</span>
+          </button>
+          <div class="user-greeting-tag">
+            <span id="greetingPrefix">Hallo, </span><strong id="displayGuestName">Gast</strong>
+          </div>
+          <div class="top-bar-placeholder" aria-hidden="true"></div>
         </div>
 
         <h2 class="editorial-heading stagger-item stagger-2" data-i18n="guessHeading">Was ist dein Tipp?</h2>
@@ -240,8 +242,8 @@
           <div class="scratch-lock-barrier" id="countdownLockOverlay">
             <div class="barrier-card">
               <i data-lucide="lock" class="barrier-icon"></i>
-              <strong class="barrier-title" data-i18n="barrierTitle">Noch verdeckt</strong>
-              <span class="barrier-text" data-i18n="barrierText">Starte den Countdown oder überspringe ihn im Entwickler-Modus.</span>
+              <strong class="barrier-title" data-i18n="barrierTitle">Countdown läuft...</strong>
+              <span class="barrier-text" data-i18n="barrierText">In wenigen Sekunden wird die Rubbelkarte freigeschaltet!</span>
             </div>
           </div>
 
