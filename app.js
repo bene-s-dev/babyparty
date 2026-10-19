@@ -243,8 +243,6 @@
     btnDevSkipCountdown: document.getElementById('btnDevSkipCountdown'),
     
     // Scratch Card with Dual Layers
-    scratchInstructionBox: document.getElementById('scratchInstructionBox'),
-    scratchProgressPill: document.getElementById('scratchProgressPill'),
     scratchCardWrapper: document.getElementById('scratchCardWrapper'),
     revealedUnderlay: document.getElementById('revealedUnderlay'),
     scratchCanvasMid: document.getElementById('scratchCanvasMid'),
@@ -831,10 +829,8 @@
     STATE.isCardUnlocked = false;
     STATE.isScratchedRevealed = false;
     elements.countdownLockOverlay.classList.remove('unlocked');
-    elements.scratchInstructionBox.classList.remove('visible');
     elements.scratchCanvasTop.classList.remove('revealed-out', 'unlocked');
     elements.scratchCanvasMid.classList.remove('revealed-out', 'unlocked');
-    elements.scratchProgressPill.textContent = '0%';
 
     drawScratchCardFoil();
 
@@ -954,7 +950,6 @@
   function unlockScratchCard() {
     STATE.isCardUnlocked = true;
     elements.countdownLockOverlay.classList.add('unlocked');
-    elements.scratchInstructionBox.classList.add('visible');
     elements.scratchCanvasTop.classList.add('unlocked');
     elements.scratchCanvasMid.classList.add('unlocked');
     elements.countdownStatusLabel.textContent = (STATE.lang === 'de') ? 'Freigeschaltet' : 'Unlocked';
@@ -1177,7 +1172,6 @@
       }
 
       const percent = Math.min(100, Math.round((transparentCount / totalSampled) * 100));
-      elements.scratchProgressPill.textContent = `${percent}%`;
 
       // Threshold: Once ~38% of the middle layer is scraped away, the gender is clearly visible!
       if (percent >= 38) {
@@ -1195,15 +1189,6 @@
     // Fade out both foil layers smoothly
     elements.scratchCanvasTop.classList.add('revealed-out');
     elements.scratchCanvasMid.classList.add('revealed-out');
-
-    elements.scratchInstructionBox.innerHTML = `
-      <i data-lucide="check-circle-2" class="icon-md" style="color:#10b981;"></i>
-      <div class="guidance-text">
-        <strong>${(STATE.lang === 'de') ? 'Vollständig enthüllt' : 'Fully Revealed'}</strong>
-        <span>${(STATE.lang === 'de') ? 'Das Geheimnis ist gelüftet.' : 'The secret is out.'}</span>
-      </div>
-      <span class="progress-indicator" style="background:#e6f8f0; color:#0d7a54;">100%</span>
-    `;
 
     audio.playFanfare();
     fireCelebrationConfetti();
