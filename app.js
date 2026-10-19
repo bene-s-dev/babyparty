@@ -541,11 +541,12 @@
 
   function updateRevealHeading() {
     if (!elements.revealHeading) return;
-    const text = (STATE.lang === 'de') ? 'Das Gender Reveal' : 'The Gender Reveal';
-    const words = text.split(' ').filter(Boolean);
-    elements.revealHeading.innerHTML = words
-      .map((word, i) => `<span class="title-word" style="--w-idx: ${i};">${word}</span>`)
-      .join(' ');
+    const isDe = (STATE.lang === 'de');
+    if (isDe) {
+      elements.revealHeading.innerHTML = 'Das <span class="reveal-highlight">Gender Reveal</span>';
+    } else {
+      elements.revealHeading.innerHTML = 'The <span class="reveal-highlight">Gender Reveal</span>';
+    }
   }
 
   function applyLanguageToDOM(lang) {
@@ -659,7 +660,9 @@
       }, 70);
     },
 
-    // Idea 6: Ultra-soft warm marimba droplet sound on keystroke (ascending pentatonic scale)
+    lastDropletIdx: -1,
+
+    // Soft warm marimba droplet sound on keystroke (shuffled/random notes for playful organic feedback)
     playTypeDroplet(charLength = 1) {
       if (!STATE.soundEnabled) return;
       this.init();
@@ -667,10 +670,17 @@
 
       try {
         const now = this.ctx.currentTime;
-        // Pentatonic scale progression (C5, D5, E5, G5, A5, C6, D6, E6)
-        const scale = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
-        const noteIdx = Math.max(0, (charLength - 1)) % scale.length;
-        const freq = scale[noteIdx];
+        // Pentatonic scale palette (harmonious in any random order: C5, D5, E5, G5, A5, C6, D6, E6)
+        const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
+        
+        // Pick a note randomly ("durcheinander"), avoiding immediate repeats
+        let noteIdx;
+        do {
+          noteIdx = Math.floor(Math.random() * notes.length);
+        } while (noteIdx === this.lastDropletIdx && notes.length > 1);
+        this.lastDropletIdx = noteIdx;
+
+        const freq = notes[noteIdx];
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -968,7 +978,7 @@
           placeholderAnimator.resume();
         }
       }
-      if (!STATE.isLanguageLocked && !elements.page1.classList.contains('video-intro-pending')) {
+      if (!STATE.isLanguageLocked) {
         startBilingualAutoCycle();
       }
     } else {
@@ -1019,43 +1029,9 @@
     }, 500);
   }
 
-  // ==================== VIDEO INTRO DELAY (2.5 SECONDS) ====================
-  function initVideoIntro() {
-    if (!elements.page1 || !elements.page1.classList.contains('video-intro-pending')) {
-      placeholderAnimator.start();
-      return;
-    }
-
-    let introRevealed = false;
-    function revealCard() {
-      if (introRevealed) return;
-      introRevealed = true;
-      if (elements.page1) {
-        elements.page1.classList.remove('video-intro-pending');
-      }
-      placeholderAnimator.start();
-      if (!STATE.isLanguageLocked && STATE.currentStep === 1) {
-        startBilingualAutoCycle();
-      }
-    }
-
-    // Auto-reveal after exactly 2.5 seconds to let the video shine first
-    const introTimer = setTimeout(revealCard, 2500);
-
-    // Allow user to tap/click anywhere to skip the wait immediately if they wish
-    const cancelEarly = () => {
-      clearTimeout(introTimer);
-      revealCard();
-      window.removeEventListener('pointerdown', cancelEarly);
-    };
-    window.addEventListener('pointerdown', cancelEarly, { once: true });
-  }
-
   // ==================== PAGE 1 LOGIC ====================
   function initPage1() {
-    if (!elements.page1.classList.contains('video-intro-pending')) {
-      placeholderAnimator.start();
-    }
+    placeholderAnimator.start();
 
     // Ensure initial disabled state is active
     if (elements.btnToStep2) {
@@ -1338,7 +1314,7 @@
   function initPage3() {
     if (elements.btnStartSuspenseCountdown) {
       elements.btnStartSuspenseCountdown.addEventListener('click', () => {
-        startCountdown(10);
+        startCountdown(10, true);
       });
     }
 
@@ -1373,13 +1349,15 @@
     setupMultiLayerScratchEvents();
   }
 
-  function startCountdown(seconds) {
+  function startCountdown(seconds, playSound = false) {
     if (STATE.countdownRunning) return;
     STATE.countdownRunning = true;
     STATE.countdownTimeLeft = seconds;
     if (elements.btnStartSuspenseCountdown) elements.btnStartSuspenseCountdown.disabled = true;
 
-    audio.playClick();
+    if (playSound) {
+      audio.playClick();
+    }
     elements.countdownStatusLabel.textContent = (STATE.lang === 'de') ? 'Spannung steigt' : 'Suspense builds';
 
     clearInterval(STATE.countdownInterval);
@@ -2776,9 +2754,7 @@
       // Start auto-alternating cycle between DE and EN smoothly
       STATE.lang = 'de';
       applyLanguageToDOM('de');
-      if (!elements.page1.classList.contains('video-intro-pending')) {
-        startBilingualAutoCycle();
-      }
+      startBilingualAutoCycle();
     }
 
     // Device / Browser Native Back Button Support
@@ -2791,7 +2767,6 @@
     });
 
     goToStep(1);
-    initVideoIntro();
     refreshIcons();
     updateScalingContainer();
   }
