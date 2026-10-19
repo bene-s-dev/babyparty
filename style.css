@@ -115,33 +115,32 @@ body.clean-bg .video-container {
   backdrop-filter: blur(6px);
 }
 
-/* ==================== SCALING CONTAINER VIEWPORT ==================== */
+/* ==================== RESPONSIVE VIEWPORT & CONTAINER ==================== */
 .app-viewport {
   position: relative;
   z-index: 10;
-  width: 100vw;
-  height: 100dvh;
+  width: 100%;
   min-height: 100dvh;
+  min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: env(safe-area-inset-top, 8px) 10px env(safe-area-inset-bottom, 8px);
+  justify-content: flex-start;
+  padding: max(env(safe-area-inset-top), 16px) 16px max(env(safe-area-inset-bottom), 24px);
 }
 
 .scaling-container {
   width: 100%;
-  max-width: 430px;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: clamp(6px, 1.4vh, 12px);
-  transform-origin: center center;
-  transform: scale(var(--app-scale, 1));
-  transition: transform 0.15s ease-out;
-  margin: auto;
+  gap: 14px;
+  margin: auto 0; /* Centered when short, scrolls naturally when tall */
+  transform: none !important;
 }
 
 /* Hidden Developer Toolbar (Appears only after 5 clicks on 'Willkommen') */
@@ -417,10 +416,15 @@ body.dev-mode-active .dev-only-element {
 .input-leading-icon {
   position: absolute;
   left: 16px;
-  width: 17px;
-  height: 17px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
   color: var(--ink-tertiary);
   pointer-events: none;
+  display: block;
+  z-index: 2;
+  flex-shrink: 0;
 }
 
 #userNameInput {
@@ -946,12 +950,15 @@ body.dev-mode-active .dev-only-element {
 .scratch-canvas-container {
   position: relative;
   width: 100%;
-  min-height: clamp(330px, 46vh, 395px);
+  height: 310px;
+  max-height: 48vh;
+  min-height: 280px;
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: 0 12px 32px rgba(24, 32, 47, 0.08);
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none;
 }
 
 /* Underlying Result */
@@ -965,7 +972,7 @@ body.dev-mode-active .dev-only-element {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 28px 20px;
+  padding: 20px 16px;
   border: 2px solid transparent;
   z-index: 1;
 }

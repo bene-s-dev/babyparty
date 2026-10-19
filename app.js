@@ -1431,36 +1431,25 @@
     }, 2400);
   }
 
-  // ==================== AUTO-SCALING CONTAINER FOR ALL SCREEN SIZES ====================
+  // ==================== RESPONSIVE LAYOUT & SCRATCH RESIZE ====================
   function updateScalingContainer() {
     const container = document.getElementById('scalingContainer');
     if (!container) return;
-
     container.style.transform = 'none';
-
-    requestAnimationFrame(() => {
-      const naturalHeight = container.scrollHeight;
-      const naturalWidth = container.offsetWidth;
-
-      const availHeight = window.innerHeight - (window.innerWidth < 480 ? 16 : 28);
-      const availWidth = window.innerWidth - 18;
-
-      let scale = 1;
-      if (naturalHeight > availHeight || naturalWidth > availWidth) {
-        const scaleY = availHeight / naturalHeight;
-        const scaleX = availWidth / naturalWidth;
-        scale = Math.min(1, Math.min(scaleX, scaleY));
-        scale = Math.max(0.68, scale);
-      }
-
-      document.documentElement.style.setProperty('--app-scale', scale.toFixed(3));
-      container.style.transform = `scale(${scale.toFixed(3)})`;
-    });
   }
 
-  window.addEventListener('resize', updateScalingContainer);
+  window.addEventListener('resize', () => {
+    if (STATE.currentStep === 3 && !STATE.isScratchedRevealed) {
+      drawScratchCardFoil();
+    }
+  });
+
   window.addEventListener('orientationchange', () => {
-    setTimeout(updateScalingContainer, 150);
+    setTimeout(() => {
+      if (STATE.currentStep === 3 && !STATE.isScratchedRevealed) {
+        drawScratchCardFoil();
+      }
+    }, 150);
   });
 
   // ==================== INITIALIZATION ====================
