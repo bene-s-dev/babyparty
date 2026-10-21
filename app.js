@@ -23,7 +23,7 @@
       stepGuess: 'Tippen',
       stepReveal: 'Reveal',
       heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word" style="--w-idx: 1;">zum</span> <span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Gender Reveal</span>',
-      heroSubtitle: 'Ein neues Kapitel für Alina & Kevin beginnt.<br>Trage Deinen Namen ein und feier mit uns.',
+      heroSubtitle: 'Ein neues Kapitel für Alina & Kevin beginnt.<br>Trage Deinen Namen ein und feiere mit uns.',
       nameLabel: 'Dein Name',
       namePlaceholder: 'z. B. Louisa B.',
       langLabel: 'Sprache:',

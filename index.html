@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <script>
     try {
       if (localStorage.getItem("baby_has_voted") === "true" || localStorage.getItem("baby_user_guess")) {
         document.documentElement.classList.add("has-voted-init");
       }
-    } catch (e) {}
+    } catch (e) { }
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kevin & Alina • Gender Reveal</title>
-  <meta name="description" content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal mit interaktiver Rubbelkarte!">
+  <meta name="description"
+    content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen?">
   <meta name="theme-color" content="#faf8f5">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
@@ -22,7 +24,8 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://babyparty.benedrive.de/">
   <meta property="og:title" content="Kevin & Alina • Gender Reveal">
-  <meta property="og:description" content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal mit interaktiver Rubbelkarte!">
+  <meta property="og:description"
+    content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal mit interaktiver Rubbelkarte!">
   <meta property="og:image" content="https://babyparty.benedrive.de/og-image.jpg">
   <meta property="og:image:secure_url" content="https://babyparty.benedrive.de/og-image.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -33,19 +36,23 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Kevin & Alina • Gender Reveal">
-  <meta name="twitter:description" content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal!">
+  <meta name="twitter:description"
+    content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal!">
   <meta name="twitter:image" content="https://babyparty.benedrive.de/og-image.jpg">
-  
+
   <!-- Google Fonts: Editorial Serif + Clean Modern Sans + Kristi & Caveat Handwritten Scripts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Kristi&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Kristi&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <!-- Ambient Slow-Motion Video Background with 7s Crossfade Loop -->
   <div class="video-container" id="videoContainer">
@@ -69,276 +76,295 @@
       <!-- Main Viewport -->
       <main class="main-container">
 
-    <!-- ==================== SEITE 1: STARTSEITE ==================== -->
-    <section class="page-view active" id="page1">
-      <div class="minimal-card">
-        <h1 class="editorial-title" id="heroTitle">
-          <span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word" style="--w-idx: 1;">zum</span>
-          <span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Gender Reveal</span>
-        </h1>
-        <p class="editorial-subtitle stagger-item stagger-2" id="heroSubtitle" data-i18n="heroSubtitle">
-          Ein neues Kapitel für Alina &amp; Kevin beginnt.<br>Trage Deinen Namen ein und feier mit uns.
-        </p>
+        <!-- ==================== SEITE 1: STARTSEITE ==================== -->
+        <section class="page-view active" id="page1">
+          <div class="minimal-card">
+            <h1 class="editorial-title" id="heroTitle">
+              <span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word"
+                style="--w-idx: 1;">zum</span>
+              <span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Gender Reveal</span>
+            </h1>
+            <p class="editorial-subtitle stagger-item stagger-2" id="heroSubtitle" data-i18n="heroSubtitle">
+              Ein neues Kapitel für Alina &amp; Kevin beginnt.<br>Trage Deinen Namen ein und feiere mit uns.
+            </p>
 
-        <form class="clean-form stagger-item stagger-3" id="nameForm" onsubmit="return false;">
-          <div class="form-group">
-            <label for="userNameInput" class="form-label" id="nameLabel" data-i18n="nameLabel">Dein Name</label>
-            <div class="input-container">
-              <svg xmlns="http://www.w3.org/2000/svg" class="input-leading-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <input 
-                type="text" 
-                id="userNameInput" 
-                placeholder="" 
-                autocomplete="name" 
-                maxlength="30"
-                required
-              >
-            </div>
-          </div>
-
-          <!-- Sprachumschalter direkt unter der Namensangabe -->
-          <div class="language-selector-row">
-            <span class="language-label" id="langLabel" data-i18n="langLabel">Sprache:</span>
-            <div class="lang-toggle-group" role="group" aria-label="Sprachauswahl">
-              <button type="button" class="lang-btn" id="langBtnDe" data-lang="de">DE</button>
-              <button type="button" class="lang-btn" id="langBtnEn" data-lang="en">EN</button>
-            </div>
-          </div>
-
-          <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-5 is-disabled" id="btnToStep2" aria-disabled="true">
-            <span id="btnToStep2Text" data-i18n="btnToStep2">Weiter</span>
-            <i data-lucide="arrow-right" class="icon-btn"></i>
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- ==================== SEITE 2: RATE-SEITE ==================== -->
-    <section class="page-view" id="page2">
-      <div class="minimal-card">
-        <h2 class="editorial-heading" id="guessHeading">
-          <span class="title-word" style="--w-idx: 0;">Was</span>
-          <span class="title-word" style="--w-idx: 1;">ist</span>
-          <span class="title-word" style="--w-idx: 2;">Dein</span>
-          <span class="title-word highlight-word" style="--w-idx: 3;">Tipp?</span>
-        </h2>
-
-        <div class="guess-main-stage" id="guessMainStage">
-          <p class="editorial-subtitle stagger-item stagger-2" data-i18n="guessSubtitle">Wähle Deine Intuition:</p>
-          <!-- Dual Choice Grid -->
-          <div class="dual-choice-grid stagger-item stagger-4">
-            <!-- Junge -->
-            <button type="button" class="gender-choice-card boy-card" id="btnPickBoy" data-choice="boy">
-              <div class="card-status-indicator">
-                <i data-lucide="check" class="check-icon"></i>
-              </div>
-              <div class="card-decor-corner" aria-hidden="true">
-                <span class="mini-sparkle">✦</span>
-                <span class="mini-sparkle small">✧</span>
-              </div>
-              <div class="card-floating-decor" aria-hidden="true">
-                <span class="ambient-twinkle tw-1">✦</span>
-                <span class="ambient-twinkle tw-2">✦</span>
-                <span class="ambient-dot dt-1"></span>
-                <span class="ambient-dot dt-2"></span>
-              </div>
-              <div class="gender-icon-wrapper boy-wash">
-                <svg viewBox="0 0 24 24" class="gender-symbol-icon" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <circle cx="10" cy="14" r="5"></circle>
-                  <line x1="13.6" y1="10.4" x2="19.5" y2="4.5"></line>
-                  <polyline points="14.5 4.5 19.5 4.5 19.5 9.5"></polyline>
-                </svg>
-              </div>
-              <div class="gender-meta">
-                <h3 class="gender-name" data-i18n="boyLabel">Junge</h3>
-                <div class="card-bottom-ornament" aria-hidden="true">
-                  <span class="ornament-line"></span>
-                  <span class="ornament-star">✦</span>
-                  <span class="ornament-line"></span>
-                </div>
-              </div>
-            </button>
-
-            <!-- Mädchen -->
-            <button type="button" class="gender-choice-card girl-card" id="btnPickGirl" data-choice="girl">
-              <div class="card-status-indicator">
-                <i data-lucide="check" class="check-icon"></i>
-              </div>
-              <div class="card-decor-corner" aria-hidden="true">
-                <span class="mini-sparkle">✦</span>
-                <span class="mini-sparkle small">✧</span>
-              </div>
-              <div class="card-floating-decor" aria-hidden="true">
-                <span class="ambient-twinkle tw-1">✦</span>
-                <span class="ambient-twinkle tw-2">✦</span>
-                <span class="ambient-dot dt-1"></span>
-                <span class="ambient-dot dt-2"></span>
-              </div>
-              <div class="gender-icon-wrapper girl-wash">
-                <svg viewBox="0 0 24 24" class="gender-symbol-icon" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="9" r="5"></circle>
-                  <line x1="12" y1="14" x2="12" y2="21"></line>
-                  <line x1="9" y1="17.5" x2="15" y2="17.5"></line>
-                </svg>
-              </div>
-              <div class="gender-meta">
-                <h3 class="gender-name" data-i18n="girlLabel">Mädchen</h3>
-                <div class="card-bottom-ornament" aria-hidden="true">
-                  <span class="ornament-line"></span>
-                  <span class="ornament-star">✦</span>
-                  <span class="ornament-line"></span>
-                </div>
-              </div>
-            </button>
-          </div>
-
-          <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-5 is-disabled" id="btnToStep3" aria-disabled="true">
-            <span data-i18n="btnToStep3">Weiter</span>
-            <i data-lucide="arrow-right" class="icon-btn"></i>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SEITE 3: REVEAL & SCRATCH ==================== -->
-    <section class="page-view" id="page3">
-      <div class="minimal-card reveal-viewport-card">
-        <h2 class="editorial-heading stagger-item stagger-1" id="revealHeading">
-          <span class="reveal-highlight">Gender Reveal</span>
-        </h2>
-
-        <!-- Content Stage (Centered vertically between top title and bottom) -->
-        <div class="reveal-main-stage" id="revealMainStage">
-          <div class="selected-summary-chip stagger-item stagger-2" id="userGuessSummary">
-            <span data-i18n="userGuessLabel">Dein Tipp:</span>
-            <strong id="userSummaryBadge">Junge</strong>
-          </div>
-
-        <!-- Compact Date Countdown to Donnerstag 29.10.2026, 18 Uhr -->
-        <div class="countdown-module stagger-item stagger-3" id="countdownSection">
-          <div class="countdown-header-row">
-            <div class="countdown-label-group">
-              <i data-lucide="calendar-heart" class="icon-sm"></i>
-              <span id="countdownStatusLabel" data-i18n="countdownTargetLabel">Reveal am Do., 29. Okt. 2026 • 18:00 Uhr</span>
-            </div>
-          </div>
-          
-          <div class="countdown-grid" id="countdownGrid">
-            <div class="countdown-chip">
-              <span class="digit-val" id="timerDays">00</span>
-              <span class="digit-unit" data-i18n="unitDays">Tage</span>
-            </div>
-            <div class="countdown-chip">
-              <span class="digit-val" id="timerHours">00</span>
-              <span class="digit-unit" data-i18n="unitHours">Std</span>
-            </div>
-            <div class="countdown-chip">
-              <span class="digit-val" id="timerMins">00</span>
-              <span class="digit-unit" data-i18n="unitMins">Min</span>
-            </div>
-            <div class="countdown-chip">
-              <span class="digit-val" id="timerSecs">00</span>
-              <span class="digit-unit" data-i18n="unitSecs">Sek</span>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Scratch Container with Multi-Layer Foil -->
-        <div class="scratch-canvas-container stagger-item stagger-4" id="scratchCardWrapper">
-          
-          <!-- Underneath Reveal Card (Pure announcement without cramped buttons) -->
-          <div class="underlying-card mystery-preview" id="revealedUnderlay">
-            <div class="reveal-content-inner">
-              <span class="reveal-prefix" data-i18n="revealPrefix">Es wird ein...</span>
-              
-              <div class="revealed-badge" id="revealedGenderBadge">
-                <span class="reveal-badge-icon" id="revealedIcon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/>
+            <form class="clean-form stagger-item stagger-3" id="nameForm" onsubmit="return false;">
+              <div class="form-group">
+                <label for="userNameInput" class="form-label" id="nameLabel" data-i18n="nameLabel">Dein Name</label>
+                <div class="input-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="input-leading-icon" width="18" height="18"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                   </svg>
-                </span>
-                <h3 class="revealed-headline" id="revealedGenderTitle">???</h3>
+                  <input type="text" id="userNameInput" placeholder="" autocomplete="name" maxlength="30" required>
+                </div>
               </div>
 
-              <p class="revealed-quote-text" id="revealedQuote">
-                Wische weiter zum Enthüllen...
-              </p>
+              <!-- Sprachumschalter direkt unter der Namensangabe -->
+              <div class="language-selector-row">
+                <span class="language-label" id="langLabel" data-i18n="langLabel">Sprache:</span>
+                <div class="lang-toggle-group" role="group" aria-label="Sprachauswahl">
+                  <button type="button" class="lang-btn" id="langBtnDe" data-lang="de">DE</button>
+                  <button type="button" class="lang-btn" id="langBtnEn" data-lang="en">EN</button>
+                </div>
+              </div>
+
+              <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-5 is-disabled"
+                id="btnToStep2" aria-disabled="true">
+                <span id="btnToStep2Text" data-i18n="btnToStep2">Weiter</span>
+                <i data-lucide="arrow-right" class="icon-btn"></i>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ==================== SEITE 2: RATE-SEITE ==================== -->
+        <section class="page-view" id="page2">
+          <div class="minimal-card">
+            <h2 class="editorial-heading" id="guessHeading">
+              <span class="title-word" style="--w-idx: 0;">Was</span>
+              <span class="title-word" style="--w-idx: 1;">ist</span>
+              <span class="title-word" style="--w-idx: 2;">Dein</span>
+              <span class="title-word highlight-word" style="--w-idx: 3;">Tipp?</span>
+            </h2>
+
+            <div class="guess-main-stage" id="guessMainStage">
+              <p class="editorial-subtitle stagger-item stagger-2" data-i18n="guessSubtitle">Wähle Deine Intuition:</p>
+              <!-- Dual Choice Grid -->
+              <div class="dual-choice-grid stagger-item stagger-4">
+                <!-- Junge -->
+                <button type="button" class="gender-choice-card boy-card" id="btnPickBoy" data-choice="boy">
+                  <div class="card-status-indicator">
+                    <i data-lucide="check" class="check-icon"></i>
+                  </div>
+                  <div class="card-decor-corner" aria-hidden="true">
+                    <span class="mini-sparkle">✦</span>
+                    <span class="mini-sparkle small">✧</span>
+                  </div>
+                  <div class="card-floating-decor" aria-hidden="true">
+                    <span class="ambient-twinkle tw-1">✦</span>
+                    <span class="ambient-twinkle tw-2">✦</span>
+                    <span class="ambient-dot dt-1"></span>
+                    <span class="ambient-dot dt-2"></span>
+                  </div>
+                  <div class="gender-icon-wrapper boy-wash">
+                    <svg viewBox="0 0 24 24" class="gender-symbol-icon" fill="none" stroke="currentColor"
+                      stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="10" cy="14" r="5"></circle>
+                      <line x1="13.6" y1="10.4" x2="19.5" y2="4.5"></line>
+                      <polyline points="14.5 4.5 19.5 4.5 19.5 9.5"></polyline>
+                    </svg>
+                  </div>
+                  <div class="gender-meta">
+                    <h3 class="gender-name" data-i18n="boyLabel">Junge</h3>
+                    <div class="card-bottom-ornament" aria-hidden="true">
+                      <span class="ornament-line"></span>
+                      <span class="ornament-star">✦</span>
+                      <span class="ornament-line"></span>
+                    </div>
+                  </div>
+                </button>
+
+                <!-- Mädchen -->
+                <button type="button" class="gender-choice-card girl-card" id="btnPickGirl" data-choice="girl">
+                  <div class="card-status-indicator">
+                    <i data-lucide="check" class="check-icon"></i>
+                  </div>
+                  <div class="card-decor-corner" aria-hidden="true">
+                    <span class="mini-sparkle">✦</span>
+                    <span class="mini-sparkle small">✧</span>
+                  </div>
+                  <div class="card-floating-decor" aria-hidden="true">
+                    <span class="ambient-twinkle tw-1">✦</span>
+                    <span class="ambient-twinkle tw-2">✦</span>
+                    <span class="ambient-dot dt-1"></span>
+                    <span class="ambient-dot dt-2"></span>
+                  </div>
+                  <div class="gender-icon-wrapper girl-wash">
+                    <svg viewBox="0 0 24 24" class="gender-symbol-icon" fill="none" stroke="currentColor"
+                      stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="9" r="5"></circle>
+                      <line x1="12" y1="14" x2="12" y2="21"></line>
+                      <line x1="9" y1="17.5" x2="15" y2="17.5"></line>
+                    </svg>
+                  </div>
+                  <div class="gender-meta">
+                    <h3 class="gender-name" data-i18n="girlLabel">Mädchen</h3>
+                    <div class="card-bottom-ornament" aria-hidden="true">
+                      <span class="ornament-line"></span>
+                      <span class="ornament-star">✦</span>
+                      <span class="ornament-line"></span>
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              <button type="button" class="action-btn gradient-btn-primary stagger-item stagger-5 is-disabled"
+                id="btnToStep3" aria-disabled="true">
+                <span data-i18n="btnToStep3">Weiter</span>
+                <i data-lucide="arrow-right" class="icon-btn"></i>
+              </button>
             </div>
           </div>
+        </section>
 
-          <!-- Multi-Layer Scratch Canvas: Layer 1 (Middle Shimmer) and Layer 2 (Top Charcoal) -->
-          <canvas id="scratchCanvasMid" class="scratch-canvas-layer" width="440" height="420"></canvas>
-          <canvas id="scratchCanvasTop" class="scratch-canvas-layer" width="440" height="420"></canvas>
-          <canvas id="scratchSparklesCanvas" class="scratch-sparkles-layer" width="440" height="420"></canvas>
+        <!-- ==================== SEITE 3: REVEAL & SCRATCH ==================== -->
+        <section class="page-view" id="page3">
+          <div class="minimal-card reveal-viewport-card">
+            <h2 class="editorial-heading stagger-item stagger-1" id="revealHeading">
+              <span class="reveal-highlight">Gender Reveal</span>
+            </h2>
 
-          <!-- Lock state before countdown completes -->
-          <div class="scratch-lock-barrier" id="countdownLockOverlay">
-            <div class="barrier-lock-pill">
-              <i data-lucide="lock" class="barrier-lock-icon"></i>
-              <strong class="barrier-title" data-i18n="barrierTitle">Noch gesperrt</strong>
+            <!-- Content Stage (Centered vertically between top title and bottom) -->
+            <div class="reveal-main-stage" id="revealMainStage">
+              <div class="selected-summary-chip stagger-item stagger-2" id="userGuessSummary">
+                <span data-i18n="userGuessLabel">Dein Tipp:</span>
+                <strong id="userSummaryBadge">Junge</strong>
+              </div>
+
+              <!-- Compact Date Countdown to Donnerstag 29.10.2026, 18 Uhr -->
+              <div class="countdown-module stagger-item stagger-3" id="countdownSection">
+                <div class="countdown-header-row">
+                  <div class="countdown-label-group">
+                    <i data-lucide="calendar-heart" class="icon-sm"></i>
+                    <span id="countdownStatusLabel" data-i18n="countdownTargetLabel">Reveal am Do., 29. Okt. 2026 •
+                      18:00 Uhr</span>
+                  </div>
+                </div>
+
+                <div class="countdown-grid" id="countdownGrid">
+                  <div class="countdown-chip">
+                    <span class="digit-val" id="timerDays">00</span>
+                    <span class="digit-unit" data-i18n="unitDays">Tage</span>
+                  </div>
+                  <div class="countdown-chip">
+                    <span class="digit-val" id="timerHours">00</span>
+                    <span class="digit-unit" data-i18n="unitHours">Std</span>
+                  </div>
+                  <div class="countdown-chip">
+                    <span class="digit-val" id="timerMins">00</span>
+                    <span class="digit-unit" data-i18n="unitMins">Min</span>
+                  </div>
+                  <div class="countdown-chip">
+                    <span class="digit-val" id="timerSecs">00</span>
+                    <span class="digit-unit" data-i18n="unitSecs">Sek</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Scratch Container with Multi-Layer Foil -->
+              <div class="scratch-canvas-container stagger-item stagger-4" id="scratchCardWrapper">
+
+                <!-- Underneath Reveal Card (Pure announcement without cramped buttons) -->
+                <div class="underlying-card mystery-preview" id="revealedUnderlay">
+                  <div class="reveal-content-inner">
+                    <span class="reveal-prefix" data-i18n="revealPrefix">Es wird ein...</span>
+
+                    <div class="revealed-badge" id="revealedGenderBadge">
+                      <span class="reveal-badge-icon" id="revealedIcon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z" />
+                        </svg>
+                      </span>
+                      <h3 class="revealed-headline" id="revealedGenderTitle">???</h3>
+                    </div>
+
+                    <p class="revealed-quote-text" id="revealedQuote">
+                      Wische weiter zum Enthüllen...
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Multi-Layer Scratch Canvas: Layer 1 (Middle Shimmer) and Layer 2 (Top Charcoal) -->
+                <canvas id="scratchCanvasMid" class="scratch-canvas-layer" width="440" height="420"></canvas>
+                <canvas id="scratchCanvasTop" class="scratch-canvas-layer" width="440" height="420"></canvas>
+                <canvas id="scratchSparklesCanvas" class="scratch-sparkles-layer" width="440" height="420"></canvas>
+
+                <!-- Lock state before countdown completes -->
+                <div class="scratch-lock-barrier" id="countdownLockOverlay">
+                  <div class="barrier-lock-pill">
+                    <i data-lucide="lock" class="barrier-lock-icon"></i>
+                    <strong class="barrier-title" data-i18n="barrierTitle">Noch gesperrt</strong>
+                  </div>
+                  <p class="barrier-sub" id="barrierSubText" data-i18n="barrierText">Wird nach Ablauf des Countdowns
+                    freigeschaltet</p>
+                </div>
+
+              </div>
+
+              <!-- Post-Reveal Details & Action Buttons -->
+              <div class="post-reveal-section" id="postRevealSection">
+
+                <!-- Personal Letter (Briefstyle Note from Parents) -->
+                <div class="parents-signature-card personal-letter-card" id="parentsSignatureCard" tabindex="0"
+                  role="region" aria-label="Persönliche Karte von Alina und Kevin"
+                  title="Tippen zum erneuten Unterschreiben">
+                  <p class="personal-letter-text" id="personalLetterText">Du hast richtig geraten!<br>Danke, dass Du
+                    mitgemacht hast,<br>wir freuen uns mit Dir ☺️<br>Stay tuned für weitere Infos!</p>
+                  <p class="personal-letter-salute" id="personalLetterSalute">In freudiger Erwartung</p>
+
+                  <div class="signature-container" id="signatureContainer">
+                    <svg class="duo-signature-svg" id="duoSignatureSvg" viewBox="0 0 520 95"
+                      preserveAspectRatio="xMidYMid meet">
+                      <defs>
+                        <!-- Mask for Alina: body stroke covers A-l-i(stem)-n-a, dot circle taps on at the end -->
+                        <mask id="maskAlina">
+                          <rect x="0" y="0" width="280" height="95" fill="black" />
+                          <path id="pathStrokeAlina"
+                            d="M 156 65 C 162 45 167 28 169 28 C 171 28 175 48 178 68 C 172 54 165 52 176 54 C 182 36 184 28 185 28 C 186 28 185 55 186 72 C 188 64 190 63 191 63 C 194 59 197 58 199 62 C 202 58 204 58 205 58 C 208 48 210 45 212 62 C 216 48 220 45 222 62 C 226 54 231 43 236 45 C 229 53 231 62 236 62 C 241 55 242 44 243 62 C 247 62 253 61 257 59"
+                            fill="none" stroke="white" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"
+                            style="stroke-dasharray: 450; stroke-dashoffset: 450;" />
+                          <circle id="maskDotAlina" cx="200" cy="36" r="18" fill="white" style="opacity: 0;" />
+                        </mask>
+
+                        <!-- Mask for Kevin -->
+                        <mask id="maskKevin">
+                          <rect x="260" y="0" width="260" height="95" fill="black" />
+                          <path id="pathStrokeKevin"
+                            d="M 289 31 L 290 58 M 308 32 L 293 46 L 309 58 C 311 44 314 42 309 57 C 313 57 317 57 319 57 C 323 45 327 57 329 57 C 331 52 333 44 334 44 C 336 45 338 57 340 57 C 343 45 345 43 347 57 C 351 45 355 43 357 57 C 360 56 363 54 365 54"
+                            fill="none" stroke="white" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"
+                            style="stroke-dasharray: 330; stroke-dashoffset: 330;" />
+                        </mask>
+                      </defs>
+
+                      <!-- Alina: Kristi Font in Solid Ocean Navy (#1b3d68) -->
+                      <g id="grpAlina" mask="url(#maskAlina)">
+                        <text x="200" y="65" text-anchor="middle" class="sig-solid-alina" id="sigAlinaSvg"
+                          transform="rotate(-2.2, 200, 65)">Alina</text>
+                      </g>
+
+                      <!-- Kevin: Caveat Font in Solid Ocean Navy (#1b3d68) -->
+                      <g id="grpKevin" mask="url(#maskKevin)">
+                        <text x="325" y="58" text-anchor="middle" class="sig-solid-kevin" id="sigKevinSvg"
+                          transform="rotate(2.0, 325, 58)">Kevin</text>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Beautiful, unified action buttons -->
+                <div class="reveal-action-buttons">
+                  <button type="button" class="btn-reveal-action primary-confetti gradient-btn-primary"
+                    id="btnConfettiAgain">
+                    <i data-lucide="sparkles" class="icon-sm"></i>
+                    <span data-i18n="btnConfetti">Mehr Konfetti</span>
+                  </button>
+                  <button type="button" class="btn-reveal-action secondary-share" id="btnShareResult">
+                    <i data-lucide="share-2" class="icon-sm"></i>
+                    <span data-i18n="btnShare">Story-Karte teilen</span>
+                  </button>
+                </div>
+              </div>
             </div>
-            <p class="barrier-sub" id="barrierSubText" data-i18n="barrierText">Wird nach Ablauf des Countdowns freigeschaltet</p>
           </div>
-
-        </div>
-
-        <!-- Post-Reveal Details & Action Buttons -->
-        <div class="post-reveal-section" id="postRevealSection">
-          
-          <!-- Personal Letter (Briefstyle Note from Parents) -->
-          <div class="parents-signature-card personal-letter-card" id="parentsSignatureCard" tabindex="0" role="region" aria-label="Persönliche Karte von Alina und Kevin" title="Tippen zum erneuten Unterschreiben">
-            <p class="personal-letter-text" id="personalLetterText">Du hast richtig geraten!<br>Danke, dass Du mitgemacht hast,<br>wir freuen uns mit Dir ☺️<br>Stay tuned für weitere Infos!</p>
-            <p class="personal-letter-salute" id="personalLetterSalute">In freudiger Erwartung</p>
-            
-            <div class="signature-container" id="signatureContainer">
-              <svg class="duo-signature-svg" id="duoSignatureSvg" viewBox="0 0 520 95" preserveAspectRatio="xMidYMid meet">
-                <defs>
-                  <!-- Mask for Alina: body stroke covers A-l-i(stem)-n-a, dot circle taps on at the end -->
-                  <mask id="maskAlina">
-                    <rect x="0" y="0" width="280" height="95" fill="black" />
-                    <path id="pathStrokeAlina" d="M 156 65 C 162 45 167 28 169 28 C 171 28 175 48 178 68 C 172 54 165 52 176 54 C 182 36 184 28 185 28 C 186 28 185 55 186 72 C 188 64 190 63 191 63 C 194 59 197 58 199 62 C 202 58 204 58 205 58 C 208 48 210 45 212 62 C 216 48 220 45 222 62 C 226 54 231 43 236 45 C 229 53 231 62 236 62 C 241 55 242 44 243 62 C 247 62 253 61 257 59" fill="none" stroke="white" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray: 450; stroke-dashoffset: 450;" />
-                    <circle id="maskDotAlina" cx="200" cy="36" r="18" fill="white" style="opacity: 0;" />
-                  </mask>
-
-                  <!-- Mask for Kevin -->
-                  <mask id="maskKevin">
-                    <rect x="260" y="0" width="260" height="95" fill="black" />
-                    <path id="pathStrokeKevin" d="M 289 31 L 290 58 M 308 32 L 293 46 L 309 58 C 311 44 314 42 309 57 C 313 57 317 57 319 57 C 323 45 327 57 329 57 C 331 52 333 44 334 44 C 336 45 338 57 340 57 C 343 45 345 43 347 57 C 351 45 355 43 357 57 C 360 56 363 54 365 54" fill="none" stroke="white" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray: 330; stroke-dashoffset: 330;" />
-                  </mask>
-                </defs>
-
-                <!-- Alina: Kristi Font in Solid Ocean Navy (#1b3d68) -->
-                <g id="grpAlina" mask="url(#maskAlina)">
-                  <text x="200" y="65" text-anchor="middle" class="sig-solid-alina" id="sigAlinaSvg" transform="rotate(-2.2, 200, 65)">Alina</text>
-                </g>
-
-                <!-- Kevin: Caveat Font in Solid Ocean Navy (#1b3d68) -->
-                <g id="grpKevin" mask="url(#maskKevin)">
-                  <text x="325" y="58" text-anchor="middle" class="sig-solid-kevin" id="sigKevinSvg" transform="rotate(2.0, 325, 58)">Kevin</text>
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Beautiful, unified action buttons -->
-          <div class="reveal-action-buttons">
-            <button type="button" class="btn-reveal-action primary-confetti gradient-btn-primary" id="btnConfettiAgain">
-              <i data-lucide="sparkles" class="icon-sm"></i>
-              <span data-i18n="btnConfetti">Mehr Konfetti</span>
-            </button>
-            <button type="button" class="btn-reveal-action secondary-share" id="btnShareResult">
-              <i data-lucide="share-2" class="icon-sm"></i>
-              <span data-i18n="btnShare">Story-Karte teilen</span>
-            </button>
-          </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
-  </section>
-  </main>
-</div>
-</div>
+  </div>
 
   <!-- Ambient Background Stars Canvas (z-index: 5, behind cards) -->
   <canvas id="bgStarsCanvas"></canvas>
@@ -370,7 +396,9 @@
             <span class="dev-security-cert">ISO 27001 & SOC 2</span>
           </div>
           <p class="dev-security-text">
-            Der Reveal ist nach Militär- und Bankenstandard gegen Hacker und Manipulation geschützt. Das tatsächliche Geschlecht verbleibt verschlüsselt auf dem Server und ist ohne autorisierten Schlüssel vorzeitig nicht auslesbar.
+            Der Reveal ist nach Militär- und Bankenstandard gegen Hacker und Manipulation geschützt. Das tatsächliche
+            Geschlecht verbleibt verschlüsselt auf dem Server und ist ohne autorisierten Schlüssel vorzeitig nicht
+            auslesbar.
           </p>
           <div class="dev-security-bsi">
             <img src="bsilogo.png" alt="BSI Logo" class="dev-bsi-logo" />
@@ -386,14 +414,8 @@
           <div class="form-group dev-password-group">
             <div class="input-container dev-input-container">
               <i data-lucide="lock" class="input-leading-icon"></i>
-              <input 
-                type="password" 
-                id="devPasswordInput" 
-                class="dev-password-input"
-                placeholder="Passwort eingeben..." 
-                autocomplete="current-password" 
-                maxlength="50"
-              />
+              <input type="password" id="devPasswordInput" class="dev-password-input" placeholder="Passwort eingeben..."
+                autocomplete="current-password" maxlength="50" />
             </div>
             <div class="dev-auth-error" id="devAuthError"></div>
           </div>
@@ -411,7 +433,8 @@
   </div>
 
   <!-- Floating Dev Skip Button (Only visible on Page 3 when DevMode is active & countdown not yet skipped) -->
-  <button type="button" class="dev-floating-skip-btn" id="btnDevFloatingSkip" aria-label="Countdown für Vorschau überspringen">
+  <button type="button" class="dev-floating-skip-btn" id="btnDevFloatingSkip"
+    aria-label="Countdown für Vorschau überspringen">
     <i data-lucide="zap" class="icon-sm"></i>
     <span data-i18n="btnDevFloatingSkip">Countdown für Vorschau überspringen</span>
   </button>
@@ -449,4 +472,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
