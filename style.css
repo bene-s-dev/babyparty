@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Kristi&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
 /* ==========================================================================
-   MINIMALIST EDITORIAL BABY SHOWER — DESIGN SYSTEM
+   MINIMALIST EDITORIAL GENDER REVEAL — DESIGN SYSTEM
    ========================================================================== */
 
 :root {
@@ -145,12 +147,15 @@ body.clean-bg .video-container {
 .scaling-container {
   width: 100%;
   max-width: 440px;
+  flex: 1;
+  min-height: calc(100dvh - max(env(safe-area-inset-top), 10px) - max(env(safe-area-inset-bottom), 12px) - 8px);
+  min-height: calc(100vh - 28px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(8px, 1.6vh, 12px);
-  margin: auto 0; /* Centers vertically when ample space, collapses naturally to top when scrolling */
-  padding: 4px 0;
+  gap: clamp(6px, 1.2vh, 10px);
+  margin: 0;
+  padding: 2px 0;
   box-sizing: border-box;
   transform: none !important;
 }
@@ -215,10 +220,11 @@ body.dev-mode-active .dev-only-element {
 .main-container {
   position: relative;
   width: 100%;
-  min-height: auto;
+  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 0;
   margin: 0;
 }
@@ -228,6 +234,8 @@ body.dev-mode-active .dev-only-element {
   display: none;
   width: 100%;
   max-width: 450px;
+  flex: 1;
+  flex-direction: column;
   opacity: 0;
   transform: translateY(18px) scale(0.98);
   filter: blur(4px);
@@ -235,10 +243,19 @@ body.dev-mode-active .dev-only-element {
 }
 
 .page-view.active {
-  display: block;
+  display: flex;
   opacity: 1;
   transform: translateY(0) scale(1);
   filter: blur(0);
+}
+
+#page1 {
+  justify-content: center;
+  align-items: center;
+}
+
+#page1 .minimal-card {
+  margin: auto 0;
 }
 
 /* ==================== KASKADIERENDES EINBLENDEN (cascadeFadeIn / animate-cascade) ==================== */
@@ -324,7 +341,46 @@ body.lang-swapping .language-label {
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  padding: clamp(4px, 1.2vh, 12px) 6px;
+  padding: clamp(14px, 2.5vh, 26px) 4px clamp(8px, 1.5vh, 16px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Parents Chip on Page 1 & Page 3 */
+.parents-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(24, 32, 47, 0.08);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(24, 32, 47, 0.04);
+}
+
+.parents-chip .heart-icon-mini {
+  color: var(--pastel-pink);
+  flex-shrink: 0;
+  animation: miniHeartBeat 2.4s infinite ease-in-out;
+}
+
+@keyframes miniHeartBeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.22); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.18); }
+  56% { transform: scale(1); }
 }
 
 .editorial-title {
@@ -408,7 +464,7 @@ body.lang-swapping .language-label {
   will-change: opacity, transform, filter;
 }
 
-/* Moving gradient on Babyshower on Page 1 */
+/* Moving gradient on Gender Reveal on Page 1 */
 .title-word.word-highlight {
   display: block;
   background: linear-gradient(
@@ -935,18 +991,20 @@ body.lang-swapping .language-label {
 .gender-choice-card {
   position: relative;
   background: #ffffff;
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: clamp(18px, 2.4vh, 24px) clamp(10px, 2vw, 14px) clamp(16px, 2vh, 20px);
+  border-radius: clamp(18px, 2.5vw, 24px);
+  padding: clamp(20px, 2.8vh, 28px) clamp(10px, 2vw, 16px);
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.2vh, 20px);
   text-align: center;
-  min-height: clamp(150px, 19vh, 175px);
-  justify-content: space-between;
-  box-shadow: 0 4px 18px rgba(24, 32, 47, 0.04);
-  transition: all 0.25s var(--transition-smooth);
+  min-height: clamp(195px, 26vh, 235px);
+  aspect-ratio: 0.74;
+  box-shadow: 0 6px 20px rgba(24, 32, 47, 0.05);
+  transition: all 0.28s var(--transition-smooth);
+  overflow: hidden;
 }
 
 .gender-choice-card:hover {
@@ -962,12 +1020,123 @@ body.lang-swapping .language-label {
   outline-offset: 2px;
 }
 
+/* Card corner decorative sparkle (non-text) */
+.card-decor-corner {
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+  opacity: 0.55;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 2;
+}
+
+.boy-card .card-decor-corner {
+  color: #5b9bd5;
+}
+
+.girl-card .card-decor-corner {
+  color: #e38ea0;
+}
+
+.mini-sparkle {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.mini-sparkle.small {
+  font-size: 0.65rem;
+  opacity: 0.75;
+}
+
+/* Ambient floating sparkles in the card background (non-text) */
+.card-floating-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.ambient-twinkle {
+  position: absolute;
+  font-size: 0.75rem;
+  line-height: 1;
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+  animation: cardSparkleFloat 4s ease-in-out infinite alternate;
+}
+
+.boy-card .ambient-twinkle,
+.boy-card .ambient-dot {
+  color: #4b8ccb;
+}
+
+.girl-card .ambient-twinkle,
+.girl-card .ambient-dot {
+  color: #d8768d;
+}
+
+.ambient-twinkle.tw-1 {
+  top: 36%;
+  left: 12%;
+  font-size: 0.68rem;
+  animation-delay: 0.3s;
+}
+
+.ambient-twinkle.tw-2 {
+  top: 24%;
+  right: 14%;
+  font-size: 0.78rem;
+  animation-delay: 1.5s;
+}
+
+.ambient-dot {
+  position: absolute;
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: cardSparkleFloat 3.5s ease-in-out infinite alternate;
+}
+
+.ambient-dot.dt-1 {
+  bottom: 22%;
+  left: 15%;
+  animation-delay: 0.8s;
+}
+
+.ambient-dot.dt-2 {
+  bottom: 34%;
+  right: 14%;
+  animation-delay: 2.1s;
+}
+
+@keyframes cardSparkleFloat {
+  0% {
+    transform: translateY(0) scale(0.9);
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateY(-4px) scale(1.1);
+    opacity: 0.35;
+  }
+}
+
 .card-status-indicator {
   position: absolute;
-  top: 11px;
-  right: 11px;
-  width: 22px;
-  height: 22px;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 1.5px solid rgba(24, 32, 47, 0.16);
   background: #ffffff;
@@ -977,52 +1146,102 @@ body.lang-swapping .language-label {
   color: transparent;
   transition: all 0.2s ease;
   box-shadow: 0 1px 4px rgba(24, 32, 47, 0.06);
+  z-index: 3;
 }
 
 .check-icon {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   stroke-width: 3;
 }
 
 .gender-icon-wrapper {
-  width: clamp(46px, 6vh, 56px);
-  height: clamp(46px, 6vh, 56px);
+  width: clamp(54px, 7vh, 66px);
+  height: clamp(54px, 7vh, 66px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2px;
+  margin: 0;
   transition: transform 0.25s var(--transition-smooth);
+  position: relative;
+  z-index: 2;
 }
 
 .gender-symbol-icon {
-  width: clamp(22px, 3.2vh, 28px);
-  height: clamp(22px, 3.2vh, 28px);
-  stroke-width: 1.75;
+  width: clamp(26px, 3.4vh, 32px);
+  height: clamp(26px, 3.4vh, 32px);
+  stroke-width: 2.2;
 }
 
-/* Boy Card (Pastel Sky Blue) */
+.gender-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Bottom delicate ornament under title */
+.card-bottom-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 5px;
+  opacity: 0.65;
+}
+
+.ornament-line {
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.ornament-star {
+  font-size: 0.65rem;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.boy-card .card-bottom-ornament {
+  color: #5b9bd5;
+}
+
+.girl-card .card-bottom-ornament {
+  color: #e38ea0;
+}
+
+/* Boy Card (Pastel Sky Blue - richer & distinct) */
 .boy-card {
-  background: linear-gradient(180deg, #ffffff 45%, var(--pastel-blue-wash) 100%);
-  border-color: rgba(108, 161, 215, 0.25);
+  background: linear-gradient(180deg, #edf5fd 0%, #d8ecfe 55%, #c8e4fc 100%);
+  border: 1.5px solid #8ec2f2;
+  box-shadow: 0 8px 24px rgba(91, 155, 213, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 .boy-card:hover {
-  border-color: var(--pastel-blue);
-  box-shadow: 0 10px 24px rgba(108, 161, 215, 0.22);
+  border-color: #5b9bd5;
+  box-shadow: 0 12px 28px rgba(91, 155, 213, 0.25);
+  transform: translateY(-3px);
 }
 
 .boy-wash {
-  background: var(--pastel-blue-wash);
-  color: var(--pastel-blue-ink);
+  background: #badefc;
+  color: #124d80;
+  box-shadow: 0 2px 10px rgba(91, 155, 213, 0.22);
+}
+
+.boy-card .card-status-indicator {
+  border-color: #8ec2f2;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .boy-card.selected {
-  border-color: var(--pastel-blue);
-  background: linear-gradient(180deg, #ffffff 30%, var(--pastel-blue-wash) 100%);
-  box-shadow: 0 12px 28px rgba(108, 161, 215, 0.28), 0 0 0 2px var(--pastel-blue);
-  transform: translateY(-2px);
+  border: 2px solid #3b82f6;
+  background: linear-gradient(180deg, #d8ebfd 0%, #b3dcfe 100%);
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.22);
+  transform: translateY(-3px);
 }
 
 @keyframes checkIndicatorPop {
@@ -1043,46 +1262,67 @@ body.lang-swapping .language-label {
 }
 
 .boy-card.selected .card-status-indicator {
-  background: #ffffff;
-  border: 2px solid var(--pastel-blue);
-  color: var(--pastel-blue-ink);
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
   animation: checkIndicatorPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-  box-shadow: 0 2px 8px rgba(31, 78, 121, 0.22);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
 }
 
 .boy-card.selected .gender-icon-wrapper {
   transform: scale(1.08);
 }
 
-/* Girl Card (Pastel Blush Pink) */
+.gender-choice-card.selected .card-decor-corner {
+  opacity: 0.95;
+  transform: scale(1.1);
+}
+
+.gender-choice-card.selected .ambient-twinkle {
+  opacity: 0.65;
+}
+
+.gender-choice-card.selected .card-bottom-ornament {
+  opacity: 1;
+}
+
+/* Girl Card (Pastel Blush Pink - richer & distinct) */
 .girl-card {
-  background: linear-gradient(180deg, #ffffff 45%, var(--pastel-pink-wash) 100%);
-  border-color: rgba(227, 142, 160, 0.25);
+  background: linear-gradient(180deg, #fef0f5 0%, #fcdae7 55%, #facfe0 100%);
+  border: 1.5px solid #f2a2b8;
+  box-shadow: 0 8px 24px rgba(227, 142, 160, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 .girl-card:hover {
-  border-color: var(--pastel-pink);
-  box-shadow: 0 10px 24px rgba(227, 142, 160, 0.22);
+  border-color: #e38ea0;
+  box-shadow: 0 12px 28px rgba(227, 142, 160, 0.25);
+  transform: translateY(-3px);
 }
 
 .girl-wash {
-  background: var(--pastel-pink-wash);
-  color: var(--pastel-pink-ink);
+  background: #f8c3d5;
+  color: #7d1f38;
+  box-shadow: 0 2px 10px rgba(227, 142, 160, 0.22);
+}
+
+.girl-card .card-status-indicator {
+  border-color: #f2a2b8;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .girl-card.selected {
-  border-color: var(--pastel-pink);
-  background: linear-gradient(180deg, #ffffff 30%, var(--pastel-pink-wash) 100%);
-  box-shadow: 0 12px 28px rgba(227, 142, 160, 0.28), 0 0 0 2px var(--pastel-pink);
-  transform: translateY(-2px);
+  border: 2px solid #e38ea0;
+  background: linear-gradient(180deg, #fcd8e7 0%, #f9b7ce 100%);
+  box-shadow: 0 10px 24px rgba(227, 142, 160, 0.22);
+  transform: translateY(-3px);
 }
 
 .girl-card.selected .card-status-indicator {
-  background: #ffffff;
-  border: 2px solid var(--pastel-pink);
-  color: var(--pastel-pink-ink);
+  background: #e38ea0;
+  border-color: #e38ea0;
+  color: #ffffff;
   animation: checkIndicatorPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-  box-shadow: 0 2px 8px rgba(135, 46, 69, 0.22);
+  box-shadow: 0 2px 10px rgba(227, 142, 160, 0.30);
 }
 
 .girl-card.selected .gender-icon-wrapper {
@@ -1091,9 +1331,18 @@ body.lang-swapping .language-label {
 
 .gender-name {
   font-family: var(--font-editorial);
-  font-size: clamp(1.15rem, 2.3vh, 1.35rem);
+  font-size: clamp(1.2rem, 2.4vh, 1.42rem);
   font-weight: 600;
   color: var(--ink-primary);
+  margin: 0;
+}
+
+.boy-card .gender-name {
+  color: #123d68;
+}
+
+.girl-card .gender-name {
+  color: #64192d;
 }
 
 /* Minimalist Poll Summary */
@@ -1107,7 +1356,7 @@ body.lang-swapping .language-label {
 }
 
 #btnToStep3 {
-  margin-top: clamp(10px, 2vh, 18px);
+  margin-top: clamp(34px, 6.5vh, 64px);
 }
 
 .poll-labels {
@@ -1167,86 +1416,90 @@ body.lang-swapping .language-label {
   font-weight: 700;
 }
 
-/* Compact Countdown Module with Pastel Ambience */
+/* Compact Date Countdown - Clean and Unboxed */
 .countdown-module {
-  background: rgba(255, 255, 255, 0.94);
-  border-radius: var(--radius-pill);
-  border: 1.5px solid rgba(24, 32, 47, 0.07);
-  box-shadow: 
-    0 6px 18px -4px rgba(24, 32, 47, 0.04),
-    0 0 16px -2px rgba(91, 155, 213, 0.16),
-    0 0 16px -2px rgba(232, 142, 164, 0.16);
-  padding: 8px 16px;
-  margin-bottom: 12px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 4px 0 8px;
+  margin-bottom: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.45s var(--transition-smooth);
 }
 
-.countdown-compact-row {
+.countdown-module.countdown-completed,
+#countdownSection.countdown-completed {
+  display: none !important;
+}
+
+.countdown-header-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
 }
 
 .countdown-label-group {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
+  gap: 7px;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--ink-secondary);
 }
 
+.countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .countdown-chip {
-  display: inline-flex;
-  align-items: baseline;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 3px;
-  padding: 5px 14px;
-  border-radius: var(--radius-pill);
-  min-width: 58px;
+  gap: 2px;
+  padding: 6px 4px;
+  border-radius: 12px;
   background: #ffffff;
+  border: 1px solid rgba(24, 32, 47, 0.06);
+  box-shadow: 0 2px 6px rgba(24, 32, 47, 0.03);
+  min-width: 0;
 }
 
 .countdown-chip .digit-val {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  line-height: 1;
+  line-height: 1.1;
   color: var(--ink-primary);
 }
 
 .countdown-chip .digit-unit {
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: var(--ink-tertiary);
-  text-transform: lowercase;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-.active-sec {
-  background: #ffffff;
-  border: 1.5px solid transparent;
-  background-image: linear-gradient(#ffffff, #ffffff), linear-gradient(135deg, var(--pastel-blue), var(--pastel-pink));
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  box-shadow: 0 4px 14px rgba(232, 142, 164, 0.3), 0 0 12px rgba(91, 155, 213, 0.3);
-  animation: activeDigitPulse 1.8s infinite ease-in-out;
-}
 
-@keyframes activeDigitPulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 4px 14px rgba(232, 142, 164, 0.3), 0 0 12px rgba(91, 155, 213, 0.3);
-  }
-  50% {
-    transform: scale(1.04);
-    box-shadow: 0 6px 18px rgba(232, 142, 164, 0.45), 0 0 16px rgba(91, 155, 213, 0.45);
-  }
+.barrier-sub {
+  display: block;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.88);
+  margin-top: 4px;
+  font-weight: 500;
 }
 
 .dev-inline-btn {
@@ -1272,14 +1525,16 @@ body.lang-swapping .language-label {
 
 #page3 .editorial-heading {
   font-family: var(--font-editorial);
-  font-size: clamp(1.45rem, 3.2vh, 1.95rem);
-  font-weight: 600;
-  line-height: 1.25;
+  font-size: clamp(2.3rem, 5.5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
   color: var(--ink-primary);
   text-align: center;
   width: 100%;
-  margin: 0 auto 8px;
+  margin: clamp(16px, 3vh, 32px) auto clamp(8px, 1.5vh, 16px);
   display: block;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
 }
 
 #page3 .editorial-heading .reveal-highlight {
@@ -1304,9 +1559,112 @@ body.lang-swapping .language-label {
   padding-left: 0.06em;
 }
 
+/* Page 3 Content Stage: Vertically centered in remaining space */
+.reveal-main-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+  margin: auto 0;
+  gap: clamp(8px, 1.5vh, 14px);
+  box-sizing: border-box;
+  transition: transform 0.90s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-main-stage.stage-revealed-up {
+  transform: translateY(-16px);
+}
+
 #page3 .selected-summary-chip {
   display: inline-flex;
-  margin: 0 auto 10px;
+  margin: 0 auto;
+}
+
+#page3 .countdown-module {
+  margin: 0;
+  width: 100%;
+}
+
+#page3 .scratch-canvas-container {
+  margin: 0;
+  width: 100%;
+}
+
+/* Page 2 Header at Top & Content Centered */
+#page2 .editorial-heading {
+  margin-top: clamp(16px, 3vh, 32px);
+  margin-bottom: clamp(6px, 1vh, 10px);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+#page2 .editorial-subtitle {
+  margin-bottom: clamp(12px, 2vh, 18px);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* ==================== PAGE 2: SEQUENTIAL CASCADE AFTER TITLE IS WRITTEN ==================== */
+#page2 .editorial-heading .title-word {
+  display: inline-block;
+  opacity: 0;
+  animation: titleWordFadeUp 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: calc(0.06s + var(--w-idx, 0) * 0.14s);
+  will-change: opacity, transform, filter;
+}
+
+#page2.active .editorial-subtitle {
+  opacity: 0;
+  animation: cascadeFadeIn 0.55s var(--transition-smooth) forwards !important;
+  animation-delay: 1.15s !important;
+}
+
+#page2.active .dual-choice-grid {
+  opacity: 0;
+  animation: cascadeFadeIn 0.55s var(--transition-smooth) forwards !important;
+  animation-delay: 1.45s !important;
+}
+
+#page2.active .dual-choice-grid .boy-card {
+  opacity: 0;
+  animation: cascadeFadeIn 0.50s var(--transition-smooth) forwards !important;
+  animation-delay: 1.45s !important;
+}
+
+#page2.active .dual-choice-grid .girl-card {
+  opacity: 0;
+  animation: cascadeFadeIn 0.50s var(--transition-smooth) forwards !important;
+  animation-delay: 1.62s !important;
+}
+
+#page2.active #btnToStep3 {
+  opacity: 0;
+  animation: cascadeFadeIn 0.55s var(--transition-smooth) forwards !important;
+  animation-delay: 1.95s !important;
+}
+
+.guess-main-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1;
+  margin: auto 0;
+  gap: clamp(14px, 2.5vh, 22px);
+  box-sizing: border-box;
+}
+
+.guess-main-stage .dual-choice-grid {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.guess-main-stage #btnToStep3 {
+  width: 100%;
+  margin-top: clamp(38px, 7.5vh, 72px);
 }
 
 @keyframes movingTitleGradient {
@@ -1334,113 +1692,64 @@ body.lang-swapping .language-label {
   pointer-events: none;
 }
 
-/* Scratch Canvas Container (Recessed physical lottery card well) */
+/* Scratch Canvas Container - Compact & Elegant */
 .scratch-canvas-container {
   position: relative;
   width: 100%;
-  height: clamp(195px, 26vh, 230px);
-  border-radius: var(--radius-md);
+  height: clamp(140px, 18vh, 162px);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 10px 28px rgba(24, 32, 47, 0.08), inset 0 2px 5px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-  border: 2px solid rgba(195, 203, 215, 0.85);
-  background: #a2a8b3;
+  box-shadow: 0 8px 24px -4px rgba(24, 32, 47, 0.07);
+  border: 1px solid rgba(24, 32, 47, 0.08);
+  background: #ffffff;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
 }
 
-/* Underlying Result (100% Crisp & Sharp from first scratch with Neutral Luxury Shimmer) */
+/* Underlying Result (Celebratory, Open Editorial Layout) */
 .underlying-card {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 25%, #ffffff 0%, #faf8f5 65%, #f4ede3 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: clamp(10px, 1.8vh, 16px) clamp(10px, 2vw, 14px);
-  border: 2px solid rgba(224, 218, 206, 0.7);
-  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  border: none;
+  background: #ffffff;
   box-sizing: border-box;
   z-index: 1;
   user-select: none;
-  transition: background 0.75s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.75s ease, transform 0.5s ease;
-}
-
-/* Neutral Mystery Preview (While Scratching 0% - 49%) */
-.underlying-card.mystery-preview {
-  background: radial-gradient(circle at 50% 25%, #ffffff 0%, #faf8f5 65%, #f4ede3 100%);
-  border-color: rgba(220, 212, 198, 0.8);
-}
-
-.underlying-card.mystery-preview .revealed-headline {
-  color: #8c7b64;
-  letter-spacing: 0.16em;
-  font-size: 1.7rem;
-}
-
-.underlying-card.mystery-preview .revealed-badge {
-  background: rgba(212, 197, 169, 0.16);
-  border-color: rgba(200, 180, 145, 0.5);
-  border-style: dashed;
-  color: #928166;
-  box-shadow: 0 4px 14px rgba(200, 180, 145, 0.12);
-  min-width: 150px;
-}
-
-.underlying-card.mystery-preview .revealed-quote-text {
-  color: #9c9282;
-  font-style: italic;
-  font-size: 0.82rem;
-}
-
-/* Big Color Bloom & Pop at >= 50% */
-.underlying-card.scratch-revealed {
-  transform: scale(1);
-}
-
-.underlying-card.scratch-revealed .revealed-badge {
-  animation: badgePopBloom 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-}
-
-@keyframes badgePopBloom {
-  0% { transform: scale(0.85); opacity: 0.6; }
-  50% { transform: scale(1.10); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.underlying-card.gender-girl {
-  background: radial-gradient(circle at 50% 25%, var(--pastel-pink-wash) 0%, #ffffff 85%);
-  border-color: var(--pastel-pink);
-}
-
-.underlying-card.gender-girl .revealed-headline {
-  color: var(--pastel-pink-ink);
-}
-
-.underlying-card.gender-girl .revealed-badge {
-  background: var(--pastel-pink-wash);
-  border-color: var(--pastel-pink-border);
-  color: var(--pastel-pink-ink);
-  border-style: solid;
+  transition: background 0.75s ease;
 }
 
 .underlying-card.gender-boy {
-  background: radial-gradient(circle at 50% 25%, var(--pastel-blue-wash) 0%, #ffffff 85%);
-  border-color: var(--pastel-blue);
+  background: radial-gradient(circle at 50% 30%, #eff6ff 0%, #ffffff 85%);
 }
 
-.underlying-card.gender-boy .revealed-headline {
-  color: var(--pastel-blue-ink);
+.underlying-card.gender-girl {
+  background: radial-gradient(circle at 50% 30%, #fff1f2 0%, #ffffff 85%);
 }
 
-.underlying-card.gender-boy .revealed-badge {
-  background: var(--pastel-blue-wash);
-  border-color: var(--pastel-blue-border);
-  color: var(--pastel-blue-ink);
-  border-style: solid;
+.underlying-card.mystery-preview {
+  background: radial-gradient(circle at 50% 30%, #f8fafc 0%, #ffffff 85%);
+}
+
+.underlying-card.mystery-preview .reveal-badge-icon {
+  background: rgba(100, 116, 139, 0.12);
+  color: #475569;
+}
+
+.underlying-card.mystery-preview .revealed-headline {
+  color: #475569;
+  background: linear-gradient(135deg, #334155 0%, #64748b 60%, #475569 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(100, 116, 139, 0.2));
+  letter-spacing: 0.15em;
 }
 
 .reveal-content-inner {
@@ -1451,43 +1760,37 @@ body.lang-swapping .language-label {
   justify-content: center;
 }
 
-.reveal-eyebrow {
-  font-size: clamp(0.60rem, 1.2vh, 0.68rem);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-secondary);
-  margin-bottom: clamp(2px, 0.5vh, 4px);
-}
-
 .reveal-prefix {
   font-family: var(--font-editorial);
-  font-size: clamp(0.92rem, 1.8vh, 1.05rem);
+  font-size: clamp(0.92rem, 2.2vw, 1.05rem);
   font-style: italic;
-  color: var(--ink-secondary);
-  margin-bottom: clamp(4px, 1vh, 8px);
+  color: #475569;
+  margin: 0 0 6px;
 }
 
+/* Unboxed, Large Celebratory Gender Title */
 .revealed-badge {
   display: inline-flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: clamp(6px, 1.5vw, 10px);
-  padding: clamp(6px, 1.2vh, 10px) clamp(16px, 4vw, 24px);
-  border-radius: var(--radius-md);
-  border: 1.5px solid transparent;
-  margin-bottom: clamp(4px, 1vh, 8px);
+  gap: 10px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin: 0 0 6px;
+  overflow: visible;
 }
 
 .reveal-badge-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: clamp(20px, 2.6vh, 26px);
-  height: clamp(20px, 2.6vh, 26px);
-  stroke-width: 1.75;
-  margin-bottom: 0;
+  padding: 5px;
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 
@@ -1496,30 +1799,60 @@ body.lang-swapping .language-label {
   height: 100%;
 }
 
+.underlying-card.gender-boy .reveal-badge-icon {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1e3a8a;
+}
+
+.underlying-card.gender-girl .reveal-badge-icon {
+  background: rgba(225, 29, 72, 0.12);
+  color: #9f1239;
+}
+
 .revealed-headline {
   font-family: var(--font-editorial);
-  font-size: clamp(1.35rem, 2.8vh, 1.75rem);
+  font-size: clamp(1.9rem, 5.2vw, 2.5rem);
   font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1.1;
-  white-space: nowrap;
+  letter-spacing: 0.06em;
+  line-height: 1.22;
   margin: 0;
+  padding: 0.02em 0.06em 0.22em;
+  display: inline-block;
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+.underlying-card.gender-boy .revealed-headline {
+  color: #1e3a8a;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.25));
+}
+
+.underlying-card.gender-girl .revealed-headline {
+  color: #9f1239;
+  background: linear-gradient(135deg, #831843 0%, #db2777 60%, #be185d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(219, 39, 119, 0.25));
 }
 
 .revealed-quote-text {
   font-family: var(--font-editorial);
-  font-size: clamp(0.76rem, 1.5vh, 0.92rem);
+  font-size: clamp(0.80rem, 2.0vw, 0.88rem);
   font-style: italic;
-  color: var(--ink-primary);
-  line-height: 1.3;
+  color: #334155;
   margin: 0;
-  max-width: 310px;
+  max-width: 94%;
+  line-height: 1.35;
+  text-align: center;
 }
 
 /* Post-Reveal Section (Below Scratch Card) */
 .post-reveal-section {
   width: 100%;
-  margin-top: 14px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1527,103 +1860,223 @@ body.lang-swapping .language-label {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transform: translateY(8px);
+  transform: translateY(12px);
   pointer-events: none;
-  transition: opacity 0.45s var(--transition-smooth), transform 0.45s var(--transition-smooth), max-height 0.45s ease;
+  transition: opacity 0.65s var(--transition-smooth), transform 0.65s var(--transition-smooth), max-height 0.65s ease;
 }
 
 .post-reveal-section.visible {
   opacity: 1;
-  max-height: none;
+  max-height: 900px;
   overflow: visible !important;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-.intuition-result {
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 2vw, 12px);
-  background: rgba(24, 32, 47, 0.035);
-  border: 1px solid rgba(24, 32, 47, 0.07);
-  padding: clamp(8px, 1.3vh, 12px) clamp(10px, 2.5vw, 16px);
-  border-radius: var(--radius-md);
-  width: 100%;
-  text-align: left;
-  box-sizing: border-box;
+/* ==================== ANIMATED LETTER WORDS (WORD-BY-WORD REVEAL) ==================== */
+.letter-word {
+  display: inline-block;
+  opacity: 0;
+  will-change: opacity, transform, filter;
 }
 
-.result-icon {
-  width: clamp(18px, 2.5vh, 22px);
-  height: clamp(18px, 2.5vh, 22px);
-  color: var(--ink-primary);
-  flex-shrink: 0;
+.post-reveal-section.visible .letter-word {
+  animation: titleWordFadeUp 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: calc(0.65s + var(--w-idx, 0) * 0.075s);
 }
 
-.result-details strong {
-  display: block;
-  font-size: clamp(0.78rem, 1.8vw, 0.84rem);
-  color: var(--ink-primary);
-}
-
-.result-details span {
-  font-size: clamp(0.70rem, 1.6vw, 0.75rem);
-  color: var(--ink-secondary);
-}
-
-.reveal-action-buttons {
+/* ==================== UNBOXED PERSONAL LETTER & AUTHENTIC HANDWRITING ==================== */
+.parents-signature-card {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin: 12px auto 6px;
+  padding: 4px 8px;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.parents-signature-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.parents-signature-card:focus {
+  outline: none;
+}
+
+.parents-signature-card:focus-visible {
+  outline: 2px solid rgba(91, 155, 213, 0.5);
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+.personal-letter-text {
+  font-family: var(--font-sans);
+  font-size: clamp(0.96rem, 2.3vw, 1.10rem);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.58;
+  color: #334155;
+  margin: 0 0 10px;
+  padding: 0 12px;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+.personal-letter-salute {
+  font-family: var(--font-sans);
+  font-size: clamp(0.92rem, 2.2vw, 1.02rem);
+  font-weight: 500;
+  color: #475569;
+  margin: clamp(16px, 3.8vw, 22px) 0 4px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.signature-container {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  overflow: visible;
+  padding: 4px 0 8px;
+}
+
+.duo-signature-svg {
+  width: 100%;
+  height: auto;
+  max-height: 95px;
+  overflow: visible;
+  display: block;
+}
+
+/* 1. Alina: Kristi font in Solid Deep Ocean Navy (#1b3d68) */
+.sig-solid-alina {
+  font-family: 'Kristi', cursive;
+  font-size: 64px;
+  font-weight: 400;
+  fill: #1b3d68;
+  letter-spacing: 0.5px;
+}
+
+/* 2. Kevin: Caveat font in Solid Deep Ocean Navy (#1b3d68) */
+.sig-solid-kevin {
+  font-family: 'Caveat', cursive;
+  font-size: 42px;
+  font-weight: 700;
+  fill: #1b3d68;
+  letter-spacing: 0.5px;
+}
+
+
+/* Beautiful, Harmonious Action Buttons - Always Side by Side */
+.reveal-action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
   width: 100%;
-  overflow: visible;
-  padding: 2px 0 6px;
+  margin-top: 6px;
   box-sizing: border-box;
 }
 
-@media (min-width: 480px) {
-  .reveal-action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+/* Reveal Action Buttons: Sequential Entrance Strictly After Signature Finishes */
+.post-reveal-section .btn-reveal-action.primary-confetti,
+.post-reveal-section .btn-reveal-action.secondary-share {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.post-reveal-section.visible .btn-reveal-action.primary-confetti {
+  animation: cascadeFadeIn 0.55s var(--transition-smooth) 4.80s forwards, movingButtonGradient 5s linear infinite !important;
+  pointer-events: auto;
+}
+
+.post-reveal-section.visible .btn-reveal-action.secondary-share {
+  animation: cascadeFadeIn 0.55s var(--transition-smooth) 5.10s forwards !important;
+  pointer-events: auto;
 }
 
 .btn-reveal-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: clamp(11px, 1.6vh, 13px) clamp(12px, 3vw, 16px);
+  gap: 6px;
+  height: 46px;
+  padding: 0 clamp(6px, 2vw, 14px);
   border-radius: var(--radius-pill);
   font-family: var(--font-sans);
-  font-size: clamp(0.82rem, 2vw, 0.88rem);
+  font-size: clamp(0.76rem, 2.7vw, 0.88rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s var(--transition-smooth);
-  white-space: normal;
-  text-align: center;
-  width: 100%;
   box-sizing: border-box;
+  width: 100%;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
-.btn-reveal-action:hover {
-  transform: translateY(-1px);
-}
-
-.btn-reveal-action:active {
-  transform: translateY(1px) scale(0.985);
+.btn-reveal-action i,
+.btn-reveal-action svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 }
 
 .btn-reveal-action.primary-confetti {
-  color: #ffffff;
-  border: none;
+  background: linear-gradient(
+    115deg,
+    #5b9bd5 0%,
+    #8f5ec5 28%,
+    #ea8ea4 52%,
+    #d46882 76%,
+    #5b9bd5 100%
+  ) !important;
+  background-size: 240% 100% !important;
+  animation: movingButtonGradient 5s linear infinite !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 
+    0 8px 20px -2px rgba(91, 155, 213, 0.38),
+    0 4px 12px -1px rgba(234, 142, 164, 0.30) !important;
 }
 
-.btn-reveal-action.secondary-share {
-  background: #ffffff;
-  color: var(--ink-primary);
-  border: 1.5px solid var(--border-subtle);
+.btn-reveal-action.primary-confetti:hover {
+  transform: translateY(-1.5px);
+  filter: brightness(1.05);
+  box-shadow: 
+    0 10px 24px -2px rgba(91, 155, 213, 0.48),
+    0 6px 16px -1px rgba(234, 142, 164, 0.38) !important;
+}
+
+.btn-reveal-action.secondary-share,
+.btn-reveal-action.secondary-confetti {
+  background: #ffffff !important;
+  color: var(--ink-primary) !important;
+  border: 1.5px solid rgba(24, 32, 47, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(24, 32, 47, 0.04) !important;
+}
+
+.btn-reveal-action.secondary-share:hover,
+.btn-reveal-action.secondary-confetti:hover {
+  transform: translateY(-1.5px);
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(24, 32, 47, 0.22) !important;
+  box-shadow: 0 4px 12px rgba(24, 32, 47, 0.08) !important;
 }
 
 .btn-reveal-restart {
@@ -1631,12 +2084,13 @@ body.lang-swapping .language-label {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
+  padding: 6px 14px;
+  margin-top: 4px;
   background: transparent;
   border: none;
   color: var(--ink-secondary);
   font-family: var(--font-sans);
-  font-size: 0.82rem;
+  font-size: 0.80rem;
   font-weight: 500;
   cursor: pointer;
   transition: color 0.2s ease;
@@ -1684,18 +2138,22 @@ body.lang-swapping .language-label {
   pointer-events: none;
 }
 
-/* Barrier while countdown runs */
+/* Barrier while countdown runs - Sleek Glassmorphism Lock Overlay */
 .scratch-lock-barrier {
   position: absolute;
   inset: 0;
   z-index: 15;
-  background: rgba(24, 32, 47, 0.35);
-  backdrop-filter: blur(2px);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  transition: opacity 0.4s ease, visibility 0.4s;
+  gap: 8px;
+  padding: 14px;
+  box-sizing: border-box;
+  transition: opacity 0.5s var(--transition-smooth), visibility 0.5s;
 }
 
 .scratch-lock-barrier.unlocked {
@@ -1704,42 +2162,45 @@ body.lang-swapping .language-label {
   pointer-events: none;
 }
 
-.barrier-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  padding: 20px 24px;
-  border-radius: var(--radius-md);
-  box-shadow: 0 12px 35px rgba(24, 32, 47, 0.14), 0 0 20px rgba(91, 155, 213, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  display: flex;
-  flex-direction: column;
+.barrier-lock-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  text-align: center;
+  gap: 8px;
+  padding: 7px 18px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-pill);
+  box-shadow: 
+    0 8px 24px -2px rgba(15, 23, 42, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
 }
 
-.barrier-icon {
-  width: 28px;
-  height: 28px;
-  color: var(--pastel-blue);
-  animation: lockPulse 2.2s infinite ease-in-out;
-}
-
-@keyframes lockPulse {
-  0%, 100% { transform: scale(1); opacity: 0.85; color: var(--pastel-blue); }
-  50% { transform: scale(1.12); opacity: 1; color: var(--pastel-pink); }
+.barrier-lock-icon {
+  width: 15px;
+  height: 15px;
+  color: #2563eb;
+  flex-shrink: 0;
+  transform: none;
 }
 
 .barrier-title {
-  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--ink-primary);
+  letter-spacing: 0.01em;
 }
 
-.barrier-text {
-  font-size: 0.76rem;
-  color: var(--ink-secondary);
-  max-width: 220px;
+.barrier-sub {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.01em;
+  margin: 0;
+  text-align: center;
+  max-width: 90%;
 }
 
 /* Ambient Background Stars Canvas (Behind elements on z-index: 5) */
@@ -1914,6 +2375,48 @@ body.lang-swapping .language-label {
   margin-top: 18px;
 }
 
+/* Developer Authentication Modal */
+.dev-auth-window {
+  max-width: 360px;
+}
+
+.editorial-modal-text {
+  font-size: 0.86rem;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.dev-auth-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 6px;
+  min-height: 18px;
+  text-align: left;
+}
+
+.action-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  border: 1px solid var(--border-subtle);
+  background: var(--canvas-cream);
+  color: var(--ink-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-btn-secondary:hover {
+  background: rgba(24, 32, 47, 0.08);
+}
+
 /* Story Card Modal */
 .story-modal-window {
   max-width: 390px;
@@ -1999,9 +2502,122 @@ body.lang-swapping .language-label {
   transform: translateY(1px) scale(0.985);
 }
 
-/* Minimalist Toast (Disabled per user request) */
+/* ==================== ELEGANT FLOATING TOAST ==================== */
 .minimal-toast {
-  display: none !important;
+  position: fixed;
+  top: max(env(safe-area-inset-top, 14px), 18px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-24px);
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.94);
+  color: #ffffff;
+  padding: 10px 22px;
+  border-radius: 16px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  text-align: center;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+  width: max-content;
+  max-width: min(94vw, 560px);
+  box-sizing: border-box;
+  display: block !important;
+}
+
+.minimal-toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+@media (max-width: 480px) {
+  .minimal-toast {
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    border-radius: 14px;
+    padding: 9px 15px;
+    font-size: 0.76rem;
+    line-height: 1.36;
+  }
+}
+
+/* ==================== FLOATING DEV SKIP BUTTON (PAGE 3 ONLY) ==================== */
+.dev-floating-skip-btn {
+  position: fixed;
+  bottom: max(env(safe-area-inset-bottom, 18px), 24px);
+  left: 50%;
+  transform: translateX(-50%) translateY(25px);
+  z-index: 99998;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 9999px;
+  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12), 0 0 16px rgba(59, 130, 246, 0.25);
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s, background 0.2s, box-shadow 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.dev-floating-skip-btn svg,
+.dev-floating-skip-btn i {
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+body.dev-mode-active .dev-floating-skip-btn.visible,
+.dev-floating-skip-btn.visible {
+  display: inline-flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) !important;
+  animation: floatingDevFloat 3s ease-in-out infinite alternate;
+}
+
+.dev-floating-skip-btn:hover {
+  background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.75), 0 0 24px rgba(59, 130, 246, 0.45);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.dev-floating-skip-btn:active {
+  transform: translateX(-50%) translateY(1px) scale(0.98);
+}
+
+@keyframes floatingDevFloat {
+  0% {
+    transform: translateX(-50%) translateY(0);
+    box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12), 0 0 14px rgba(59, 130, 246, 0.25);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-4px);
+    box-shadow: 0 18px 36px -4px rgba(15, 23, 42, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 22px rgba(59, 130, 246, 0.42);
+  }
 }
 
 /* ==================== RESPONSIVE TUNING FOR MOBILE DEVICES ==================== */
@@ -2017,19 +2633,20 @@ body.lang-swapping .language-label {
     gap: 8px;
   }
   .gender-choice-card {
-    padding: 14px 8px 12px;
-    min-height: clamp(125px, 17vh, 150px);
+    padding: clamp(18px, 2.5vh, 24px) 10px clamp(16px, 2.2vh, 20px);
+    min-height: clamp(175px, 24vh, 215px);
+    aspect-ratio: 0.74;
   }
   .gender-icon-wrapper {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
   }
   .gender-symbol-icon {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
   .gender-name {
-    font-size: 1.15rem;
+    font-size: 1.18rem;
   }
 }
 
@@ -2043,21 +2660,22 @@ body.lang-swapping .language-label {
     margin-bottom: 4px;
   }
   #page3 .editorial-heading {
-    font-size: clamp(1.2rem, 2.5vh, 1.5rem);
-    margin-bottom: 2px;
+    font-size: clamp(1.85rem, 4.2vh, 2.4rem);
+    margin-top: clamp(10px, 2vh, 18px);
+    margin-bottom: clamp(6px, 1.2vh, 12px);
   }
   .highlight-text {
     margin-top: 2px;
   }
   .scratch-canvas-container {
-    height: clamp(185px, 25vh, 215px);
+    height: clamp(125px, 16vh, 145px);
   }
   .underlying-card {
-    padding: 10px 10px;
+    padding: 8px 10px;
   }
   .revealed-badge {
-    padding: 5px 16px;
-    margin-bottom: 4px;
+    padding: 0;
+    margin-bottom: 6px;
   }
   .revealed-headline {
     font-size: 1.35rem;
@@ -2070,7 +2688,8 @@ body.lang-swapping .language-label {
     gap: 6px;
   }
   .gender-choice-card {
-    min-height: 130px;
+    min-height: clamp(160px, 22vh, 185px);
+    aspect-ratio: 0.74;
   }
 }
 
@@ -2084,15 +2703,16 @@ body.lang-swapping .language-label {
     gap: 6px;
   }
   #page3 .editorial-heading {
-    font-size: clamp(1.1rem, 2.2vh, 1.35rem);
-    margin-bottom: 2px;
+    font-size: clamp(1.6rem, 3.8vh, 2.1rem);
+    margin-top: clamp(8px, 1.6vh, 14px);
+    margin-bottom: clamp(6px, 1vh, 10px);
   }
   .scratch-canvas-container {
-    height: 180px;
+    height: 125px;
   }
   .revealed-badge {
-    padding: 4px 14px;
-    margin-bottom: 2px;
+    padding: 0;
+    margin-bottom: 6px;
   }
   .revealed-headline {
     font-size: 1.35rem;

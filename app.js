@@ -1,5 +1,5 @@
 /**
- * Minimalist Editorial Baby Shower & Gender Reveal
+ * Minimalist Editorial Gender Reveal — Kevin & Alina
  * - Pure Lucide icons (no emojis)
  * - Two base colors (Deep Charcoal & Luxe Cream) with Pastel Blue & Pastel Pink accents
  * - Alternating bilingual text (DE/EN) on start page until active user selection
@@ -18,12 +18,12 @@
   // ==================== BILINGUAL TRANSLATION DICTIONARY ====================
   const I18N = {
     de: {
-      headerTitle: 'Baby Shower Celebration',
+      headerTitle: 'Gender Reveal',
       stepStart: 'Start',
       stepGuess: 'Tippen',
       stepReveal: 'Reveal',
-      heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word" style="--w-idx: 1;">zur</span><span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Babyshower</span>',
-      heroSubtitle: 'Ein neues Kapitel beginnt. Trage deinen Namen ein und feier mit uns.',
+      heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word" style="--w-idx: 1;">zum</span> <span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Gender Reveal</span>',
+      heroSubtitle: 'Ein neues Kapitel für Alina & Kevin beginnt.<br>Trage Deinen Namen ein und feier mit uns.',
       nameLabel: 'Dein Name',
       namePlaceholder: 'z. B. Louisa B.',
       langLabel: 'Sprache:',
@@ -37,15 +37,16 @@
       girlLabel: 'Mädchen',
       votesSuffix: 'Stimmen',
       btnToStep3: 'Weiter',
-      userGuessLabel: 'Dein Team:',
+      userGuessLabel: 'Dein Tipp:',
       revealHeading: 'Das Gender Reveal',
       revealSubtitle: 'Die Enthüllung beginnt in Kürze.',
       countdownLabel: 'Countdown',
+      countdownTargetLabel: 'Reveal am Do., 29. Okt. 2026 • 18:00 Uhr',
+      countdownUnlockedLabel: '✨ Jetzt freirubbeln!',
       unitDays: 'Tage',
       unitHours: 'Std',
       unitMins: 'Min',
       unitSecs: 'Sek',
-      btnStartCountdown: '10s Countdown starten',
       btnDevSkip: 'Entwickler: Countdown überspringen',
       scratchTitle: 'Karte frei rubbeln',
       scratchSub: 'Wische über die Karte, um das Geschlecht aufzudecken',
@@ -53,15 +54,22 @@
       foilSecretSub: 'Wische mit dem Finger zum Enthüllen',
       foilRubbel: 'HIER FREIRUBBELN',
       foilMidText: 'FAST GESCHAFFT...',
-      barrierTitle: 'Countdown läuft...',
-      barrierText: '',
+      barrierTitle: 'Noch gesperrt',
+      barrierText: 'Wird nach Ablauf des Countdowns freigeschaltet',
       revealEyebrow: 'Offizielle Verkündung',
       revealPrefix: 'Es wird ein...',
       teaserQuote: 'Wische weiter zum Enthüllen...',
       girlTitle: 'MÄDCHEN',
       boyTitle: 'JUNGE',
       girlQuote: '„Unsere kleine Tochter wird die Welt bereichern.“',
-      boyQuote: '„Unser kleiner Sohn wird die Welt entdecken.“',
+      boyQuote: '„Unser kleiner Sohn wird die Welt bereichern.“',
+      letterMatch: name => `${name ? `${name}, ` : ''}Du hast richtig geraten!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
+      letterNoMatch: name => `${name ? `${name}, ` : ''}${name ? 'knapp' : 'Knapp'} daneben!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
+      stayTunedText: 'Stay tuned – weitere Infos folgen bald',
+      letterSalute: 'In freudiger Erwartung',
+      sigAlina: 'Alina',
+      sigKevin: 'Kevin',
+      signatureText: 'Alina Kevin',
       matchTitle: 'Richtig getippt!',
       matchSub: name => `Glückwunsch ${name}, dein Bauchgefühl lag genau richtig.`,
       noMatchTitle: 'Voller Überraschung',
@@ -78,6 +86,15 @@
       page: 'Seite',
       btnReset: 'Stimmen & Fortschritt zurücksetzen',
       btnDone: 'Fertig',
+      devAuthTitle: 'Entwickler-Zugang',
+      devAuthDesc: 'Bitte gib das Entwickler-Passwort ein, um den Entwicklermodus zu aktivieren.',
+      btnUnlock: 'Entsperren',
+      btnCancel: 'Abbrechen',
+      devAuthWrongPass: 'Falsches Passwort',
+      devAuthSuccess: 'Entwicklermodus aktiviert:<br>Countdown ist auf diesem Gerät überspringbar',
+      devToastActive: 'Entwicklermodus aktiviert:<br>Countdown ist auf diesem Gerät überspringbar',
+      devToastInactive: 'Entwicklermodus deaktiviert',
+      btnDevFloatingSkip: 'Countdown für Vorschau überspringen',
       toastNameReq: 'Bitte trage deinen Namen ein',
       toastGuessReq: 'Bitte wähle Junge oder Mädchen aus',
       toastTeamBoy: 'Tipp: Junge',
@@ -88,15 +105,15 @@
       toastSoundOff: 'Ton stummgeschaltet',
       toastLangDe: 'Sprache auf Deutsch festgelegt',
       toastLangEn: 'Language locked to English',
-      shareText: gender => `Gender Reveal: Es wird ein ${gender === 'girl' ? 'Mädchen' : 'Junge'}!`
+      shareText: gender => `Gender Reveal von Alina & Kevin: Es wird ein ${gender === 'girl' ? 'Mädchen' : 'Junge'}!`
     },
     en: {
-      headerTitle: 'Baby Shower Celebration',
+      headerTitle: 'Gender Reveal',
       stepStart: 'Start',
       stepGuess: 'Guess',
       stepReveal: 'Reveal',
-      heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Welcome</span> <span class="title-word" style="--w-idx: 1;">to</span> <span class="title-word" style="--w-idx: 2;">the</span><span class="highlight-text title-word word-highlight" style="--w-idx: 3;">Baby Shower</span>',
-      heroSubtitle: 'A new chapter begins. Enter your name and celebrate with us.',
+      heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Welcome</span> <span class="title-word" style="--w-idx: 1;">to</span> <span class="title-word" style="--w-idx: 2;">the</span> <span class="highlight-text title-word word-highlight" style="--w-idx: 3;">Gender Reveal</span>',
+      heroSubtitle: 'A new chapter for Alina & Kevin begins.<br>Enter your name and celebrate with us.',
       nameLabel: 'Your Name',
       namePlaceholder: 'e.g. Louisa B.',
       langLabel: 'Language:',
@@ -110,15 +127,16 @@
       girlLabel: 'Girl',
       votesSuffix: 'votes',
       btnToStep3: 'Continue',
-      userGuessLabel: 'Your Team:',
+      userGuessLabel: 'Your Guess:',
       revealHeading: 'The Gender Reveal',
       revealSubtitle: 'The big reveal begins shortly.',
       countdownLabel: 'Countdown',
+      countdownTargetLabel: 'Reveal on Thu, Oct 29, 2026 • 6:00 PM',
+      countdownUnlockedLabel: '✨ Scratch to reveal now!',
       unitDays: 'Days',
       unitHours: 'Hrs',
       unitMins: 'Min',
       unitSecs: 'Sec',
-      btnStartCountdown: 'Start 10s Countdown',
       btnDevSkip: 'Developer: Skip Countdown',
       scratchTitle: 'Scratch to Reveal',
       scratchSub: 'Swipe across the card to uncover the gender',
@@ -126,15 +144,22 @@
       foilSecretSub: 'Swipe with your finger to reveal',
       foilRubbel: 'SCRATCH TO REVEAL',
       foilMidText: 'ALMOST THERE...',
-      barrierTitle: 'Countdown in progress...',
-      barrierText: '',
+      barrierTitle: 'Locked',
+      barrierText: 'Unlocks when the countdown ends',
       revealEyebrow: 'Official Announcement',
       revealPrefix: 'It’s a...',
       teaserQuote: 'Keep scratching to reveal...',
       girlTitle: 'GIRL',
       boyTitle: 'BOY',
-      girlQuote: '“Our little daughter will bring so much joy into our lives.”',
-      boyQuote: '“Our little boy will bring so much adventure into our lives.”',
+      girlQuote: '“Our little daughter will enrich the world.”',
+      boyQuote: '“Our little son will enrich the world.”',
+      letterMatch: name => `${name ? `${name}, you` : 'You'} guessed it right!<br>Thank you so much for joining,<br>we're so happy to celebrate with you ☺️<br>Stay tuned for more info!`,
+      letterNoMatch: name => `${name ? `${name}, so` : 'So'} close!<br>Thank you so much for joining,<br>we're so happy to celebrate with you ☺️<br>Stay tuned for more info!`,
+      stayTunedText: 'Stay tuned – more details coming soon',
+      letterSalute: 'In joyful expectation',
+      sigAlina: 'Alina',
+      sigKevin: 'Kevin',
+      signatureText: 'Alina Kevin',
       matchTitle: 'Spot on!',
       matchSub: name => `Congratulations ${name}, your intuition was completely right.`,
       noMatchTitle: 'A sweet surprise',
@@ -151,6 +176,15 @@
       page: 'Page',
       btnReset: 'Reset Votes & Progress',
       btnDone: 'Done',
+      devAuthTitle: 'Developer Access',
+      devAuthDesc: 'Please enter the developer password to activate developer mode.',
+      btnUnlock: 'Unlock',
+      btnCancel: 'Cancel',
+      devAuthWrongPass: 'Incorrect password',
+      devAuthSuccess: 'Developer mode activated:<br>Countdown can be skipped on this device',
+      devToastActive: 'Developer mode activated:<br>Countdown can be skipped on this device',
+      devToastInactive: 'Developer mode disabled',
+      btnDevFloatingSkip: 'Skip countdown for preview',
       toastNameReq: 'Please enter your name',
       toastGuessReq: 'Please select Boy or Girl',
       toastTeamBoy: 'Guess: Boy',
@@ -161,7 +195,7 @@
       toastSoundOff: 'Sound muted',
       toastLangDe: 'Sprache auf Deutsch festgelegt',
       toastLangEn: 'Language locked to English',
-      shareText: gender => `Gender Reveal: It's a ${gender === 'girl' ? 'Girl' : 'Boy'}!`
+      shareText: gender => `Gender Reveal from Alina & Kevin: It's a ${gender === 'girl' ? 'Girl' : 'Boy'}!`
     }
   };
 
@@ -172,14 +206,15 @@
     currentStep: 1,
     guestName: '',
     userGuess: null, // 'boy' | 'girl'
-    actualGender: 'girl', // default: 'girl' (customizable in settings)
-    partyTitle: 'Baby Shower Celebration',
+    actualGender: null, // Zero-Knowledge: Only populated by authoritative server response
+    devToken: sessionStorage.getItem('baby_dev_token') || null,
+    partyTitle: 'Gender Reveal',
     soundEnabled: true,
-    devMode: false, // toggled by clicking 'Willkommen' 5 times
+    devMode: false, // toggled after password verification
     countdownRunning: false,
-    countdownTimeLeft: 10,
-    countdownDuration: 10,
     countdownInterval: null,
+    serverTimeOffset: 0,
+    isServerUnlocked: false,
     isCardUnlocked: false,
     isScratchedRevealed: false,
     votes: {
@@ -188,11 +223,8 @@
     }
   };
 
-  // Check if user previously locked a language choice
+  // Check if user previously saved custom votes
   try {
-    const savedGender = localStorage.getItem('baby_actual_gender');
-    if (savedGender) STATE.actualGender = savedGender;
-
     const savedVotes = localStorage.getItem('baby_votes_data');
     if (savedVotes) STATE.votes = JSON.parse(savedVotes);
   } catch (e) {
@@ -256,9 +288,13 @@
     revealSubheading: document.getElementById('revealSubheading'),
     countdownSection: document.getElementById('countdownSection'),
     countdownStatusLabel: document.getElementById('countdownStatusLabel'),
+    timerDays: document.getElementById('timerDays'),
+    timerHours: document.getElementById('timerHours'),
+    timerMins: document.getElementById('timerMins'),
     timerSecs: document.getElementById('timerSecs'),
     btnStartSuspenseCountdown: document.getElementById('btnStartSuspenseCountdown'),
     btnDevSkipCountdown: document.getElementById('btnDevSkipCountdown'),
+    btnDevFloatingSkip: document.getElementById('btnDevFloatingSkip'),
 
     // Scratch Card with Dual Layers
     scratchCardWrapper: document.getElementById('scratchCardWrapper'),
@@ -267,6 +303,17 @@
     scratchCanvasTop: document.getElementById('scratchCanvasTop'),
     countdownLockOverlay: document.getElementById('countdownLockOverlay'),
     postRevealSection: document.getElementById('postRevealSection'),
+
+    // Parents Signature Card & Personal Letter
+    parentsSignatureCard: document.getElementById('parentsSignatureCard'),
+    personalLetterText: document.getElementById('personalLetterText'),
+    stayTunedText: document.getElementById('stayTunedText'),
+    sigBlockAlina: document.getElementById('sigBlockAlina'),
+    sigBlockKevin: document.getElementById('sigBlockKevin'),
+    sigAlinaSvg: document.getElementById('sigAlinaSvg'),
+    sigConnector: document.getElementById('sigConnector'),
+    sigKevinSvg: document.getElementById('sigKevinSvg'),
+    signatureFlourish: document.getElementById('signatureFlourish'),
 
     // Revealed Details
     revealedGenderBadge: document.getElementById('revealedGenderBadge'),
@@ -305,6 +352,16 @@
     devJumpPage2: document.getElementById('devJumpPage2'),
     devJumpPage3: document.getElementById('devJumpPage3'),
     btnResetAllVotes: document.getElementById('btnResetAllVotes'),
+
+    // Developer Password Authentication Modal
+    devAuthModal: document.getElementById('devAuthModal'),
+    closeDevAuthBtn: document.getElementById('closeDevAuthBtn'),
+    cancelDevAuthBtn: document.getElementById('cancelDevAuthBtn'),
+    devAuthForm: document.getElementById('devAuthForm'),
+    devPasswordInput: document.getElementById('devPasswordInput'),
+    devAuthError: document.getElementById('devAuthError'),
+    submitDevAuthBtn: document.getElementById('submitDevAuthBtn'),
+    devAuthBtnText: document.getElementById('devAuthBtnText'),
 
     // Toast
     toastBubble: document.getElementById('toastBubble')
@@ -556,11 +613,21 @@
       const key = el.getAttribute('data-i18n');
       if (key === 'guessHeading' || key === 'revealHeading') return; // Handled with title-word spans
       const text = t(key);
-      if (text) el.textContent = text;
+      if (text) {
+        if (text.includes('<br') || text.includes('&') || text.includes('<span')) {
+          el.innerHTML = text;
+        } else {
+          el.textContent = text;
+        }
+      }
     });
 
     updateGuessHeading();
     updateRevealHeading();
+
+    // Bilingual signatures update
+    updateSignaturesUI();
+    updatePersonalLetterText();
 
     if (elements.heroTitle) {
       elements.heroTitle.innerHTML = t('heroTitleHtml');
@@ -660,9 +727,9 @@
       }, 70);
     },
 
-    lastDropletIdx: -1,
+    lastPianoIdx: -1,
 
-    // Soft warm marimba droplet sound on keystroke (shuffled/random notes for playful organic feedback)
+    // Warm, elegant acoustic piano note sound on keystroke (rich multi-string resonance & hammer transient)
     playTypeDroplet(charLength = 1) {
       if (!STATE.soundEnabled) return;
       this.init();
@@ -670,40 +737,81 @@
 
       try {
         const now = this.ctx.currentTime;
-        // Pentatonic scale palette (harmonious in any random order: C5, D5, E5, G5, A5, C6, D6, E6)
+        // Warm lyrical piano scale palette (C5, D5, E5, G5, A5, C6, D6, E6)
         const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
         
-        // Pick a note randomly ("durcheinander"), avoiding immediate repeats
         let noteIdx;
         do {
           noteIdx = Math.floor(Math.random() * notes.length);
-        } while (noteIdx === this.lastDropletIdx && notes.length > 1);
-        this.lastDropletIdx = noteIdx;
+        } while (noteIdx === this.lastPianoIdx && notes.length > 1);
+        this.lastPianoIdx = noteIdx;
 
         const freq = notes[noteIdx];
 
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
+        // 1. Primary string fundamental (triangle body for natural acoustic string harmonics)
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(freq, now);
+
+        // 2. Harmonic overtone / unison double-string chorus (subtle 2 mHz detune)
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(freq * 2.002, now);
+
+        // 3. Hammer felt impact transient (gives the authentic tactile wooden/felt piano strike)
+        const osc3 = this.ctx.createOscillator();
+        const gain3 = this.ctx.createGain();
+        osc3.type = 'sine';
+        osc3.frequency.setValueAtTime(freq * 3.5, now);
+
+        // Acoustic soundboard lowpass filter: strikes bright and naturally warms up
         const filter = this.ctx.createBiquadFilter();
-
-        osc.type = 'sine';
-        // Organic droplet pitch scoop
-        osc.frequency.setValueAtTime(freq * 1.05, now);
-        osc.frequency.exponentialRampToValueAtTime(freq, now + 0.02);
-
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(2200, now);
+        filter.frequency.setValueAtTime(4200, now);
+        filter.frequency.exponentialRampToValueAtTime(1200, now + 0.35);
 
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(0.065, now + 0.010);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
+        // Master output gain for smooth mixing
+        const masterGain = this.ctx.createGain();
 
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
+        // ADSR Envelopes:
+        // Osc 1: Sharp piano attack (2.5ms), rich sustain decay to 420ms
+        gain1.gain.setValueAtTime(0.0001, now);
+        gain1.gain.linearRampToValueAtTime(0.08, now + 0.0025);
+        gain1.gain.exponentialRampToValueAtTime(0.026, now + 0.12);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
 
-        osc.start(now);
-        osc.stop(now + 0.16);
+        // Osc 2 (Octave chime): quick decay for piano brilliance
+        gain2.gain.setValueAtTime(0.0001, now);
+        gain2.gain.linearRampToValueAtTime(0.038, now + 0.0025);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+        // Osc 3 (Hammer transient): 30ms quick felt strike
+        gain3.gain.setValueAtTime(0.0001, now);
+        gain3.gain.linearRampToValueAtTime(0.022, now + 0.0015);
+        gain3.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+        // Connections
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        osc3.connect(gain3);
+
+        gain1.connect(filter);
+        gain2.connect(filter);
+        gain3.connect(filter);
+
+        filter.connect(masterGain);
+        masterGain.connect(this.ctx.destination);
+
+        const stopTime = now + 0.45;
+        osc1.start(now);
+        osc2.start(now);
+        osc3.start(now);
+
+        osc1.stop(stopTime);
+        osc2.stop(stopTime);
+        osc3.stop(stopTime);
       } catch (e) { }
     },
 
@@ -933,8 +1041,10 @@
     elements.page2.classList.toggle('active', step === 2);
     elements.page3.classList.toggle('active', step === 3);
 
-    // Stop ambient starfall if leaving step 3
-    if (step !== 3) {
+    // Ambient starfall active on step 2 and step 3 (flying glitter particles in background)
+    if (step >= 2) {
+      magicEffects.startAmbientStarfall();
+    } else {
       magicEffects.stopAmbientStarfall();
     }
 
@@ -948,7 +1058,7 @@
     // Re-trigger staggered animations on active page
     const activePage = document.getElementById(`page${step}`);
     if (activePage) {
-      const staggerItems = activePage.querySelectorAll('.stagger-item, .title-word');
+      const staggerItems = activePage.querySelectorAll('.stagger-item, .title-word, .boy-card, .girl-card, #btnToStep3');
       staggerItems.forEach(item => {
         item.style.animation = 'none';
         item.offsetHeight; // trigger reflow
@@ -1000,6 +1110,7 @@
       STATE.countdownRunning = false;
     }
 
+    updateFloatingSkipBtn();
     refreshIcons();
     updateScalingContainer();
   }
@@ -1114,7 +1225,6 @@
         const inputWrap = elements.userNameInput.closest('.input-wrapper');
         triggerPlayfulWobble(inputWrap || elements.userNameInput);
         audio.playWobble();
-        showToast(t('toastNameReq'));
         elements.userNameInput.focus();
         return;
       }
@@ -1160,7 +1270,6 @@
         const grid = document.querySelector('.dual-choice-grid');
         triggerPlayfulWobble(grid);
         audio.playWobble();
-        showToast(t('toastGuessReq'));
         return;
       }
       audio.playSelect();
@@ -1205,34 +1314,28 @@
       magicEffects.burstCard(choice, cx, cy);
     }
 
-    if (choice === 'boy') {
-      showToast(t('toastTeamBoy'));
-    } else {
-      showToast(t('toastTeamGirl'));
-    }
-
     refreshIcons();
   }
 
   function updatePollUI() {
-    const boyCount = STATE.votes.boy;
-    const girlCount = STATE.votes.girl;
-    const total = boyCount + girlCount;
+    const boyCount = (STATE.votes && STATE.votes.boy) ? STATE.votes.boy : 0;
+    const girlCount = (STATE.votes && STATE.votes.girl) ? STATE.votes.girl : 0;
+    const total = boyCount + girlCount || 1;
 
     const boyPct = Math.round((boyCount / total) * 100);
     const girlPct = 100 - boyPct;
 
-    elements.boyPercent.textContent = `${boyPct}%`;
-    elements.girlPercent.textContent = `${girlPct}%`;
-    elements.pollBarBoy.style.width = `${boyPct}%`;
-    elements.pollBarGirl.style.width = `${girlPct}%`;
-    elements.pollTotalText.textContent = `${total} ${t('votesSuffix')}`;
-    elements.guestCountPill.textContent = t('guestCountPill', total);
+    if (elements.boyPercent) elements.boyPercent.textContent = `${boyPct}%`;
+    if (elements.girlPercent) elements.girlPercent.textContent = `${girlPct}%`;
+    if (elements.pollBarBoy) elements.pollBarBoy.style.width = `${boyPct}%`;
+    if (elements.pollBarGirl) elements.pollBarGirl.style.width = `${girlPct}%`;
+    if (elements.pollTotalText) elements.pollTotalText.textContent = `${total} ${t('votesSuffix')}`;
+    if (elements.guestCountPill) elements.guestCountPill.textContent = t('guestCountPill', total);
   }
 
   // ==================== PAGE 3 & COUNTDOWN ====================
   function setupRevealPage() {
-    magicEffects.stopAmbientStarfall();
+    magicEffects.startAmbientStarfall();
 
     if (STATE.userGuess === 'boy') {
       elements.userSummaryBadge.textContent = t('boyLabel');
@@ -1245,7 +1348,7 @@
     STATE.isCardUnlocked = false;
     STATE.isScratchedRevealed = false;
     if (elements.revealedUnderlay) {
-      elements.revealedUnderlay.classList.remove('gender-girl', 'gender-boy', 'scratch-revealed');
+      elements.revealedUnderlay.classList.remove('gender-girl', 'gender-boy', 'security-locked', 'scratch-revealed');
       elements.revealedUnderlay.classList.add('mystery-preview');
       elements.revealedUnderlay.style.filter = '';
     }
@@ -1254,6 +1357,10 @@
     }
     if (elements.revealedGenderTitle) {
       elements.revealedGenderTitle.textContent = '???';
+    }
+    const prefixEl = document.querySelector('.reveal-prefix');
+    if (prefixEl) {
+      prefixEl.textContent = t('revealPrefix');
     }
     if (elements.revealedQuote) {
       elements.revealedQuote.textContent = t('teaserQuote');
@@ -1266,6 +1373,15 @@
     elements.scratchCanvasTop.classList.remove('revealed-out', 'unlocked');
     elements.scratchCanvasMid.classList.remove('revealed-out', 'unlocked');
     if (elements.postRevealSection) elements.postRevealSection.classList.remove('visible');
+    const mainStage = document.getElementById('revealMainStage');
+    if (mainStage) mainStage.classList.remove('stage-revealed-up');
+    if (signatureObserver) {
+      signatureObserver.disconnect();
+      signatureObserver = null;
+    }
+    signatureAnimationPlayed = false;
+    resetSignaturesToHidden();
+    updatePersonalLetterText();
 
     drawScratchCardFoil();
     requestAnimationFrame(() => {
@@ -1276,12 +1392,76 @@
     STATE.countdownTimeLeft = STATE.countdownDuration;
     refreshIcons();
 
-    // Automatically start the 10s suspense countdown immediately upon arrival
-    startCountdown(10);
+    // Automatically start the real-time countdown to Donnerstag 29.10.2026, 18 Uhr
+    startCountdown();
+    updateFloatingSkipBtn();
+  }
+
+  function formatLetterIntoWords(htmlString, startIdx = 0) {
+    const lines = htmlString.split(/<br\s*\/?>/i);
+    let currentIdx = startIdx;
+    const formattedLines = lines.map(line => {
+      const words = line.trim().split(/\s+/).filter(Boolean);
+      const wrappedWords = words.map(w => {
+        const span = `<span class="letter-word" style="--w-idx: ${currentIdx};">${w}</span>`;
+        currentIdx++;
+        return span;
+      });
+      return wrappedWords.join(' ');
+    });
+    return {
+      html: formattedLines.join('<br>'),
+      count: currentIdx
+    };
+  }
+
+  function updatePersonalLetterText() {
+    const letterEl = elements.personalLetterText || document.getElementById('personalLetterText');
+    const saluteEl = document.getElementById('personalLetterSalute');
+    const name = STATE.guestName ? STATE.guestName.trim() : '';
+    const actual = STATE.actualGender || (STATE.userGuess || 'boy');
+    const userMatched = (STATE.userGuess === actual);
+    const rawLetter = userMatched ? t('letterMatch', name) : t('letterNoMatch', name);
+    const rawSalute = t('letterSalute');
+
+    if (letterEl) {
+      const res = formatLetterIntoWords(rawLetter, 0);
+      letterEl.innerHTML = res.html;
+
+      if (saluteEl) {
+        const saluteRes = formatLetterIntoWords(rawSalute, res.count);
+        saluteEl.innerHTML = saluteRes.html;
+      }
+    } else if (saluteEl) {
+      saluteEl.textContent = rawSalute;
+    }
   }
 
   function applyActualGenderTheme() {
+    updatePersonalLetterText();
+
+    // If card has not been scratched >= 50% yet, keep underlay in mysterious suspense mode!
+    if (!STATE.isScratchedRevealed) {
+      if (elements.revealedUnderlay) {
+        elements.revealedUnderlay.classList.remove('gender-girl', 'gender-boy', 'security-locked');
+        elements.revealedUnderlay.classList.add('mystery-preview');
+      }
+      if (elements.revealedIcon) {
+        elements.revealedIcon.innerHTML = GENDER_ICONS.mystery;
+      }
+      if (elements.revealedGenderTitle) {
+        elements.revealedGenderTitle.textContent = '???';
+      }
+      if (elements.revealedQuote) {
+        elements.revealedQuote.textContent = t('teaserQuote');
+      }
+      refreshIcons();
+      return;
+    }
+
+    if (!STATE.actualGender) return;
     const isGirl = (STATE.actualGender === 'girl');
+    elements.revealedUnderlay.classList.remove('security-locked', 'mystery-preview');
     elements.revealedUnderlay.classList.toggle('gender-girl', isGirl);
     elements.revealedUnderlay.classList.toggle('gender-boy', !isGirl);
 
@@ -1297,41 +1477,42 @@
       elements.revealedQuote.textContent = t('boyQuote');
     }
 
-    const userMatched = (STATE.userGuess === STATE.actualGender);
-    if (userMatched) {
-      elements.matchIcon.setAttribute('data-lucide', 'award');
-      elements.matchTitle.textContent = t('matchTitle');
-      elements.matchSubtitle.textContent = t('matchSub', STATE.guestName || 'Gast');
-    } else {
-      elements.matchIcon.setAttribute('data-lucide', 'sparkles');
-      elements.matchTitle.textContent = t('noMatchTitle');
-      elements.matchSubtitle.textContent = t('noMatchSub', STATE.guestName || 'Gast');
-    }
-
+    updatePersonalLetterText();
     refreshIcons();
   }
 
   function initPage3() {
     if (elements.btnStartSuspenseCountdown) {
       elements.btnStartSuspenseCountdown.addEventListener('click', () => {
-        startCountdown(10, true);
+        startCountdown();
       });
     }
 
-    elements.btnDevSkipCountdown.addEventListener('click', () => {
-      skipCountdownForDev();
-    });
+    if (elements.btnDevSkipCountdown) {
+      elements.btnDevSkipCountdown.addEventListener('click', () => {
+        skipCountdownForDev();
+      });
+    }
 
-    elements.devQuickBtn.addEventListener('click', () => {
-      if (STATE.currentStep !== 3) {
-        goToStep(3);
-      }
-      skipCountdownForDev();
-    });
+    if (elements.devQuickBtn) {
+      elements.devQuickBtn.addEventListener('click', () => {
+        if (STATE.currentStep !== 3) {
+          goToStep(3);
+        }
+        skipCountdownForDev();
+      });
+    }
+
+    const skipBtn = elements.btnDevFloatingSkip || document.getElementById('btnDevFloatingSkip');
+    if (skipBtn) {
+      skipBtn.addEventListener('click', () => {
+        audio.playClick();
+        skipCountdownForDev();
+      });
+    }
 
     elements.btnConfettiAgain.addEventListener('click', () => {
       audio.playFanfare();
-      magicEffects.stopAmbientStarfall();
       fireCelebrationConfetti();
     });
 
@@ -1340,37 +1521,262 @@
       openStoryModal();
     });
 
-    elements.btnRestartGuess.addEventListener('click', () => {
-      audio.playClick();
-      magicEffects.stopAmbientStarfall();
-      goToStep(1);
-    });
+    if (elements.btnRestartGuess) {
+      elements.btnRestartGuess.addEventListener('click', () => {
+        audio.playClick();
+        magicEffects.stopAmbientStarfall();
+        goToStep(1);
+      });
+    }
+
+    if (elements.parentsSignatureCard) {
+      elements.parentsSignatureCard.addEventListener('click', () => {
+        audio.playSelect();
+        signatureAnimationPlayed = true;
+        if (signatureObserver) {
+          signatureObserver.disconnect();
+          signatureObserver = null;
+        }
+        triggerDuoSignaturesAnimation();
+      });
+
+      // Also trigger if card receives HTML focus (e.g. keyboard navigation / Tab)
+      elements.parentsSignatureCard.addEventListener('focus', () => {
+        if (!signatureAnimationPlayed) {
+          signatureAnimationPlayed = true;
+          if (signatureObserver) {
+            signatureObserver.disconnect();
+            signatureObserver = null;
+          }
+          triggerDuoSignaturesAnimation();
+        }
+      });
+    }
 
     setupMultiLayerScratchEvents();
+    updateSignaturesUI();
+    resetSignaturesToHidden();
   }
 
-  function startCountdown(seconds, playSound = false) {
-    if (STATE.countdownRunning) return;
-    STATE.countdownRunning = true;
-    STATE.countdownTimeLeft = seconds;
-    if (elements.btnStartSuspenseCountdown) elements.btnStartSuspenseCountdown.disabled = true;
+  // ==================== LIVE HANDWRITING SIGNATURE ENGINE ====================
+  let activeSignatureAnimId = null;
+  let signatureObserver = null;
+  let signatureAnimationPlayed = false;
 
-    if (playSound) {
-      audio.playClick();
+  function updateSignaturesUI() {
+    const alina = document.getElementById('sigAlinaSvg');
+    const kevin = document.getElementById('sigKevinSvg');
+    if (!alina || !kevin) return;
+
+    alina.textContent = 'Alina';
+    kevin.textContent = 'Kevin';
+  }
+
+  function resetSignaturesToHidden() {
+    updateSignaturesUI();
+
+    const grpA = document.getElementById('grpAlina');
+    const grpK = document.getElementById('grpKevin');
+    const pathA = document.getElementById('pathStrokeAlina');
+    const dotA = document.getElementById('maskDotAlina');
+    const pathK = document.getElementById('pathStrokeKevin');
+
+    if (!grpA || !grpK || !pathA || !dotA || !pathK) return;
+
+    if (activeSignatureAnimId) {
+      cancelAnimationFrame(activeSignatureAnimId);
+      activeSignatureAnimId = null;
     }
-    elements.countdownStatusLabel.textContent = (STATE.lang === 'de') ? 'Spannung steigt' : 'Suspense builds';
 
-    clearInterval(STATE.countdownInterval);
-    STATE.countdownInterval = setInterval(() => {
-      STATE.countdownTimeLeft--;
-      elements.timerSecs.textContent = String(STATE.countdownTimeLeft).padStart(2, '0');
+    grpA.setAttribute('mask', 'url(#maskAlina)');
+    grpK.setAttribute('mask', 'url(#maskKevin)');
+
+    const lenA = pathA.getTotalLength() || 440;
+    const lenK = pathK.getTotalLength() || 320;
+
+    pathA.style.strokeDasharray = lenA;
+    pathA.style.strokeDashoffset = lenA;
+    dotA.style.opacity = '0';
+    pathK.style.strokeDasharray = lenK;
+    pathK.style.strokeDashoffset = lenK;
+  }
+
+  function initSignatureScrollTrigger() {
+    signatureAnimationPlayed = false;
+    resetSignaturesToHidden();
+
+    if (signatureObserver) {
+      signatureObserver.disconnect();
+      signatureObserver = null;
+    }
+
+    const target = document.getElementById('signatureContainer') || elements.parentsSignatureCard;
+    if (!target) return;
+
+    if (!('IntersectionObserver' in window)) {
+      triggerDuoSignaturesAnimation();
+      return;
+    }
+
+    signatureObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !signatureAnimationPlayed) {
+          signatureAnimationPlayed = true;
+          if (signatureObserver) {
+            signatureObserver.disconnect();
+            signatureObserver = null;
+          }
+          // Slight natural pause after user scrolls to it before pen glides
+          setTimeout(() => {
+            triggerDuoSignaturesAnimation();
+          }, 180);
+        }
+      });
+    }, {
+      root: null,
+      threshold: 0.25,
+      rootMargin: '0px 0px -20px 0px'
+    });
+
+    signatureObserver.observe(target);
+  }
+
+  function triggerDuoSignaturesAnimation() {
+    updateSignaturesUI();
+
+    const grpA = document.getElementById('grpAlina');
+    const grpK = document.getElementById('grpKevin');
+    const pathA = document.getElementById('pathStrokeAlina');
+    const dotA = document.getElementById('maskDotAlina');
+    const pathK = document.getElementById('pathStrokeKevin');
+
+    if (!grpA || !grpK || !pathA || !dotA || !pathK) return;
+
+    if (activeSignatureAnimId) {
+      cancelAnimationFrame(activeSignatureAnimId);
+      activeSignatureAnimId = null;
+    }
+
+    grpA.setAttribute('mask', 'url(#maskAlina)');
+    grpK.setAttribute('mask', 'url(#maskKevin)');
+
+    const lenA = pathA.getTotalLength() || 440;
+    const lenK = pathK.getTotalLength() || 320;
+
+    pathA.style.strokeDasharray = lenA;
+    pathA.style.strokeDashoffset = lenA;
+    dotA.style.opacity = '0';
+    pathK.style.strokeDasharray = lenK;
+    pathK.style.strokeDashoffset = lenK;
+
+    // Timing timeline:
+    // 1. Write cursive Alina (1050ms) - i-dot stays hidden during stroke
+    // 2. Micro pause & tap i-dot (90ms) - i-dot appears strictly at the end
+    // 3. Natural pen lift transition between names (140ms)
+    // 4. Write cursive Kevin (950ms)
+    const t1 = 1050;
+    const t2 = t1 + 90;
+    const t3 = t2 + 140;
+    const t4 = t3 + 950;
+
+    const startTime = performance.now();
+
+    function frame(now) {
+      const elapsed = now - startTime;
+
+      if (elapsed < t1) {
+        // Phase 1: Write cursive body of Alina (A -> l -> i -> n -> a) without i-dot
+        const p = elapsed / t1;
+        const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+        pathA.style.strokeDashoffset = Math.max(0, lenA * (1 - ease));
+        dotA.style.opacity = '0';
+      } else if (elapsed < t2) {
+        // Phase 2: Pen finishes 'a', lifts, and TAPS the i-dot!
+        pathA.style.strokeDashoffset = '0';
+        dotA.style.opacity = '1';
+      } else if (elapsed < t3) {
+        // Phase 3: Natural pen lift transition between Alina and Kevin
+        pathA.style.strokeDashoffset = '0';
+        dotA.style.opacity = '1';
+      } else if (elapsed < t4) {
+        // Phase 4: Write cursive Kevin in Caveat font
+        pathA.style.strokeDashoffset = '0';
+        dotA.style.opacity = '1';
+
+        const pK = (elapsed - t3) / (t4 - t3);
+        const easeK = pK < 0.5 ? 2 * pK * pK : -1 + (4 - 2 * pK) * pK;
+        pathK.style.strokeDashoffset = Math.max(0, lenK * (1 - easeK));
+      } else {
+        // Complete! Both signatures finished, remove masks for 100% crisp solid vector typography
+        pathA.style.strokeDashoffset = '0';
+        dotA.style.opacity = '1';
+        pathK.style.strokeDashoffset = '0';
+
+        grpA.removeAttribute('mask');
+        grpK.removeAttribute('mask');
+        activeSignatureAnimId = null;
+        return;
+      }
+
+      activeSignatureAnimId = requestAnimationFrame(frame);
+    }
+
+    activeSignatureAnimId = requestAnimationFrame(frame);
+  }
+
+  // Target reveal date: Donnerstag 29.10.2026, 18:00 Uhr Berlin time (CET UTC+1)
+  const REVEAL_TARGET_MS = new Date('2026-10-29T18:00:00+01:00').getTime();
+
+  function updateDateCountdown(playTick = false) {
+    // Authoritative time: synchronized with Vercel server atomic time
+    const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
+    const diff = REVEAL_TARGET_MS - currentEffectiveTime;
+
+    if (diff <= 0) {
+      if (elements.timerDays) elements.timerDays.textContent = '00';
+      if (elements.timerHours) elements.timerHours.textContent = '00';
+      if (elements.timerMins) elements.timerMins.textContent = '00';
+      if (elements.timerSecs) elements.timerSecs.textContent = '00';
+      if (elements.countdownStatusLabel) {
+        elements.countdownStatusLabel.textContent = t('countdownUnlockedLabel');
+      }
+      if (!STATE.isCardUnlocked) {
+        unlockScratchCard();
+      }
+      return true;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((diff / (1000 * 60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+
+    if (elements.timerDays) elements.timerDays.textContent = String(days).padStart(2, '0');
+    if (elements.timerHours) elements.timerHours.textContent = String(hours).padStart(2, '0');
+    if (elements.timerMins) elements.timerMins.textContent = String(mins).padStart(2, '0');
+    if (elements.timerSecs) elements.timerSecs.textContent = String(secs).padStart(2, '0');
+
+    if (playTick) {
       audio.playTick();
+    }
+    return false;
+  }
 
-      if (STATE.countdownTimeLeft <= 0) {
+  function startCountdown() {
+    clearInterval(STATE.countdownInterval);
+    STATE.countdownRunning = true;
+    const isDone = updateDateCountdown(false);
+    if (isDone) return;
+
+    if (elements.countdownStatusLabel) {
+      elements.countdownStatusLabel.textContent = t('countdownTargetLabel');
+    }
+
+    STATE.countdownInterval = setInterval(() => {
+      const finished = updateDateCountdown(STATE.currentStep === 3);
+      if (finished) {
         clearInterval(STATE.countdownInterval);
         STATE.countdownRunning = false;
-        if (elements.btnStartSuspenseCountdown) elements.btnStartSuspenseCountdown.disabled = false;
-        unlockScratchCard();
       }
     }, 1000);
   }
@@ -1378,14 +1784,19 @@
   function skipCountdownForDev() {
     clearInterval(STATE.countdownInterval);
     STATE.countdownRunning = false;
-    STATE.countdownTimeLeft = 0;
-    elements.timerSecs.textContent = '00';
-    if (elements.btnStartSuspenseCountdown) elements.btnStartSuspenseCountdown.disabled = false;
-    if (STATE.isCardUnlocked) {
-      triggerGenderReveal();
-    } else {
-      unlockScratchCard();
+    if (elements.timerDays) elements.timerDays.textContent = '00';
+    if (elements.timerHours) elements.timerHours.textContent = '00';
+    if (elements.timerMins) elements.timerMins.textContent = '00';
+    if (elements.timerSecs) elements.timerSecs.textContent = '00';
+    if (elements.countdownStatusLabel) {
+      elements.countdownStatusLabel.textContent = t('countdownUnlockedLabel');
     }
+    STATE.isServerUnlocked = true;
+    if (!STATE.actualGender) {
+      STATE.actualGender = 'boy';
+    }
+    unlockScratchCard();
+    applyActualGenderTheme();
   }
 
   function unlockScratchCard() {
@@ -1393,10 +1804,25 @@
     if (elements.revealSubheading) {
       elements.revealSubheading.classList.add('hidden-after-countdown');
     }
-    elements.countdownLockOverlay.classList.add('unlocked');
-    elements.scratchCanvasTop.classList.add('unlocked');
-    elements.scratchCanvasMid.classList.add('unlocked');
-    elements.countdownStatusLabel.textContent = (STATE.lang === 'de') ? 'Freigeschaltet' : 'Unlocked';
+    if (elements.countdownLockOverlay) {
+      elements.countdownLockOverlay.classList.add('unlocked');
+    }
+    if (elements.scratchCanvasTop) {
+      elements.scratchCanvasTop.classList.add('unlocked');
+    }
+    if (elements.scratchCanvasMid) {
+      elements.scratchCanvasMid.classList.add('unlocked');
+    }
+    if (elements.countdownStatusLabel) {
+      elements.countdownStatusLabel.textContent = t('countdownUnlockedLabel');
+    }
+    const countdownSection = document.getElementById('countdownSection') || document.getElementById('countdownModule');
+    if (countdownSection) {
+      countdownSection.classList.add('countdown-completed');
+    }
+    // Fetch reveal gender securely from Vercel API
+    fetchRevealGender();
+    updateFloatingSkipBtn();
     audio.playSelect();
     refreshIcons();
   }
@@ -1517,8 +1943,20 @@
     ctxTop.restore();
 
     const cx = w / 2;
-    const cy = Math.max(46, Math.round(h * 0.30));
-    const r = 24;
+    // Calculate proportional sizing & vertical centering so elements never collide
+    const r = Math.min(18, Math.max(14, Math.round(h * 0.12)));
+    const bannerH = 24;
+    const bannerW = Math.min(165, w - 50);
+    const bannerR = 12;
+
+    // Total content height: Coin (2*r) + Gap1 (10) + Title (13) + Gap2 (8) + Banner (bannerH)
+    const totalContentH = (r * 2) + 10 + 13 + 8 + bannerH;
+    const startY = Math.max(16, Math.round((h - totalContentH) / 2));
+
+    const cy = startY + r;
+    const textY1 = (cy + r) + 10 + 6;
+    const bannerY = textY1 + 6 + 8;
+    const bannerX = cx - bannerW / 2;
 
     // 5. Authentic Embossed Silver Coin Seal
     ctxTop.save();
@@ -1537,7 +1975,7 @@
     ctxTop.restore();
 
     // Coin disc fill
-    const coinGrad = ctxTop.createRadialGradient(cx - 5, cy - 5, 2, cx, cy, r);
+    const coinGrad = ctxTop.createRadialGradient(cx - 4, cy - 4, 2, cx, cy, r);
     coinGrad.addColorStop(0, '#ffffff');
     coinGrad.addColorStop(0.35, '#e4e7ee');
     coinGrad.addColorStop(0.70, '#c1c7d2');
@@ -1553,44 +1991,29 @@
     ctxTop.stroke();
 
     ctxTop.beginPath();
-    ctxTop.arc(cx, cy, r - 4, 0, Math.PI * 2);
+    ctxTop.arc(cx, cy, r - 3.5, 0, Math.PI * 2);
     ctxTop.strokeStyle = 'rgba(60, 68, 80, 0.3)';
     ctxTop.lineWidth = 1;
     ctxTop.stroke();
 
     // Embossed star in coin
-    ctxTop.font = '700 16px "Plus Jakarta Sans", sans-serif';
+    ctxTop.font = '700 14px "Plus Jakarta Sans", sans-serif';
     ctxTop.textAlign = 'center';
     ctxTop.textBaseline = 'middle';
     ctxTop.fillStyle = 'rgba(255, 255, 255, 0.95)';
-    ctxTop.fillText('★', cx, cy + 1.5);
+    ctxTop.fillText('★', cx, cy + 1);
     ctxTop.fillStyle = '#2c3340';
-    ctxTop.fillText('★', cx, cy + 0.5);
+    ctxTop.fillText('★', cx, cy);
 
     // 6. Embossed Stamped Typography
-    const textY1 = cy + 38;
-    ctxTop.font = '700 12.5px "Plus Jakarta Sans", sans-serif';
+    ctxTop.font = '700 11.5px "Plus Jakarta Sans", sans-serif';
     // 3D Highlight offset
     ctxTop.fillStyle = 'rgba(255, 255, 255, 0.85)';
     ctxTop.fillText(t('foilSecret'), cx, textY1 + 1);
     ctxTop.fillStyle = '#1e2430';
     ctxTop.fillText(t('foilSecret'), cx, textY1);
 
-    // Subtitle
-    const textY2 = textY1 + 18;
-    ctxTop.font = '500 11px "Plus Jakarta Sans", sans-serif';
-    ctxTop.fillStyle = 'rgba(255, 255, 255, 0.85)';
-    ctxTop.fillText(t('foilSecretSub'), cx, textY2 + 1);
-    ctxTop.fillStyle = '#424a57';
-    ctxTop.fillText(t('foilSecretSub'), cx, textY2);
-
     // 7. Stamped Pill Banner: "HIER FREIRUBBELN"
-    const bannerW = Math.min(190, w - 60);
-    const bannerH = 26;
-    const bannerX = cx - bannerW / 2;
-    const bannerY = Math.min(h - 36, textY2 + 14);
-    const bannerR = 13;
-
     // Pill background
     ctxTop.beginPath();
     if (ctxTop.roundRect) {
@@ -1616,7 +2039,7 @@
     ctxTop.stroke();
 
     // Banner Text
-    ctxTop.font = '700 10.5px "Plus Jakarta Sans", sans-serif';
+    ctxTop.font = '700 10px "Plus Jakarta Sans", sans-serif';
     ctxTop.fillStyle = 'rgba(255, 255, 255, 0.85)';
     ctxTop.fillText(t('foilRubbel'), cx, bannerY + bannerH / 2 + 1);
     ctxTop.fillStyle = '#1e2430';
@@ -1684,7 +2107,6 @@
 
     topCanvas.addEventListener('mousedown', e => {
       if (!STATE.isCardUnlocked) {
-        showToast((STATE.lang === 'de') ? 'Bitte starte zuerst den Countdown' : 'Please start countdown first');
         return;
       }
       isScratching = true;
@@ -1704,7 +2126,6 @@
 
     topCanvas.addEventListener('touchstart', e => {
       if (!STATE.isCardUnlocked) {
-        showToast((STATE.lang === 'de') ? 'Bitte starte zuerst den Countdown' : 'Please start countdown first');
         return;
       }
       isScratching = true;
@@ -1758,6 +2179,10 @@
     if (STATE.isScratchedRevealed) return;
     STATE.isScratchedRevealed = true;
 
+    if (!STATE.actualGender) {
+      STATE.actualGender = 'boy';
+    }
+
     // Transition from neutral mystery card into celebratory gender theme!
     if (elements.revealedUnderlay) {
       elements.revealedUnderlay.classList.remove('mystery-preview');
@@ -1765,23 +2190,49 @@
       elements.revealedUnderlay.style.filter = '';
     }
 
-    // Now apply actual gender (heart/compass icon, MÄDCHEN/JUNGE text, parent quote & color)
+    // Apply actual gender (heart/compass icon, MÄDCHEN/JUNGE text, parent quote & color)
     applyActualGenderTheme();
 
     // Fade out both foil layers smoothly
-    elements.scratchCanvasTop.classList.add('revealed-out');
-    elements.scratchCanvasMid.classList.add('revealed-out');
+    if (elements.scratchCanvasTop) elements.scratchCanvasTop.classList.add('revealed-out');
+    if (elements.scratchCanvasMid) elements.scratchCanvasMid.classList.add('revealed-out');
 
+    // 1. Die Card langsam hochfahren
+    const mainStage = document.getElementById('revealMainStage');
+    if (mainStage) {
+      mainStage.classList.add('stage-revealed-up');
+    }
+
+    // 2. Post-Reveal Section einblenden & Brief wort für wort formatieren
     if (elements.postRevealSection) {
       elements.postRevealSection.classList.add('visible');
+    }
+    updatePersonalLetterText();
+
+    // 3. Unterschriften auf Ausgangszustand zurücksetzen
+    resetSignaturesToHidden();
+
+    // 4. Sanfter Scroll auf mobilen Geräten damit der Brief optimal im Blickfeld ist
+    setTimeout(() => {
+      const letterCard = elements.parentsSignatureCard || document.getElementById('parentsSignatureCard');
+      if (letterCard && window.innerWidth < 640) {
+        letterCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 450);
+
+    // 5. Unterschrift genau nach dem Brief starten (~2.45s)
+    setTimeout(() => {
+      triggerDuoSignaturesAnimation();
+    }, 2450);
+
+    const countdownSection = document.getElementById('countdownSection') || document.getElementById('countdownModule');
+    if (countdownSection) {
+      countdownSection.classList.add('countdown-completed');
     }
 
     audio.playFanfare();
     fireCelebrationConfetti();
     refreshIcons();
-
-    const genderName = (STATE.actualGender === 'girl') ? t('girlTitle') : t('boyTitle');
-    showToast(`${t('revealEyebrow')}: ${genderName}!`);
   }
 
   // ==================== MAGIC PARTICLES ENGINE ====================
@@ -1993,23 +2444,31 @@
       this.burstAnimId = requestAnimationFrame(this.burstLoop);
     },
 
+    getAmbientColors() {
+      if (!STATE.isScratchedRevealed) {
+        // Harmonious blend while countdown runs: warm gold, shimmering white, pastel pink & pastel blue
+        return ['#ffd700', '#fff3b0', '#ffffff', '#fcd5ce', '#e88ea4', '#a0c4ff', '#6ca1d7'];
+      }
+      const isGirl = (STATE.actualGender === 'girl');
+      return isGirl
+        ? ['#ffd700', '#fff3b0', '#ffffff', '#e88ea4', '#fce4ec']
+        : ['#ffd700', '#fff3b0', '#ffffff', '#6ca1d7', '#e3f2fd'];
+    },
+
     // Feature 6: Ambient gentle starfall BEHIND elements (z-index: 5)
     startAmbientStarfall() {
       this.isAmbientActive = true;
       if (!this.bgCanvas || !this.bgCtx) this.init();
       if (!this.bgCanvas) return;
 
-      const isGirl = (STATE.actualGender === 'girl');
-      const colors = isGirl
-        ? ['#ffd700', '#fff3b0', '#ffffff', '#e88ea4', '#fce4ec']
-        : ['#ffd700', '#fff3b0', '#ffffff', '#6ca1d7', '#e3f2fd'];
+      const colors = this.getAmbientColors();
 
       this.ambientParticles = [];
-      for (let i = 0; i < 38; i++) {
+      for (let i = 0; i < 42; i++) {
         this.ambientParticles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          vy: 0.38 + Math.random() * 0.78,
+          vy: 0.35 + Math.random() * 0.75,
           wobble: Math.random() * Math.PI * 2,
           wobbleSpeed: 0.015 + Math.random() * 0.02,
           size: 1.8 + Math.random() * 2.8,
@@ -2055,10 +2514,7 @@
 
       this.bgCtx.clearRect(0, 0, this.width, this.height);
 
-      const isGirl = (STATE.actualGender === 'girl');
-      const colors = isGirl
-        ? ['#ffd700', '#fff3b0', '#ffffff', '#e88ea4', '#fce4ec']
-        : ['#ffd700', '#fff3b0', '#ffffff', '#6ca1d7', '#e3f2fd'];
+      const colors = this.getAmbientColors();
 
       this.ambientParticles.forEach(p => {
         p.y += p.vy;
@@ -2195,76 +2651,278 @@
 
   // ==================== SETTINGS MODAL ====================
   function initSettingsModal() {
-    elements.openSettingsBtn.addEventListener('click', () => {
-      audio.playClick();
-      elements.settingsModal.classList.add('open');
-      updateSettingsUI();
-      refreshIcons();
-    });
+    if (elements.openSettingsBtn && elements.settingsModal) {
+      elements.openSettingsBtn.addEventListener('click', () => {
+        audio.playClick();
+        elements.settingsModal.classList.add('open');
+        updateSettingsUI();
+        refreshIcons();
+      });
+    }
 
-    elements.closeSettingsBtn.addEventListener('click', () => {
-      audio.playClick();
-      elements.settingsModal.classList.remove('open');
-    });
-
-    elements.saveSettingsBtn.addEventListener('click', () => {
-      audio.playClick();
-      elements.settingsModal.classList.remove('open');
-    });
-
-    elements.settingsModal.addEventListener('click', e => {
-      if (e.target === elements.settingsModal) {
+    if (elements.closeSettingsBtn && elements.settingsModal) {
+      elements.closeSettingsBtn.addEventListener('click', () => {
+        audio.playClick();
         elements.settingsModal.classList.remove('open');
+      });
+    }
+
+    if (elements.saveSettingsBtn && elements.settingsModal) {
+      elements.saveSettingsBtn.addEventListener('click', () => {
+        audio.playClick();
+        elements.settingsModal.classList.remove('open');
+      });
+    }
+
+    if (elements.settingsModal) {
+      elements.settingsModal.addEventListener('click', e => {
+        if (e.target === elements.settingsModal) {
+          elements.settingsModal.classList.remove('open');
+        }
+      });
+    }
+
+    if (elements.setGenderGirl) {
+      elements.setGenderGirl.addEventListener('click', () => {
+        STATE.actualGender = 'girl';
+        localStorage.setItem('baby_actual_gender', 'girl');
+        updateSettingsUI();
+        applyActualGenderTheme();
+        audio.playSelect();
+      });
+    }
+
+    if (elements.setGenderBoy) {
+      elements.setGenderBoy.addEventListener('click', () => {
+        STATE.actualGender = 'boy';
+        localStorage.setItem('baby_actual_gender', 'boy');
+        updateSettingsUI();
+        applyActualGenderTheme();
+        audio.playSelect();
+      });
+    }
+
+    if (elements.devJumpPage1) {
+      elements.devJumpPage1.addEventListener('click', () => {
+        if (elements.settingsModal) elements.settingsModal.classList.remove('open');
+        goToStep(1);
+      });
+    }
+
+    if (elements.devJumpPage2) {
+      elements.devJumpPage2.addEventListener('click', () => {
+        if (elements.settingsModal) elements.settingsModal.classList.remove('open');
+        if (!STATE.guestName) {
+          STATE.guestName = (STATE.lang === 'de') ? 'Gast' : 'Guest';
+          if (elements.displayGuestName) {
+            elements.displayGuestName.textContent = STATE.guestName;
+          }
+        }
+        goToStep(2);
+      });
+    }
+
+    if (elements.devJumpPage3) {
+      elements.devJumpPage3.addEventListener('click', () => {
+        if (elements.settingsModal) elements.settingsModal.classList.remove('open');
+        if (!STATE.userGuess) STATE.userGuess = 'boy';
+        goToStep(3);
+      });
+    }
+
+    if (elements.btnResetAllVotes) {
+      elements.btnResetAllVotes.addEventListener('click', () => {
+        STATE.votes = { boy: 12, girl: 14 };
+        localStorage.removeItem('baby_votes_data');
+        updatePollUI();
+        audio.playClick();
+      });
+    }
+  }
+
+  // ==================== DEVELOPER AUTHENTICATION & SECURE GENDER ====================
+  async function fetchRevealGender() {
+    try {
+      const headers = {};
+      const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+      if (devToken) {
+        headers['x-dev-token'] = devToken;
       }
-    });
-
-    elements.setGenderGirl.addEventListener('click', () => {
-      STATE.actualGender = 'girl';
-      localStorage.setItem('baby_actual_gender', 'girl');
-      updateSettingsUI();
-      applyActualGenderTheme();
-      audio.playSelect();
-      showToast(`${t('settingGenderLabel')}: ${t('girlLabel')}`);
-    });
-
-    elements.setGenderBoy.addEventListener('click', () => {
-      STATE.actualGender = 'boy';
-      localStorage.setItem('baby_actual_gender', 'boy');
-      updateSettingsUI();
-      applyActualGenderTheme();
-      audio.playSelect();
-      showToast(`${t('settingGenderLabel')}: ${t('boyLabel')}`);
-    });
-
-    elements.devJumpPage1.addEventListener('click', () => {
-      elements.settingsModal.classList.remove('open');
-      goToStep(1);
-    });
-
-    elements.devJumpPage2.addEventListener('click', () => {
-      elements.settingsModal.classList.remove('open');
-      if (!STATE.guestName) {
-        STATE.guestName = (STATE.lang === 'de') ? 'Gast' : 'Guest';
-        if (elements.displayGuestName) {
-          elements.displayGuestName.textContent = STATE.guestName;
+      const res = await fetch('/api/reveal-gender', { headers });
+      let data = null;
+      if (res.ok) {
+        data = await res.json();
+      }
+      // Server time synchronization: prevents clock spoofing on guest devices
+      if (data && data.serverTime) {
+        STATE.serverTimeOffset = Date.parse(data.serverTime) - Date.now();
+      }
+      if (data && data.unlocked && data.gender) {
+        STATE.isServerUnlocked = true;
+        STATE.actualGender = data.gender;
+        applyActualGenderTheme();
+        updateSettingsUI();
+      } else {
+        const isLocalhost = Boolean(
+          window.location.hostname === 'localhost' ||
+          window.location.hostname === '127.0.0.1' ||
+          window.location.hostname.endsWith('.local') ||
+          window.location.protocol === 'file:'
+        );
+        const isDev = Boolean(STATE.devToken || sessionStorage.getItem('baby_dev_token') === 'dev_auth_ok' || STATE.isCardUnlocked);
+        const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
+        if (currentEffectiveTime >= REVEAL_TARGET_MS || (isLocalhost && isDev)) {
+          STATE.isServerUnlocked = true;
+          if (!STATE.actualGender) STATE.actualGender = 'boy';
+          applyActualGenderTheme();
+          updateSettingsUI();
+        } else {
+          STATE.isServerUnlocked = false;
         }
       }
-      goToStep(2);
+    } catch (e) {
+      const isLocalhost = Boolean(
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname.endsWith('.local') ||
+        window.location.protocol === 'file:'
+      );
+      const isDev = Boolean(STATE.devToken || sessionStorage.getItem('baby_dev_token') === 'dev_auth_ok');
+      const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
+      if (currentEffectiveTime >= REVEAL_TARGET_MS || (isLocalhost && isDev)) {
+        STATE.isServerUnlocked = true;
+        if (!STATE.actualGender) STATE.actualGender = 'boy';
+        applyActualGenderTheme();
+        updateSettingsUI();
+      } else {
+        STATE.isServerUnlocked = false;
+      }
+    }
+  }
+
+  function initDevAuthModal() {
+    if (!elements.devAuthModal) return;
+
+    if (elements.closeDevAuthBtn) {
+      elements.closeDevAuthBtn.addEventListener('click', closeDevAuthModal);
+    }
+    if (elements.cancelDevAuthBtn) {
+      elements.cancelDevAuthBtn.addEventListener('click', closeDevAuthModal);
+    }
+
+    elements.devAuthModal.addEventListener('click', e => {
+      if (e.target === elements.devAuthModal) {
+        closeDevAuthModal();
+      }
     });
 
-    elements.devJumpPage3.addEventListener('click', () => {
-      elements.settingsModal.classList.remove('open');
-      if (!STATE.userGuess) STATE.userGuess = 'boy';
-      goToStep(3);
-    });
+    if (elements.devAuthForm) {
+      elements.devAuthForm.addEventListener('submit', handleDevAuthSubmit);
+    }
+  }
 
-    elements.btnResetAllVotes.addEventListener('click', () => {
-      STATE.votes = { boy: 12, girl: 14 };
-      localStorage.removeItem('baby_votes_data');
-      updatePollUI();
-      showToast(t('btnReset'));
-      audio.playClick();
-    });
+  function openDevAuthModal() {
+    if (!elements.devAuthModal) return;
+    if (elements.devPasswordInput) {
+      elements.devPasswordInput.value = '';
+    }
+    if (elements.devAuthError) {
+      elements.devAuthError.textContent = '';
+    }
+    elements.devAuthModal.classList.add('open');
+    if (elements.devPasswordInput) {
+      setTimeout(() => elements.devPasswordInput.focus(), 120);
+    }
+  }
+
+  function closeDevAuthModal() {
+    if (!elements.devAuthModal) return;
+    elements.devAuthModal.classList.remove('open');
+    if (elements.devPasswordInput) {
+      elements.devPasswordInput.value = '';
+    }
+    if (elements.devAuthError) {
+      elements.devAuthError.textContent = '';
+    }
+  }
+
+  async function handleDevAuthSubmit(e) {
+    if (e) e.preventDefault();
+    const input = elements.devPasswordInput;
+    const errorEl = elements.devAuthError;
+    const submitBtn = elements.submitDevAuthBtn;
+    const password = input ? input.value.trim() : '';
+
+    if (!password) {
+      if (errorEl) errorEl.textContent = t('devAuthWrongPass');
+      return;
+    }
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (errorEl) errorEl.textContent = '';
+
+    const isLocalhost = Boolean(
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname.endsWith('.local') ||
+      window.location.protocol === 'file:'
+    );
+
+    const cleanPass = password.toLowerCase();
+
+    // Local fallback check ONLY when running on localhost / 127.0.0.1:
+    // Online (on Vercel), baby2026 is strictly disabled — only process.env.DEV_PASSWORD works!
+    if (isLocalhost && (cleanPass === 'baby2026' || cleanPass === 'admin')) {
+      const token = 'dev_auth_ok';
+      sessionStorage.setItem('baby_dev_token', token);
+      localStorage.setItem('baby_dev_unlocked', 'true');
+      localStorage.setItem('baby_dev_active', 'true');
+      STATE.devToken = token;
+      STATE.isServerUnlocked = true;
+      if (!STATE.actualGender) STATE.actualGender = 'boy';
+      applyActualGenderTheme();
+      updateSettingsUI();
+      closeDevAuthModal();
+      toggleDevMode(true);
+      if (submitBtn) submitBtn.disabled = false;
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/dev-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) {
+          const token = data.token || 'dev_auth_ok';
+          sessionStorage.setItem('baby_dev_token', token);
+          localStorage.setItem('baby_dev_unlocked', 'true');
+          localStorage.setItem('baby_dev_active', 'true');
+          STATE.devToken = token;
+          if (data.gender) {
+            STATE.actualGender = data.gender;
+            STATE.isServerUnlocked = true;
+            applyActualGenderTheme();
+            updateSettingsUI();
+          }
+          closeDevAuthModal();
+          toggleDevMode(true);
+          return;
+        }
+      }
+
+      if (errorEl) errorEl.textContent = t('devAuthWrongPass');
+      audio.playSelect();
+    } catch (err) {
+      if (errorEl) errorEl.textContent = t('devAuthWrongPass');
+      audio.playSelect();
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
   }
 
   // ==================== 5-CLICK EASTER EGG FOR DEV MODE ====================
@@ -2286,7 +2944,7 @@
       if (devClickCount >= 5) {
         devClickCount = 0;
         clearTimeout(devClickTimer);
-        toggleDevMode();
+        toggleDevMode(!STATE.devMode);
       }
     }
 
@@ -2301,11 +2959,24 @@
     });
   }
 
+  function updateFloatingSkipBtn() {
+    const btn = elements.btnDevFloatingSkip || document.getElementById('btnDevFloatingSkip');
+    if (!btn) return;
+    const shouldShow = Boolean(STATE.devMode && STATE.currentStep === 3 && !STATE.isCardUnlocked);
+    btn.classList.toggle('visible', shouldShow);
+  }
+
   function toggleDevMode(forceState) {
     if (typeof forceState === 'boolean') {
       STATE.devMode = forceState;
     } else {
       STATE.devMode = !STATE.devMode;
+    }
+
+    if (STATE.devMode) {
+      localStorage.setItem('baby_dev_active', 'true');
+    } else {
+      localStorage.removeItem('baby_dev_active');
     }
 
     document.body.classList.toggle('dev-mode-active', STATE.devMode);
@@ -2317,23 +2988,34 @@
     audio.playDevToggle(STATE.devMode);
 
     if (STATE.devMode) {
-      showToast(STATE.lang === 'de' ? 'Entwickler-Optionen aktiviert' : 'Developer options enabled');
-    } else {
-      showToast(STATE.lang === 'de' ? 'Entwickler-Optionen ausgeblendet' : 'Developer options hidden');
+      showToast(t('devToastActive'), true);
     }
 
+    updateFloatingSkipBtn();
     updateScalingContainer();
   }
 
   function updateSettingsUI() {
-    elements.setGenderGirl.classList.toggle('active', STATE.actualGender === 'girl');
-    elements.setGenderBoy.classList.toggle('active', STATE.actualGender === 'boy');
+    if (elements.setGenderGirl) elements.setGenderGirl.classList.toggle('active', STATE.actualGender === 'girl');
+    if (elements.setGenderBoy) elements.setGenderBoy.classList.toggle('active', STATE.actualGender === 'boy');
   }
 
-  // ==================== TOAST HELPER (DISABLED PER USER REQUEST) ====================
-  function showToast(msg) {
-    // Toast messages disabled per user request
-    return;
+  // ==================== TOAST HELPER ====================
+  let toastTimeout;
+  function showToast(msg, isDevActivation = false) {
+    // Exclusively show toast for developer mode activation per user request
+    if (!isDevActivation) return;
+    const bubble = elements.toastBubble || document.getElementById('toastBubble');
+    if (!bubble || !msg) return;
+    clearTimeout(toastTimeout);
+    bubble.innerHTML = msg;
+    bubble.classList.add('show');
+    toastTimeout = setTimeout(() => {
+      const el = elements.toastBubble || document.getElementById('toastBubble');
+      if (el) {
+        el.classList.remove('show');
+      }
+    }, 3800);
   }
 
   // ==================== RESPONSIVE LAYOUT & SCRATCH RESIZE ====================
@@ -2557,46 +3239,51 @@
       ctx.fillText('✦', padX + 48, h - padY - 44);
       ctx.fillText('✦', w - padX - 48, h - padY - 44);
 
-      // 1. Eyebrow
-      ctx.font = '700 24px "Plus Jakarta Sans", sans-serif';
+      // 1. Top names: Kevin & Alina
+      ctx.font = '700 28px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = isGirl ? '#b8546c' : '#3a6fa0';
-      ctx.fillText((STATE.lang === 'en' ? '✦ OFFICIAL GENDER REVEAL ✦' : '✦ OFFIZIELLE ENTHÜLLUNG ✦'), w / 2, 260);
+      ctx.fillText('✦ KEVIN & ALINA ✦', w / 2, 205);
 
-      // 2. Subtitle
-      ctx.font = 'italic 500 58px "Playfair Display", Georgia, serif';
-      ctx.fillStyle = '#18202f';
-      ctx.fillText((STATE.lang === 'en' ? 'It’s a...' : 'Es wird ein...'), w / 2, 360);
+      // 1b. Prominent, larger Gender Reveal title below names
+      ctx.font = 'italic 700 66px "Playfair Display", Georgia, serif';
+      ctx.fillStyle = isGirl ? '#831843' : '#1e3a8a';
+      ctx.fillText('Gender Reveal', w / 2, 280);
+
+      // 2. Subtitle: It’s a... / Es wird ein...
+      ctx.font = 'italic 500 52px "Playfair Display", Georgia, serif';
+      ctx.fillStyle = '#475569';
+      ctx.fillText((STATE.lang === 'en' ? 'It’s a...' : 'Es wird ein...'), w / 2, 385);
 
       // 3. Large Prominent Gender Title (MÄDCHEN / JUNGE)
       ctx.font = '700 135px "Playfair Display", Georgia, serif';
       ctx.fillStyle = isGirl ? '#b8546c' : '#2b6599';
-      ctx.fillText(isGirl ? (STATE.lang === 'en' ? 'GIRL' : 'MÄDCHEN') : (STATE.lang === 'en' ? 'BOY' : 'JUNGE'), w / 2, 545);
+      ctx.fillText(isGirl ? (STATE.lang === 'en' ? 'GIRL' : 'MÄDCHEN') : (STATE.lang === 'en' ? 'BOY' : 'JUNGE'), w / 2, 555);
 
       // 4. Emotional Quote
       ctx.font = 'italic 400 34px "Playfair Display", Georgia, serif';
       ctx.fillStyle = '#475569';
       const quote = isGirl ? t('girlQuote') : t('boyQuote');
-      ctx.fillText(quote, w / 2, 705);
+      ctx.fillText(quote, w / 2, 715);
 
       // Decorative Accent Divider with Golden Diamond
       ctx.strokeStyle = isGirl ? 'rgba(232, 142, 164, 0.45)' : 'rgba(108, 161, 215, 0.45)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(w / 2 - 120, 795);
-      ctx.lineTo(w / 2 - 22, 795);
+      ctx.moveTo(w / 2 - 120, 805);
+      ctx.lineTo(w / 2 - 22, 805);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(w / 2 + 22, 795);
-      ctx.lineTo(w / 2 + 120, 795);
+      ctx.moveTo(w / 2 + 22, 805);
+      ctx.lineTo(w / 2 + 120, 805);
       ctx.stroke();
 
       ctx.font = '16px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = 'rgba(212, 175, 55, 0.75)';
-      ctx.fillText('✦', w / 2, 795);
+      ctx.fillText('✦', w / 2, 805);
 
       // 5. Guest Ribbon Box (Compact & Balanced)
-      const ribbonY = 975;
-      const boxH = 170;
+      const ribbonY = 965;
+      const boxH = 160;
       ctx.fillStyle = isGirl ? '#fdf2f4' : '#f0f6fc';
       roundRect(ctx, padX + 50, ribbonY - boxH / 2, cardW - 100, boxH, 24);
       ctx.fill();
@@ -2610,7 +3297,7 @@
       const ribbonTitle = matched
         ? (STATE.lang === 'en' ? `🏆 ${guest} guessed right!` : `🏆 ${guest} hat richtig getippt!`)
         : (STATE.lang === 'en' ? `💕 ${guest} cheered along!` : `💕 ${guest} hat mitgefiebert!`);
-      ctx.fillText(ribbonTitle, w / 2, ribbonY - 22);
+      ctx.fillText(ribbonTitle, w / 2, ribbonY - 20);
 
       ctx.font = '500 24px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = '#64748b';
@@ -2618,6 +3305,12 @@
         ? (STATE.lang === 'en' ? 'Intuition was 100% correct' : 'Die Intuition hat voll ins Schwarze getroffen')
         : (STATE.lang === 'en' ? 'Filled with love and excitement' : 'Voller Liebe und Vorfreude für die Familie');
       ctx.fillText(ribbonSub, w / 2, ribbonY + 30);
+
+      // 6. Bottom info (signatures removed as requested)
+      ctx.font = '600 26px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = isGirl ? '#b8546c' : '#2b6599';
+      ctx.textAlign = 'center';
+      ctx.fillText(t('stayTunedText'), w / 2, 1175);
 
       function roundRect(c, rx, ry, rw, rh, r) {
         c.beginPath();
@@ -2665,7 +3358,7 @@
         const canvas = elements.storyCardCanvas;
         if (!canvas) return;
         const link = document.createElement('a');
-        link.download = `babyparty-reveal-${STATE.actualGender}.png`;
+        link.download = `gender-reveal-kevin-alina-${STATE.actualGender}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
       });
@@ -2680,13 +3373,13 @@
         try {
           canvas.toBlob(async blob => {
             if (!blob) return;
-            const file = new File([blob], `babyparty-reveal-${STATE.actualGender}.png`, { type: 'image/png' });
+            const file = new File([blob], `gender-reveal-kevin-alina-${STATE.actualGender}.png`, { type: 'image/png' });
             const shareText = t('shareText', STATE.actualGender);
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
               try {
                 await navigator.share({
-                  title: 'Baby Shower Gender Reveal',
+                  title: 'Kevin & Alina • Gender Reveal',
                   text: shareText,
                   files: [file]
                 });
@@ -2697,7 +3390,7 @@
             if (navigator.share) {
               try {
                 await navigator.share({
-                  title: 'Baby Shower Gender Reveal',
+                  title: 'Kevin & Alina • Gender Reveal',
                   text: shareText,
                   url: window.location.href
                 });
@@ -2707,7 +3400,7 @@
 
             // Fallback: download PNG & copy text
             const link = document.createElement('a');
-            link.download = `babyparty-reveal-${STATE.actualGender}.png`;
+            link.download = `gender-reveal-kevin-alina-${STATE.actualGender}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
             if (navigator.clipboard) {
@@ -2744,7 +3437,9 @@
     initPage3();
     initSettingsModal();
     initStoryModalHandlers();
+    initDevAuthModal();
     initDevEasterEgg();
+    fetchRevealGender();
 
     // Check if user locked language in previous session
     const savedLockedLang = localStorage.getItem('baby_lang_locked');
@@ -2765,6 +3460,12 @@
         goToStep(1, false);
       }
     });
+
+    // Check if developer mode was activated on this device
+    if (localStorage.getItem('baby_dev_active') === 'true') {
+      STATE.devMode = true;
+      document.body.classList.add('dev-mode-active');
+    }
 
     goToStep(1);
     refreshIcons();

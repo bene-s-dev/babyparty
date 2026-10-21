@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kristi&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #faf8f5;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .test-card {
+      background: #ffffff;
+      padding: 36px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      width: 580px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .personal-letter-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #334155;
+      margin-bottom: 24px;
+      text-align: center;
+      line-height: 1.55;
+    }
+    .sig-container {
+      width: 520px;
+      height: 95px;
+      position: relative;
+      overflow: visible;
+    }
+    svg.sig-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      display: block;
+    }
+    .sig-solid-alina {
+      font-family: 'Kristi', cursive;
+      font-size: 64px;
+      font-weight: 400;
+      fill: #1b3d68;
+    }
+    .sig-solid-connector {
+      font-family: 'Caveat', cursive;
+      font-size: 26px;
+      font-weight: 600;
+      fill: #64748b;
+    }
+    .sig-solid-kevin {
+      font-family: 'Caveat', cursive;
+      font-size: 42px;
+      font-weight: 700;
+      fill: #1b3d68;
+    }
+
+    /* Pen Nib Styling */
+    .pen-nib {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 28px;
+      height: 28px;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0;
+      filter: drop-shadow(1px 3px 4px rgba(27, 61, 104, 0.28));
+      transform-origin: 3px 25px; /* Exact fountain pen nib tip */
+      transition: opacity 0.2s ease;
+    }
+    .writing-pen-active .pen-nib {
+      opacity: 1;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 24px;
+      border-radius: 99px;
+      border: none;
+      background: #1b3d68;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(27, 61, 104, 0.2);
+    }
+    button:hover {
+      background: #132d4e;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-card">
+    <p class="personal-letter-text">Du hast richtig geraten, danke dass du mitgemacht hast! Wir freuen uns mit dir! Stay tuned für weitere Infos!</p>
+    
+    <div class="sig-container" id="sigContainer">
+      <svg class="sig-svg" id="duoSvg" viewBox="0 0 520 95">
+        <defs>
+          <clipPath id="clipAlina">
+            <rect id="rectAlina" x="6" y="0" width="0" height="95" />
+          </clipPath>
+          <clipPath id="clipKevin">
+            <rect id="rectKevin" x="290" y="0" width="0" height="95" />
+          </clipPath>
+        </defs>
+
+        <!-- Alina solid text -->
+        <g clip-path="url(#clipAlina)">
+          <text x="120" y="65" text-anchor="middle" class="sig-solid-alina" transform="rotate(-2, 120, 65)">Eure Alina</text>
+        </g>
+
+        <!-- Connector -->
+        <text x="256" y="58" text-anchor="middle" class="sig-solid-connector" id="sigUnd" style="opacity: 0;">und</text>
+
+        <!-- Kevin solid text -->
+        <g clip-path="url(#clipKevin)">
+          <text x="398" y="58" text-anchor="middle" class="sig-solid-kevin" transform="rotate(2, 398, 58)">Euer Kevin</text>
+        </g>
+      </svg>
+
+      <!-- SVG Fountain Pen Icon -->
+      <svg class="pen-nib" id="penNib" viewBox="0 0 28 28" fill="none">
+        <!-- Fountain pen golden body, steel clip and obsidian nib -->
+        <g transform="rotate(-25, 14, 14)">
+          <path d="M19 3L23 7L12 18L8 14L19 3Z" fill="#1b3d68"/>
+          <path d="M18 2L20 4L19.5 4.5L17.5 2.5L18 2Z" fill="#d97706"/>
+          <path d="M8 14L12 18L7 23L4 24L5 21L8 14Z" fill="#f59e0b"/>
+          <path d="M6 22L4 24L6 20L7 21L6 22Z" fill="#1e293b"/>
+          <line x1="6.5" y1="20.5" x2="4" y2="24" stroke="#0f172a" stroke-width="0.8"/>
+        </g>
+      </svg>
+    </div>
+
+    <button onclick="playWriting()">Animation abspielen</button>
+  </div>
+
+  <script>
+    let animId = null;
+
+    function playWriting() {
+      if (animId) cancelAnimationFrame(animId);
+
+      const container = document.getElementById('sigContainer');
+      const rectA = document.getElementById('rectAlina');
+      const rectK = document.getElementById('rectKevin');
+      const und = document.getElementById('sigUnd');
+      const pen = document.getElementById('penNib');
+
+      // Reset
+      rectA.setAttribute('width', 0);
+      rectK.setAttribute('width', 0);
+      und.style.opacity = 0;
+      und.style.transition = 'opacity 0.25s ease';
+      container.classList.add('writing-pen-active');
+
+      const startX_A = 10;
+      const endX_A = 236;
+      const totalWidth_A = endX_A - startX_A;
+
+      const startX_K = 290;
+      const endX_K = 512;
+      const totalWidth_K = endX_K - startX_K;
+
+      const durationA = 1450; // ms
+      const pauseDuration = 280; // ms
+      const durationK = 1400; // ms
+
+      const totalDuration = durationA + pauseDuration + durationK;
+      const startTime = performance.now();
+
+      function update(now) {
+        const elapsed = now - startTime;
+        const svgRect = container.getBoundingClientRect();
+        const scaleX = svgRect.width / 520;
+        const scaleY = svgRect.height / 95;
+
+        if (elapsed < durationA) {
+          // Writing Alina
+          const p = elapsed / durationA;
+          // Natural handwriting rhythm
+          const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+          const currentW = Math.max(0, Math.min(totalWidth_A, totalWidth_A * ease));
+          rectA.setAttribute('width', currentW);
+
+          const currentX = startX_A + currentW;
+          // Cadence wobble: pen tip dances with the cursive loops
+          const wobbleY = Math.sin(p * Math.PI * 10) * 3;
+          const penX = currentX * scaleX;
+          const penY = (58 + wobbleY) * scaleY;
+
+          pen.style.transform = `translate(${penX - 4}px, ${penY - 24}px) rotate(${-8 + Math.sin(p * Math.PI * 8) * 7}deg)`;
+          pen.style.opacity = '1';
+        } else if (elapsed < durationA + pauseDuration) {
+          // Pause / Connector "und"
+          rectA.setAttribute('width', totalWidth_A);
+          und.style.opacity = '1';
+
+          // Pen lifts gently between words
+          const pPause = (elapsed - durationA) / pauseDuration;
+          const jumpX = (endX_A + (startX_K - endX_A) * pPause);
+          const jumpY = 56 - Math.sin(pPause * Math.PI) * 14;
+
+          const penX = jumpX * scaleX;
+          const penY = jumpY * scaleY;
+
+          pen.style.transform = `translate(${penX - 4}px, ${penY - 24}px) rotate(-18deg)`;
+          pen.style.opacity = '0.85';
+        } else if (elapsed < totalDuration) {
+          // Writing Kevin
+          rectA.setAttribute('width', totalWidth_A);
+          und.style.opacity = '1';
+
+          const elapsedK = elapsed - durationA - pauseDuration;
+          const p = elapsedK / durationK;
+          const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+          const currentW = Math.max(0, Math.min(totalWidth_K, totalWidth_K * ease));
+          rectK.setAttribute('width', currentW);
+
+          const currentX = startX_K + currentW;
+          const wobbleY = Math.sin(p * Math.PI * 11) * 2.5;
+          const penX = currentX * scaleX;
+          const penY = (54 + wobbleY) * scaleY;
+
+          pen.style.transform = `translate(${penX - 4}px, ${penY - 24}px) rotate(${-10 + Math.sin(p * Math.PI * 10) * 6}deg)`;
+          pen.style.opacity = '1';
+        } else {
+          // Finished!
+          rectA.setAttribute('width', totalWidth_A);
+          rectK.setAttribute('width', totalWidth_K);
+          und.style.opacity = '1';
+
+          // Pen lifts off gracefully and fades
+          const penX = (endX_K + 10) * scaleX;
+          const penY = 32 * scaleY;
+          pen.style.transform = `translate(${penX}px, ${penY - 24}px) rotate(-28deg)`;
+          pen.style.opacity = '0';
+          setTimeout(() => {
+            container.classList.remove('writing-pen-active');
+          }, 400);
+          return;
+        }
+
+        animId = requestAnimationFrame(update);
+      }
+
+      animId = requestAnimationFrame(update);
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(playWriting, 300);
+    });
+  </script>
+</body>
+</html>
