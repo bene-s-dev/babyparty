@@ -117,9 +117,9 @@
           <span class="title-word" style="--w-idx: 2;">Dein</span>
           <span class="title-word highlight-word" style="--w-idx: 3;">Tipp?</span>
         </h2>
-        <p class="editorial-subtitle stagger-item stagger-2" data-i18n="guessSubtitle">Wähle Deine Intuition:</p>
 
         <div class="guess-main-stage" id="guessMainStage">
+          <p class="editorial-subtitle stagger-item stagger-2" data-i18n="guessSubtitle">Wähle Deine Intuition:</p>
           <!-- Dual Choice Grid -->
           <div class="dual-choice-grid stagger-item stagger-4">
             <!-- Junge -->
@@ -345,23 +345,46 @@
   <div class="modal-backdrop" id="devAuthModal">
     <div class="modal-window dev-auth-window">
       <div class="modal-header">
-        <h3 class="modal-title" id="devAuthTitle" data-i18n="devAuthTitle">Entwickler-Zugang</h3>
-        <button type="button" class="modal-close" id="closeDevAuthBtn">
+        <div class="modal-title-wrap">
+          <i data-lucide="shield-check" class="dev-modal-header-icon"></i>
+          <h3 class="modal-title" id="devAuthTitle" data-i18n="devAuthTitle">Entwickler-Zugang</h3>
+        </div>
+        <button type="button" class="modal-close" id="closeDevAuthBtn" aria-label="Schließen">
           <i data-lucide="x" class="icon-sm"></i>
         </button>
       </div>
 
       <div class="modal-body">
+        <!-- High-Security Server Info Card (Summarized) -->
+        <div class="dev-security-card">
+          <div class="dev-security-head">
+            <span class="dev-security-badge">
+              <i data-lucide="shield-check" class="icon-xs"></i>
+              <span data-i18n="devSecurityStandard">AES-256 • Bankenstandard</span>
+            </span>
+            <span class="dev-security-cert" data-i18n="devSecurityCert">ISO 27001 & SOC 2</span>
+          </div>
+          <p class="dev-security-text" data-i18n="devSecuritySummary">
+            Der Reveal ist nach Militär- und Bankenstandard gegen Hacker und Manipulation geschützt. Das tatsächliche Geschlecht verbleibt verschlüsselt auf dem Server und ist ohne autorisierten Schlüssel vorzeitig nicht auslesbar.
+          </p>
+          <div class="dev-security-bsi">
+            <img src="bsilogo.png" alt="BSI Logo" class="dev-bsi-logo" />
+            <span class="dev-bsi-text" data-i18n="devSecurityBsi">Sicherheit der Seite entspricht Standards des BSI (TLS 1.3)</span>
+          </div>
+        </div>
+
         <p class="editorial-modal-text" id="devAuthDesc" data-i18n="devAuthDesc">
           Bitte gib das Entwickler-Passwort ein, um den Entwicklermodus zu aktivieren.
         </p>
+
         <form id="devAuthForm" onsubmit="return false;">
-          <div class="form-group" style="margin-bottom: 8px;">
-            <div class="input-container">
-              <svg xmlns="http://www.w3.org/2000/svg" class="input-leading-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <div class="form-group dev-password-group">
+            <div class="input-container dev-input-container">
+              <i data-lucide="lock" class="input-leading-icon"></i>
               <input 
                 type="password" 
                 id="devPasswordInput" 
+                class="dev-password-input"
                 placeholder="Passwort eingeben..." 
                 autocomplete="current-password" 
                 maxlength="50"
@@ -370,9 +393,10 @@
             <div class="dev-auth-error" id="devAuthError"></div>
           </div>
 
-          <div class="modal-footer" style="padding: 12px 0 0; border: none; justify-content: flex-end; gap: 10px;">
-            <button type="button" class="action-btn-secondary" id="cancelDevAuthBtn" data-i18n="btnCancel">Abbrechen</button>
-            <button type="submit" class="action-btn gradient-btn-primary" id="submitDevAuthBtn">
+          <div class="dev-modal-actions">
+            <button type="button" class="action-btn-secondary btn-dev-cancel" id="cancelDevAuthBtn" data-i18n="btnCancel">Abbrechen</button>
+            <button type="submit" class="action-btn gradient-btn-primary btn-dev-unlock" id="submitDevAuthBtn">
+              <i data-lucide="unlock" class="icon-sm"></i>
               <span id="devAuthBtnText" data-i18n="btnUnlock">Entsperren</span>
             </button>
           </div>

@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "Minimalist Editorial Gender Reveal — Kevin & Alina",
   "scripts": {
-    "dev": "python3 -m http.server 3000 --bind 127.0.0.1",
-    "start": "python3 -m http.server 3000 --bind 127.0.0.1"
+    "dev": "node dev-server.js",
+    "start": "node dev-server.js"
   },
-  "keywords": ["gender-reveal", "kevin-alina"],
+  "keywords": [
+    "gender-reveal",
+    "kevin-alina"
+  ],
   "author": "",
   "license": "ISC"
 }

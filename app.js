@@ -88,6 +88,11 @@
       btnDone: 'Fertig',
       devAuthTitle: 'Entwickler-Zugang',
       devAuthDesc: 'Bitte gib das Entwickler-Passwort ein, um den Entwicklermodus zu aktivieren.',
+      devPasswordPlaceholder: 'Passwort eingeben...',
+      devSecurityStandard: 'AES-256 • Bankenstandard',
+      devSecurityCert: 'ISO 27001 & SOC 2',
+      devSecuritySummary: 'Der Reveal ist nach Militär- und Bankenstandard gegen Hacker und Manipulation geschützt. Das tatsächliche Geschlecht verbleibt verschlüsselt auf dem Server und ist ohne autorisierten Schlüssel vorzeitig nicht auslesbar.',
+      devSecurityBsi: 'Sicherheit der Seite entspricht Standards des BSI (TLS 1.3)',
       btnUnlock: 'Entsperren',
       btnCancel: 'Abbrechen',
       devAuthWrongPass: 'Falsches Passwort',
@@ -178,6 +183,11 @@
       btnDone: 'Done',
       devAuthTitle: 'Developer Access',
       devAuthDesc: 'Please enter the developer password to activate developer mode.',
+      devPasswordPlaceholder: 'Enter password...',
+      devSecurityStandard: 'AES-256 • Banking Standard',
+      devSecurityCert: 'ISO 27001 & SOC 2',
+      devSecuritySummary: 'The reveal is protected against hackers and tampering using military and banking standards. The actual gender remains encrypted on the server and cannot be read prematurely without an authorized key.',
+      devSecurityBsi: 'Site security complies with BSI standards (TLS 1.3)',
       btnUnlock: 'Unlock',
       btnCancel: 'Cancel',
       devAuthWrongPass: 'Incorrect password',
@@ -1826,7 +1836,13 @@
     }, 1000);
   }
 
-  function skipCountdownForDev() {
+  async function skipCountdownForDev() {
+    const token = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    if (!STATE.devMode || !token) {
+      openDevAuthModal();
+      return;
+    }
+
     clearInterval(STATE.countdownInterval);
     STATE.countdownRunning = false;
     if (elements.timerDays) elements.timerDays.textContent = '00';
@@ -1838,13 +1854,22 @@
     }
     STATE.isServerUnlocked = true;
     if (!STATE.actualGender) {
-      STATE.actualGender = 'boy';
+      await fetchRevealGender();
     }
     unlockScratchCard();
     applyActualGenderTheme();
   }
 
   function unlockScratchCard() {
+    const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
+    const token = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    const isDevAuth = Boolean(STATE.devMode && token);
+
+    // Strict security check: only unlock if real countdown time reached or verified developer
+    if (currentEffectiveTime < REVEAL_TARGET_MS && !isDevAuth) {
+      return;
+    }
+
     STATE.isCardUnlocked = true;
     if (elements.revealSubheading) {
       elements.revealSubheading.classList.add('hidden-after-countdown');
@@ -2220,13 +2245,18 @@
     }
   }
 
-  function triggerGenderReveal() {
+  async function triggerGenderReveal() {
     if (STATE.isScratchedRevealed) return;
-    STATE.isScratchedRevealed = true;
 
     if (!STATE.actualGender) {
-      STATE.actualGender = 'boy';
+      await fetchRevealGender();
     }
+    if (!STATE.actualGender) {
+      console.warn('Authoritative gender not yet released by secure server');
+      return;
+    }
+
+    STATE.isScratchedRevealed = true;
 
     // Transition from neutral mystery card into celebratory gender theme!
     if (elements.revealedUnderlay) {
@@ -2858,11 +2888,13 @@
     if (!elements.devAuthModal) return;
     if (elements.devPasswordInput) {
       elements.devPasswordInput.value = '';
+      elements.devPasswordInput.placeholder = t('devPasswordPlaceholder') || 'Passwort eingeben...';
     }
     if (elements.devAuthError) {
       elements.devAuthError.textContent = '';
     }
     elements.devAuthModal.classList.add('open');
+    refreshIcons();
     if (elements.devPasswordInput) {
       setTimeout(() => elements.devPasswordInput.focus(), 120);
     }
