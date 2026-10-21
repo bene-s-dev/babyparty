@@ -1,5 +1,6 @@
 // Vercel Serverless Function: Secure Reveal Gender
 // Environment Variable: REVEAL_GENDER, DEV_PASSWORD
+const crypto = require('crypto');
 
 function normalizeGender(val) {
   if (!val) return 'boy';
@@ -26,8 +27,15 @@ module.exports = async function handler(req, res) {
 
     const finalGender = normalizeGender(process.env.REVEAL_GENDER || 'boy');
 
+    const envPassword = process.env.DEV_PASSWORD ? process.env.DEV_PASSWORD.trim() : '';
     const devToken = req.headers['x-dev-token'];
-    const isDevAuthorized = (devToken === 'dev_auth_ok');
+
+    // Dev access strictly verified against DEV_PASSWORD env variable — NO hardcoded fallback token!
+    let isDevAuthorized = false;
+    if (envPassword && devToken) {
+      const expectedToken = crypto.createHmac('sha256', envPassword).update('baby_dev_auth_session').digest('hex');
+      isDevAuthorized = (devToken === expectedToken);
+    }
 
     // Deliver real gender if official countdown time is reached OR if authorized developer:
     if (isTimeReached || isDevAuthorized) {

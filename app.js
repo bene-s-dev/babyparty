@@ -2816,37 +2816,17 @@
         applyActualGenderTheme();
         updateSettingsUI();
       } else {
-        const isLocalhost = Boolean(
-          window.location.hostname === 'localhost' ||
-          window.location.hostname === '127.0.0.1' ||
-          window.location.hostname.endsWith('.local') ||
-          window.location.protocol === 'file:'
-        );
-        const isDev = Boolean(STATE.devToken || sessionStorage.getItem('baby_dev_token') === 'dev_auth_ok' || STATE.isCardUnlocked);
         const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
-        if (currentEffectiveTime >= REVEAL_TARGET_MS || (isLocalhost && isDev)) {
+        if (currentEffectiveTime >= REVEAL_TARGET_MS) {
           STATE.isServerUnlocked = true;
-          if (!STATE.actualGender) STATE.actualGender = 'boy';
-          applyActualGenderTheme();
-          updateSettingsUI();
         } else {
           STATE.isServerUnlocked = false;
         }
       }
     } catch (e) {
-      const isLocalhost = Boolean(
-        window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1' ||
-        window.location.hostname.endsWith('.local') ||
-        window.location.protocol === 'file:'
-      );
-      const isDev = Boolean(STATE.devToken || sessionStorage.getItem('baby_dev_token') === 'dev_auth_ok');
       const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
-      if (currentEffectiveTime >= REVEAL_TARGET_MS || (isLocalhost && isDev)) {
+      if (currentEffectiveTime >= REVEAL_TARGET_MS) {
         STATE.isServerUnlocked = true;
-        if (!STATE.actualGender) STATE.actualGender = 'boy';
-        applyActualGenderTheme();
-        updateSettingsUI();
       } else {
         STATE.isServerUnlocked = false;
       }
@@ -2914,33 +2894,6 @@
     if (submitBtn) submitBtn.disabled = true;
     if (errorEl) errorEl.textContent = '';
 
-    const isLocalhost = Boolean(
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname.endsWith('.local') ||
-      window.location.protocol === 'file:'
-    );
-
-    const cleanPass = password.toLowerCase();
-
-    // Local fallback check ONLY when running on localhost / 127.0.0.1:
-    // Online (on Vercel), baby2026 is strictly disabled — only process.env.DEV_PASSWORD works!
-    if (isLocalhost && (cleanPass === 'baby2026' || cleanPass === 'admin')) {
-      const token = 'dev_auth_ok';
-      sessionStorage.setItem('baby_dev_token', token);
-      localStorage.setItem('baby_dev_unlocked', 'true');
-      localStorage.setItem('baby_dev_active', 'true');
-      STATE.devToken = token;
-      STATE.isServerUnlocked = true;
-      if (!STATE.actualGender) STATE.actualGender = 'boy';
-      applyActualGenderTheme();
-      updateSettingsUI();
-      closeDevAuthModal();
-      toggleDevMode(true);
-      if (submitBtn) submitBtn.disabled = false;
-      return;
-    }
-
     try {
       const res = await fetch('/api/dev-auth', {
         method: 'POST',
@@ -2948,27 +2901,27 @@
         body: JSON.stringify({ password })
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.success) {
-          const token = data.token || 'dev_auth_ok';
-          sessionStorage.setItem('baby_dev_token', token);
-          localStorage.setItem('baby_dev_unlocked', 'true');
-          localStorage.setItem('baby_dev_active', 'true');
-          STATE.devToken = token;
-          if (data.gender) {
-            STATE.actualGender = data.gender;
-            STATE.isServerUnlocked = true;
-            applyActualGenderTheme();
-            updateSettingsUI();
-          }
-          closeDevAuthModal();
-          toggleDevMode(true);
-          return;
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data && data.success && data.token) {
+        const token = data.token;
+        sessionStorage.setItem('baby_dev_token', token);
+        localStorage.setItem('baby_dev_active', 'true');
+        STATE.devToken = token;
+        if (data.gender) {
+          STATE.actualGender = data.gender;
+          STATE.isServerUnlocked = true;
+          applyActualGenderTheme();
+          updateSettingsUI();
         }
+        closeDevAuthModal();
+        toggleDevMode(true);
+        return;
       }
 
-      if (errorEl) errorEl.textContent = t('devAuthWrongPass');
+      if (errorEl) {
+        errorEl.textContent = (data && data.error) ? data.error : t('devAuthWrongPass');
+      }
       audio.playSelect();
     } catch (err) {
       if (errorEl) errorEl.textContent = t('devAuthWrongPass');
@@ -2997,7 +2950,14 @@
       if (devClickCount >= 5) {
         devClickCount = 0;
         clearTimeout(devClickTimer);
-        toggleDevMode(!STATE.devMode);
+        const token = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+        if (STATE.devMode) {
+          toggleDevMode(false);
+        } else if (token) {
+          toggleDevMode(true);
+        } else {
+          openDevAuthModal();
+        }
       }
     }
 
@@ -3024,6 +2984,16 @@
       STATE.devMode = forceState;
     } else {
       STATE.devMode = !STATE.devMode;
+    }
+
+    // Dev mode requires verified authentication token (from DEV_PASSWORD env)
+    const token = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    if (STATE.devMode && !token) {
+      STATE.devMode = false;
+      localStorage.removeItem('baby_dev_active');
+      document.body.classList.remove('dev-mode-active');
+      openDevAuthModal();
+      return;
     }
 
     if (STATE.devMode) {
@@ -3514,10 +3484,18 @@
       }
     });
 
-    // Check if developer mode was activated on this device
-    if (localStorage.getItem('baby_dev_active') === 'true') {
+    // Check if developer mode was activated on this device with valid session token
+    const storedDevToken = sessionStorage.getItem('baby_dev_token');
+    const isDevActive = localStorage.getItem('baby_dev_active') === 'true';
+    if (storedDevToken && isDevActive) {
       STATE.devMode = true;
+      STATE.devToken = storedDevToken;
       document.body.classList.add('dev-mode-active');
+    } else {
+      STATE.devMode = false;
+      STATE.devToken = storedDevToken || null;
+      document.body.classList.remove('dev-mode-active');
+      localStorage.removeItem('baby_dev_active');
     }
 
     // Direct jump to reveal page (Step 3) if user has already voted

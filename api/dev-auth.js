@@ -1,5 +1,6 @@
 // Vercel Serverless Function: Developer Authentication
 // Environment Variable: DEV_PASSWORD, REVEAL_GENDER
+const crypto = require('crypto');
 
 function normalizeGender(val) {
   if (!val) return 'boy';
@@ -34,21 +35,22 @@ module.exports = async function handler(req, res) {
     }
 
     const submittedPassword = (body && body.password) ? String(body.password).trim() : '';
-    const hasEnvPassword = Boolean(process.env.DEV_PASSWORD && process.env.DEV_PASSWORD.trim());
-    const configuredPassword = hasEnvPassword ? process.env.DEV_PASSWORD.trim() : null;
+    const envPassword = process.env.DEV_PASSWORD ? process.env.DEV_PASSWORD.trim() : '';
     const finalGender = normalizeGender(process.env.REVEAL_GENDER || 'boy');
 
-    // Online with DEV_PASSWORD env variable set:
-    // ONLY the secret DEV_PASSWORD from Vercel is accepted. baby2026 is REJECTED online.
-    // If no DEV_PASSWORD is set at all (unconfigured / local), baby2026 is allowed as initial fallback.
-    const isAuthorized = hasEnvPassword
-      ? (submittedPassword === configuredPassword)
-      : (submittedPassword === 'baby2026' || submittedPassword.toLowerCase() === 'baby2026');
+    // DEV MODE STRICTLY PROTECTED BY ENV - NO FALLBACKS!
+    if (!envPassword) {
+      return res.status(403).json({
+        success: false,
+        error: 'Dev Mode nicht konfiguriert (DEV_PASSWORD fehlt in den Umgebungsvariablen)'
+      });
+    }
 
-    if (submittedPassword && isAuthorized) {
+    if (submittedPassword && submittedPassword === envPassword) {
+      const token = crypto.createHmac('sha256', envPassword).update('baby_dev_auth_session').digest('hex');
       return res.status(200).json({
         success: true,
-        token: 'dev_auth_ok',
+        token: token,
         gender: finalGender,
         message: 'Developer options unlocked'
       });
