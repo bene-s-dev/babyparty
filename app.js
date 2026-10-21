@@ -43,6 +43,8 @@
       countdownLabel: 'Countdown',
       countdownTargetLabel: 'Reveal am Do., 29. Okt. 2026 • 18:00 Uhr',
       countdownUnlockedLabel: '✨ Jetzt freirubbeln!',
+      expiredHintTitle: 'Der Moment ist da! ✨',
+      expiredHintText: 'Rubble das Feld frei, um das Geheimnis zu lüften.',
       unitDays: 'Tage',
       unitHours: 'Std',
       unitMins: 'Min',
@@ -138,6 +140,8 @@
       countdownLabel: 'Countdown',
       countdownTargetLabel: 'Reveal on Thu, Oct 29, 2026 • 6:00 PM',
       countdownUnlockedLabel: '✨ Scratch to reveal now!',
+      expiredHintTitle: 'The moment is here! ✨',
+      expiredHintText: 'Scratch the card to reveal the secret.',
       unitDays: 'Days',
       unitHours: 'Hrs',
       unitMins: 'Min',
@@ -306,6 +310,7 @@
     userSummaryBadge: document.getElementById('userSummaryBadge'),
     revealSubheading: document.getElementById('revealSubheading'),
     countdownSection: document.getElementById('countdownSection'),
+    countdownExpiredHint: document.getElementById('countdownExpiredHint'),
     countdownStatusLabel: document.getElementById('countdownStatusLabel'),
     timerDays: document.getElementById('timerDays'),
     timerHours: document.getElementById('timerHours'),
@@ -861,6 +866,79 @@
       } catch (e) { }
     },
 
+    heartbeatInterval: null,
+
+    // Deep physiological heartbeat (lub-dub pulse with warm sub-bass acoustic resonance)
+    playHeartbeatPulse() {
+      if (!STATE.soundEnabled) return;
+      this.init();
+      if (!this.ctx) return;
+
+      try {
+        const now = this.ctx.currentTime;
+
+        // Sub-bass filter for deep, muffled physiological body sound (like an ultrasound or stethoscope)
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(145, now);
+        filter.Q.value = 1.35;
+        filter.connect(this.ctx.destination);
+
+        // Beat 1: "Lub" (lower pitch ~62 Hz -> ~42 Hz)
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(62, now);
+        osc1.frequency.exponentialRampToValueAtTime(42, now + 0.12);
+
+        gain1.gain.setValueAtTime(0.0001, now);
+        gain1.gain.linearRampToValueAtTime(0.24, now + 0.022);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
+
+        osc1.connect(gain1);
+        gain1.connect(filter);
+        osc1.start(now);
+        osc1.stop(now + 0.16);
+
+        // Beat 2: "Dub" (slightly higher pitch ~78 Hz -> ~48 Hz, following ~135ms later)
+        const t2 = now + 0.135;
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(78, t2);
+        osc2.frequency.exponentialRampToValueAtTime(48, t2 + 0.10);
+
+        gain2.gain.setValueAtTime(0.0001, t2);
+        gain2.gain.linearRampToValueAtTime(0.19, t2 + 0.018);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.12);
+
+        osc2.connect(gain2);
+        gain2.connect(filter);
+        osc2.start(t2);
+        osc2.stop(t2 + 0.14);
+      } catch (e) { }
+    },
+
+    startHeartbeat() {
+      if (this.heartbeatInterval) return;
+      this.playHeartbeatPulse();
+      // Steady physiological tempo (~70 BPM = every 860ms)
+      this.heartbeatInterval = setInterval(() => {
+        if (STATE.currentStep === 3 && STATE.soundEnabled && !STATE.isScratchedRevealed) {
+          this.playHeartbeatPulse();
+        } else if (STATE.currentStep !== 3 || STATE.isScratchedRevealed) {
+          this.stopHeartbeat();
+        }
+      }, 860);
+    },
+
+    stopHeartbeat() {
+      if (this.heartbeatInterval) {
+        clearInterval(this.heartbeatInterval);
+        this.heartbeatInterval = null;
+      }
+    },
+
     // Warm, muted wooden clock tick for countdown (never a harsh beep)
     playTick() {
       if (!STATE.soundEnabled) return;
@@ -1123,7 +1201,9 @@
       updatePollUI();
     } else if (step === 3) {
       setupRevealPage();
+      audio.startHeartbeat();
     } else {
+      audio.stopHeartbeat();
       clearInterval(STATE.countdownInterval);
       STATE.countdownRunning = false;
     }
@@ -1420,6 +1500,15 @@
     elements.scratchCanvasTop.classList.remove('revealed-out', 'unlocked');
     elements.scratchCanvasMid.classList.remove('revealed-out', 'unlocked');
     if (elements.postRevealSection) elements.postRevealSection.classList.remove('visible');
+    if (elements.countdownExpiredHint) {
+      elements.countdownExpiredHint.classList.remove('hidden-on-reveal');
+      const isPastCountdown = (REVEAL_TARGET_MS - (Date.now() + (STATE.serverTimeOffset || 0)) <= 0);
+      if ((STATE.isCardUnlocked || isPastCountdown) && !STATE.isScratchedRevealed) {
+        elements.countdownExpiredHint.classList.add('visible');
+      } else {
+        elements.countdownExpiredHint.classList.remove('visible');
+      }
+    }
     const mainStage = document.getElementById('revealMainStage');
     if (mainStage) mainStage.classList.remove('stage-revealed-up');
     if (signatureObserver) {
@@ -1529,6 +1618,15 @@
   }
 
   function initPage3() {
+    const ensureHeartbeatOnInteraction = () => {
+      if (STATE.currentStep === 3 && !STATE.isScratchedRevealed && STATE.soundEnabled) {
+        audio.init();
+        audio.startHeartbeat();
+      }
+    };
+    window.addEventListener("click", ensureHeartbeatOnInteraction, { passive: true });
+    window.addEventListener("touchstart", ensureHeartbeatOnInteraction, { passive: true });
+
     if (elements.btnStartSuspenseCountdown) {
       elements.btnStartSuspenseCountdown.addEventListener('click', () => {
         startCountdown();
@@ -1890,6 +1988,10 @@
     if (countdownSection) {
       countdownSection.classList.add('countdown-completed');
     }
+    if (elements.countdownExpiredHint && !STATE.isScratchedRevealed) {
+      elements.countdownExpiredHint.classList.add('visible');
+      elements.countdownExpiredHint.classList.remove('hidden-on-reveal');
+    }
     // Fetch reveal gender securely from Vercel API
     fetchRevealGender();
     updateFloatingSkipBtn();
@@ -2116,9 +2218,36 @@
     ctxTop.fillText(t('foilRubbel'), cx, bannerY + bannerH / 2);
   }
 
+  function handleLockedCardTap(e) {
+    if (STATE.isCardUnlocked) return;
+    if (e && e.cancelable && e.type !== "mousedown") {
+      e.preventDefault();
+    }
+    triggerPlayfulWobble(elements.scratchCardWrapper);
+    audio.playWobble();
+
+    const pill = elements.countdownLockOverlay ? elements.countdownLockOverlay.querySelector(".barrier-lock-pill") : null;
+    if (pill) {
+      pill.classList.remove("locked-shake");
+      void pill.offsetWidth;
+      pill.classList.add("locked-shake");
+      setTimeout(() => pill.classList.remove("locked-shake"), 500);
+    }
+  }
+
   function setupMultiLayerScratchEvents() {
     const topCanvas = elements.scratchCanvasTop;
     const midCanvas = elements.scratchCanvasMid;
+
+    if (elements.countdownLockOverlay) {
+      elements.countdownLockOverlay.addEventListener("mousedown", handleLockedCardTap);
+      elements.countdownLockOverlay.addEventListener("touchstart", handleLockedCardTap, { passive: false });
+    }
+    if (elements.scratchCardWrapper) {
+      elements.scratchCardWrapper.addEventListener("click", e => {
+        if (!STATE.isCardUnlocked) handleLockedCardTap(e);
+      });
+    }
 
     function getCoords(e) {
       const rect = topCanvas.getBoundingClientRect();
@@ -2177,6 +2306,7 @@
 
     topCanvas.addEventListener('mousedown', e => {
       if (!STATE.isCardUnlocked) {
+        handleLockedCardTap(e);
         return;
       }
       isScratching = true;
@@ -2196,6 +2326,7 @@
 
     topCanvas.addEventListener('touchstart', e => {
       if (!STATE.isCardUnlocked) {
+        handleLockedCardTap(e);
         return;
       }
       isScratching = true;
@@ -2282,6 +2413,9 @@
     if (elements.postRevealSection) {
       elements.postRevealSection.classList.add('visible');
     }
+    if (elements.countdownExpiredHint) {
+      elements.countdownExpiredHint.classList.add('hidden-on-reveal');
+    }
     updatePersonalLetterText();
 
     // 3. Unterschriften auf Ausgangszustand zurücksetzen
@@ -2305,6 +2439,7 @@
       countdownSection.classList.add('countdown-completed');
     }
 
+    audio.stopHeartbeat();
     audio.playFanfare();
     fireCelebrationConfetti();
     refreshIcons();

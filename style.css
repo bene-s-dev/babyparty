@@ -1592,6 +1592,95 @@ body.lang-swapping .language-label {
   width: 100%;
 }
 
+/* Friendly note shown after countdown expiration above the scratch card */
+.countdown-expired-hint {
+  display: none;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto clamp(2px, 0.8vh, 6px);
+  box-sizing: border-box;
+  animation: expiredHintFadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.countdown-expired-hint.visible {
+  display: block;
+}
+
+.countdown-expired-hint.hidden-on-reveal {
+  opacity: 0;
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, max-height 0.4s ease, margin 0.4s ease;
+}
+
+.expired-hint-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(9px, 1.6vh, 13px) clamp(14px, 3.5vw, 20px);
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(226, 218, 208, 0.85);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 18px -4px rgba(143, 94, 197, 0.08), 0 1px 3px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.expired-hint-inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--pastel-blue), #8f5ec5 50%, var(--pastel-pink));
+}
+
+.expired-hint-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-editorial);
+  font-size: clamp(1.05rem, 2.5vw, 1.22rem);
+  font-weight: 700;
+  color: var(--ink-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 3px;
+}
+
+.expired-hint-badge .icon-sparkle {
+  width: 15px;
+  height: 15px;
+  color: #d99a38;
+  filter: drop-shadow(0 1px 2px rgba(217, 154, 56, 0.3));
+}
+
+.expired-hint-text {
+  font-family: var(--font-sans);
+  font-size: clamp(0.82rem, 1.8vw, 0.88rem);
+  line-height: 1.38;
+  color: var(--ink-secondary);
+  margin: 0;
+}
+
+@keyframes expiredHintFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Page 2 Header at Top & Content Centered */
 #page2 .editorial-heading {
   margin-top: clamp(16px, 3vh, 32px);
@@ -2174,6 +2263,23 @@ body.lang-swapping .language-label {
   box-shadow: 
     0 8px 24px -2px rgba(15, 23, 42, 0.22),
     0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.barrier-lock-pill.locked-shake {
+  animation: lockPillPulse 0.46s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  background: rgba(255, 242, 245, 0.98);
+  border-color: rgba(244, 114, 182, 0.65);
+  box-shadow: 0 8px 24px -2px rgba(225, 29, 72, 0.22), 0 0 12px rgba(244, 114, 182, 0.35);
+}
+
+@keyframes lockPillPulse {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.08) rotate(-2deg); }
+  50% { transform: scale(0.96) rotate(2deg); }
+  75% { transform: scale(1.04) rotate(-1deg); }
 }
 
 .barrier-lock-icon {
@@ -2899,6 +3005,17 @@ body.dev-mode-active .dev-floating-skip-btn.visible,
     min-height: clamp(160px, 22vh, 185px);
     aspect-ratio: 0.74;
   }
+  .expired-hint-inner {
+    padding: 7px 12px;
+  }
+  .expired-hint-badge {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+  .expired-hint-text {
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
 }
 
 /* Very compact heights (e.g. iPhone SE 548px Safari viewport or landscape) */
@@ -2935,6 +3052,17 @@ body.dev-mode-active .dev-floating-skip-btn.visible,
   }
   .story-preview-wrapper {
     max-height: 190px;
+  }
+  .expired-hint-inner {
+    padding: 5px 10px;
+  }
+  .expired-hint-badge {
+    font-size: 0.92rem;
+    margin-bottom: 1px;
+  }
+  .expired-hint-text {
+    font-size: 0.74rem;
+    line-height: 1.2;
   }
   .story-card-canvas {
     max-height: 180px;
