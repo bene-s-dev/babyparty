@@ -2888,7 +2888,7 @@
     if (!elements.devAuthModal) return;
     if (elements.devPasswordInput) {
       elements.devPasswordInput.value = '';
-      elements.devPasswordInput.placeholder = t('devPasswordPlaceholder') || 'Passwort eingeben...';
+      elements.devPasswordInput.placeholder = 'Passwort eingeben...';
     }
     if (elements.devAuthError) {
       elements.devAuthError.textContent = '';
@@ -2919,7 +2919,7 @@
     const password = input ? input.value.trim() : '';
 
     if (!password) {
-      if (errorEl) errorEl.textContent = t('devAuthWrongPass');
+      if (errorEl) errorEl.textContent = 'Falsches Passwort';
       return;
     }
 
@@ -2952,11 +2952,11 @@
       }
 
       if (errorEl) {
-        errorEl.textContent = (data && data.error) ? data.error : t('devAuthWrongPass');
+        errorEl.textContent = (data && data.error) ? data.error : 'Falsches Passwort';
       }
       audio.playSelect();
     } catch (err) {
-      if (errorEl) errorEl.textContent = t('devAuthWrongPass');
+      if (errorEl) errorEl.textContent = 'Falsches Passwort';
       audio.playSelect();
     } finally {
       if (submitBtn) submitBtn.disabled = false;

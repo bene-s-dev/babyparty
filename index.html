@@ -16,20 +16,25 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
 
-  <!-- Open Graph / Facebook -->
+  <link rel="canonical" href="https://babyparty.benedrive.de/">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://bene-s-dev.github.io/babyparty/">
+  <meta property="og:url" content="https://babyparty.benedrive.de/">
   <meta property="og:title" content="Kevin & Alina • Gender Reveal">
   <meta property="og:description" content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal mit interaktiver Rubbelkarte!">
-  <meta property="og:image" content="og-image.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="675">
+  <meta property="og:image" content="https://babyparty.benedrive.de/og-image.jpg">
+  <meta property="og:image:secure_url" content="https://babyparty.benedrive.de/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1376">
+  <meta property="og:image:height" content="768">
+  <meta property="og:image:alt" content="Kevin & Alina Gender Reveal">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Kevin & Alina • Gender Reveal">
   <meta name="twitter:description" content="Feiere mit uns den Gender Reveal von Alina & Kevin! Gib Deinen Tipp ab: Junge oder Mädchen? Erlebe den großen Reveal!">
-  <meta name="twitter:image" content="og-image.jpg">
+  <meta name="twitter:image" content="https://babyparty.benedrive.de/og-image.jpg">
   
   <!-- Google Fonts: Editorial Serif + Clean Modern Sans + Kristi & Caveat Handwritten Scripts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -341,13 +346,13 @@
   <!-- Foreground Confetti & Bursts Canvas (z-index: 100) -->
   <canvas id="confettiCanvas"></canvas>
 
-  <!-- Developer Authentication Modal -->
-  <div class="modal-backdrop" id="devAuthModal">
+  <!-- Developer Authentication Modal (Permanent German only - no translation) -->
+  <div class="modal-backdrop" id="devAuthModal" lang="de">
     <div class="modal-window dev-auth-window">
       <div class="modal-header">
         <div class="modal-title-wrap">
           <i data-lucide="shield-check" class="dev-modal-header-icon"></i>
-          <h3 class="modal-title" id="devAuthTitle" data-i18n="devAuthTitle">Entwickler-Zugang</h3>
+          <h3 class="modal-title" id="devAuthTitle">Entwickler-Zugang</h3>
         </div>
         <button type="button" class="modal-close" id="closeDevAuthBtn" aria-label="Schließen">
           <i data-lucide="x" class="icon-sm"></i>
@@ -360,20 +365,20 @@
           <div class="dev-security-head">
             <span class="dev-security-badge">
               <i data-lucide="shield-check" class="icon-xs"></i>
-              <span data-i18n="devSecurityStandard">AES-256 • Bankenstandard</span>
+              <span>AES-256 • Bankenstandard</span>
             </span>
-            <span class="dev-security-cert" data-i18n="devSecurityCert">ISO 27001 & SOC 2</span>
+            <span class="dev-security-cert">ISO 27001 & SOC 2</span>
           </div>
-          <p class="dev-security-text" data-i18n="devSecuritySummary">
+          <p class="dev-security-text">
             Der Reveal ist nach Militär- und Bankenstandard gegen Hacker und Manipulation geschützt. Das tatsächliche Geschlecht verbleibt verschlüsselt auf dem Server und ist ohne autorisierten Schlüssel vorzeitig nicht auslesbar.
           </p>
           <div class="dev-security-bsi">
             <img src="bsilogo.png" alt="BSI Logo" class="dev-bsi-logo" />
-            <span class="dev-bsi-text" data-i18n="devSecurityBsi">Sicherheit der Seite entspricht Standards des BSI (TLS 1.3)</span>
+            <span class="dev-bsi-text">Sicherheit der Seite entspricht Standards des BSI (TLS 1.3)</span>
           </div>
         </div>
 
-        <p class="editorial-modal-text" id="devAuthDesc" data-i18n="devAuthDesc">
+        <p class="editorial-modal-text" id="devAuthDesc">
           Bitte gib das Entwickler-Passwort ein, um den Entwicklermodus zu aktivieren.
         </p>
 
@@ -394,10 +399,10 @@
           </div>
 
           <div class="dev-modal-actions">
-            <button type="button" class="action-btn-secondary btn-dev-cancel" id="cancelDevAuthBtn" data-i18n="btnCancel">Abbrechen</button>
+            <button type="button" class="action-btn-secondary btn-dev-cancel" id="cancelDevAuthBtn">Abbrechen</button>
             <button type="submit" class="action-btn gradient-btn-primary btn-dev-unlock" id="submitDevAuthBtn">
               <i data-lucide="unlock" class="icon-sm"></i>
-              <span id="devAuthBtnText" data-i18n="btnUnlock">Entsperren</span>
+              <span id="devAuthBtnText">Entsperren</span>
             </button>
           </div>
         </form>
