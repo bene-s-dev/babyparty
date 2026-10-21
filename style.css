@@ -484,10 +484,13 @@ body.lang-swapping .language-label {
   will-change: opacity, transform, filter, background-position;
 }
 
-/* Moving gradient on Tipp / Guess on Page 2 */
+/* Moving gradient on Tipp / Guess on Page 2 (padding + negative margin prevent italic glyph clipping with background-clip: text) */
+#page2 .editorial-heading .title-word.highlight-word,
 .editorial-heading .title-word.highlight-word {
   display: inline-block;
   font-style: italic;
+  padding: 0.08em 0.28em 0.16em 0.20em;
+  margin: -0.08em -0.20em -0.16em -0.14em;
   background: linear-gradient(
     115deg,
     var(--pastel-blue) 0%,
@@ -500,10 +503,11 @@ body.lang-swapping .language-label {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: titleWordFadeUp 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, movingTitleGradient 5s linear infinite;
-  animation-delay: calc(0.10s + var(--w-idx, 0) * 0.16s), 0s;
+  animation: titleWordFadeUp 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, movingTitleGradient 5s linear infinite;
+  animation-delay: calc(0.06s + var(--w-idx, 0) * 0.14s), 0s;
   will-change: opacity, transform, filter, background-position;
   filter: drop-shadow(0 2px 10px rgba(143, 94, 197, 0.25));
+  overflow: visible;
 }
 
 #page1 .editorial-subtitle.stagger-2 {
@@ -1555,9 +1559,9 @@ body.lang-swapping .language-label {
   -webkit-text-fill-color: transparent;
   animation: movingTitleGradient 5s linear infinite;
   filter: drop-shadow(0 2px 10px rgba(143, 94, 197, 0.20));
-  padding-bottom: 0.08em;
-  padding-right: 0.06em;
-  padding-left: 0.06em;
+  padding: 0.08em 0.24em 0.16em 0.16em;
+  margin: -0.08em -0.16em -0.16em -0.12em;
+  overflow: visible;
 }
 
 /* Page 3 Content Stage: Vertically centered in remaining space */
@@ -1673,7 +1677,7 @@ body.lang-swapping .language-label {
 }
 
 /* ==================== PAGE 2: SEQUENTIAL CASCADE AFTER TITLE IS WRITTEN ==================== */
-#page2 .editorial-heading .title-word {
+#page2 .editorial-heading .title-word:not(.highlight-word) {
   display: inline-block;
   opacity: 0;
   animation: titleWordFadeUp 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -1746,7 +1750,13 @@ body.lang-swapping .language-label {
 }
 
 #page3 .editorial-subtitle {
-  margin-bottom: 8px;
+  min-height: auto;
+  margin: 0 auto;
+  text-align: center;
+  max-width: 320px;
+  color: var(--ink-secondary);
+  font-size: clamp(0.84rem, 1.8vh, 0.94rem);
+  line-height: 1.45;
   transition: opacity 0.4s ease, max-height 0.4s ease, margin 0.4s ease;
 }
 
