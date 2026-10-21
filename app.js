@@ -1227,15 +1227,22 @@
   // Idea 4: Playful iOS-style wobble animation for empty input or cards
   function triggerPlayfulWobble(targetEl) {
     if (!targetEl) return;
-    targetEl.classList.remove('playful-wobble');
+    // Remove entrance cascade stagger class so it never restarts at opacity: 0
+    targetEl.classList.remove("stagger-item", "stagger-1", "stagger-2", "stagger-3", "stagger-4", "stagger-5");
+    targetEl.classList.remove("playful-wobble");
+    targetEl.style.opacity = "1";
+    targetEl.style.animation = "none";
     void targetEl.offsetWidth; // Force reflow
-    targetEl.classList.add('playful-wobble');
+    targetEl.classList.add("playful-wobble");
     if (navigator.vibrate) {
       try { navigator.vibrate([15, 30, 15]); } catch (e) { }
     }
     setTimeout(() => {
-      targetEl.classList.remove('playful-wobble');
-    }, 500);
+      targetEl.classList.remove("playful-wobble");
+      targetEl.style.animation = "none";
+      targetEl.style.opacity = "1";
+      targetEl.style.transform = "none";
+    }, 480);
   }
 
   // ==================== PAGE 1 LOGIC ====================
@@ -1527,6 +1534,12 @@
 
     STATE.countdownTimeLeft = STATE.countdownDuration;
     refreshIcons();
+    setTimeout(() => {
+      if (elements.scratchCardWrapper) {
+        elements.scratchCardWrapper.classList.remove("stagger-item", "stagger-4");
+        elements.scratchCardWrapper.style.opacity = "1";
+      }
+    }, 750);
 
     // Automatically start the real-time countdown to Donnerstag 29.10.2026, 18 Uhr
     startCountdown();

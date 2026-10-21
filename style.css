@@ -905,6 +905,7 @@ body.lang-swapping .language-label {
 
 .playful-wobble {
   animation: playfulWobble 0.46s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+  opacity: 1 !important;
 }
 
 .live-counter-pill {
