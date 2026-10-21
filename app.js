@@ -43,7 +43,7 @@
       countdownLabel: 'Countdown',
       countdownTargetLabel: 'Reveal am Do., 29. Okt. 2026 • 18:00 Uhr',
       countdownUnlockedLabel: '✨ Jetzt freirubbeln!',
-      expiredHintTitle: 'Der Moment ist da! ✨',
+      expiredHintTitle: 'Der Moment ist da!',
       expiredHintText: 'Rubble das Feld frei, um das Geheimnis zu lüften.',
       unitDays: 'Tage',
       unitHours: 'Std',
@@ -140,7 +140,7 @@
       countdownLabel: 'Countdown',
       countdownTargetLabel: 'Reveal on Thu, Oct 29, 2026 • 6:00 PM',
       countdownUnlockedLabel: '✨ Scratch to reveal now!',
-      expiredHintTitle: 'The moment is here! ✨',
+      expiredHintTitle: 'The moment is here!',
       expiredHintText: 'Scratch the card to reveal the secret.',
       unitDays: 'Days',
       unitHours: 'Hrs',
@@ -1618,14 +1618,13 @@
   }
 
   function initPage3() {
-    const ensureHeartbeatOnInteraction = () => {
+    const resumeAudioOnce = () => {
+      audio.init();
       if (STATE.currentStep === 3 && !STATE.isScratchedRevealed && STATE.soundEnabled) {
-        audio.init();
         audio.startHeartbeat();
       }
     };
-    window.addEventListener("click", ensureHeartbeatOnInteraction, { passive: true });
-    window.addEventListener("touchstart", ensureHeartbeatOnInteraction, { passive: true });
+    window.addEventListener("pointerdown", resumeAudioOnce, { once: true });
 
     if (elements.btnStartSuspenseCountdown) {
       elements.btnStartSuspenseCountdown.addEventListener('click', () => {
@@ -1909,9 +1908,7 @@
     if (elements.timerMins) elements.timerMins.textContent = String(mins).padStart(2, '0');
     if (elements.timerSecs) elements.timerSecs.textContent = String(secs).padStart(2, '0');
 
-    if (playTick) {
-      audio.playTick();
-    }
+    // Countdown tick sound removed so it does not clash with heartbeat
     return false;
   }
 
@@ -2218,13 +2215,24 @@
     ctxTop.fillText(t('foilRubbel'), cx, bannerY + bannerH / 2);
   }
 
+  let lastLockedWobbleTime = 0;
   function handleLockedCardTap(e) {
     if (STATE.isCardUnlocked) return;
-    if (e && e.cancelable && e.type !== "mousedown") {
-      e.preventDefault();
+    if (e) {
+      if (e.stopPropagation) e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      if (e.cancelable && e.type !== "mousedown") {
+        e.preventDefault();
+      }
     }
+
+    const now = Date.now();
+    if (now - lastLockedWobbleTime < 600) {
+      return;
+    }
+    lastLockedWobbleTime = now;
+
     triggerPlayfulWobble(elements.scratchCardWrapper);
-    audio.playWobble();
 
     const pill = elements.countdownLockOverlay ? elements.countdownLockOverlay.querySelector(".barrier-lock-pill") : null;
     if (pill) {
@@ -2240,13 +2248,7 @@
     const midCanvas = elements.scratchCanvasMid;
 
     if (elements.countdownLockOverlay) {
-      elements.countdownLockOverlay.addEventListener("mousedown", handleLockedCardTap);
-      elements.countdownLockOverlay.addEventListener("touchstart", handleLockedCardTap, { passive: false });
-    }
-    if (elements.scratchCardWrapper) {
-      elements.scratchCardWrapper.addEventListener("click", e => {
-        if (!STATE.isCardUnlocked) handleLockedCardTap(e);
-      });
+      elements.countdownLockOverlay.addEventListener("pointerdown", handleLockedCardTap);
     }
 
     function getCoords(e) {
