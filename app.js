@@ -38,7 +38,7 @@
       votesSuffix: 'Stimmen',
       btnToStep3: 'Weiter',
       userGuessLabel: 'Dein Tipp:',
-      revealHeading: 'Das Gender Reveal',
+      revealHeading: 'Gender Reveal',
       revealSubtitle: 'Die Enthüllung beginnt in Kürze.',
       countdownLabel: 'Countdown',
       countdownTargetLabel: 'Reveal am Do., 29. Okt. 2026 • 18:00 Uhr',
@@ -128,7 +128,7 @@
       votesSuffix: 'votes',
       btnToStep3: 'Continue',
       userGuessLabel: 'Your Guess:',
-      revealHeading: 'The Gender Reveal',
+      revealHeading: 'Gender Reveal',
       revealSubtitle: 'The big reveal begins shortly.',
       countdownLabel: 'Countdown',
       countdownTargetLabel: 'Reveal on Thu, Oct 29, 2026 • 6:00 PM',
@@ -598,12 +598,7 @@
 
   function updateRevealHeading() {
     if (!elements.revealHeading) return;
-    const isDe = (STATE.lang === 'de');
-    if (isDe) {
-      elements.revealHeading.innerHTML = 'Das <span class="reveal-highlight">Gender Reveal</span>';
-    } else {
-      elements.revealHeading.innerHTML = 'The <span class="reveal-highlight">Gender Reveal</span>';
-    }
+    elements.revealHeading.innerHTML = '<span class="reveal-highlight">Gender Reveal</span>';
   }
 
   function applyLanguageToDOM(lang) {
