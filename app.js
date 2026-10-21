@@ -31,8 +31,8 @@
       guestCountPill: n => `${n} Gäste nehmen bereits teil`,
       btnBack: 'Zurück',
       greetingPrefix: 'Hallo, ',
-      guessHeading: 'Was ist dein Tipp?',
-      guessSubtitle: 'Wähle deine Intuition:',
+      guessHeading: 'Was ist Dein Tipp?',
+      guessSubtitle: 'Wähle Deine Intuition:',
       boyLabel: 'Junge',
       girlLabel: 'Mädchen',
       votesSuffix: 'Stimmen',
@@ -63,17 +63,17 @@
       boyTitle: 'JUNGE',
       girlQuote: '„Unsere kleine Tochter wird die Welt bereichern.“',
       boyQuote: '„Unser kleiner Sohn wird die Welt bereichern.“',
-      letterMatch: name => `${name ? `${name}, ` : ''}Du hast richtig geraten!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
-      letterNoMatch: name => `${name ? `${name}, ` : ''}${name ? 'knapp' : 'Knapp'} daneben!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
+      letterMatch: name => `${name ? `${name}, ` : ''}Du hast richtig geraten!<br>Danke, dass Du mitgemacht hast,<br>wir freuen uns mit Dir ☺️<br>Stay tuned für weitere Infos!`,
+      letterNoMatch: name => `${name ? `${name}, ` : ''}${name ? 'knapp' : 'Knapp'} daneben!<br>Danke, dass Du mitgemacht hast,<br>wir freuen uns mit Dir ☺️<br>Stay tuned für weitere Infos!`,
       stayTunedText: 'Stay tuned – weitere Infos folgen bald',
       letterSalute: 'In freudiger Erwartung',
       sigAlina: 'Alina',
       sigKevin: 'Kevin',
       signatureText: 'Alina Kevin',
       matchTitle: 'Richtig getippt!',
-      matchSub: name => `Glückwunsch ${name}, dein Bauchgefühl lag genau richtig.`,
+      matchSub: name => `Glückwunsch ${name}, Dein Bauchgefühl lag genau richtig.`,
       noMatchTitle: 'Voller Überraschung',
-      noMatchSub: name => `Hauptsache gesund und voller Liebe. Wir freuen uns mit dir, ${name}.`,
+      noMatchSub: name => `Hauptsache gesund und voller Liebe. Wir freuen uns mit Dir, ${name}.`,
       btnConfetti: 'Mehr Konfetti',
       btnShare: 'Story-Karte teilen',
       btnRestart: 'Neu starten',
@@ -95,7 +95,7 @@
       devToastActive: 'Entwicklermodus aktiviert:<br>Countdown ist auf diesem Gerät überspringbar',
       devToastInactive: 'Entwicklermodus deaktiviert',
       btnDevFloatingSkip: 'Countdown für Vorschau überspringen',
-      toastNameReq: 'Bitte trage deinen Namen ein',
+      toastNameReq: 'Bitte trage Deinen Namen ein',
       toastGuessReq: 'Bitte wähle Junge oder Mädchen aus',
       toastTeamBoy: 'Tipp: Junge',
       toastTeamGirl: 'Tipp: Mädchen',
@@ -579,11 +579,11 @@
     let text = '';
     if (name) {
       text = (STATE.lang === 'de')
-        ? `${name}, was ist dein Tipp?`
+        ? `${name}, was ist Dein Tipp?`
         : `${name}, what is your guess?`;
     } else {
       text = (STATE.lang === 'de')
-        ? 'Was ist dein Tipp?'
+        ? 'Was ist Dein Tipp?'
         : 'What is your guess?';
     }
     const words = text.split(' ').filter(Boolean);
