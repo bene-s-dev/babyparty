@@ -2732,3 +2732,20 @@ body.dev-mode-active .dev-floating-skip-btn.visible,
     max-height: 180px;
   }
 }
+
+/* Zero-flicker instant landing on Reveal page when user already voted */
+html.has-voted-init #page1 {
+  display: none !important;
+}
+html.has-voted-init #page3 {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+html.has-voted-init body {
+  background: var(--bg-cream) !important;
+}
+html.has-voted-init .video-container {
+  display: none !important;
+}

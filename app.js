@@ -223,10 +223,18 @@
     }
   };
 
-  // Check if user previously saved custom votes
+  // Check if user previously saved custom votes, guess or guest name
   try {
     const savedVotes = localStorage.getItem('baby_votes_data');
     if (savedVotes) STATE.votes = JSON.parse(savedVotes);
+    const savedGuess = localStorage.getItem('baby_user_guess');
+    if (savedGuess && (savedGuess === 'boy' || savedGuess === 'girl')) {
+      STATE.userGuess = savedGuess;
+    }
+    const savedName = localStorage.getItem('baby_guest_name');
+    if (savedName) {
+      STATE.guestName = savedName;
+    }
   } catch (e) {
     console.warn('LocalStorage error:', e);
   }
@@ -284,6 +292,7 @@
 
     // Page 3 Elements
     revealHeading: document.getElementById('revealHeading'),
+    userGuessSummary: document.getElementById('userGuessSummary'),
     userSummaryBadge: document.getElementById('userSummaryBadge'),
     revealSubheading: document.getElementById('revealSubheading'),
     countdownSection: document.getElementById('countdownSection'),
@@ -1096,6 +1105,10 @@
       const hasGuess = Boolean(STATE.userGuess);
       elements.btnToStep3.classList.toggle('is-disabled', !hasGuess);
       elements.btnToStep3.setAttribute('aria-disabled', !hasGuess ? 'true' : 'false');
+      if (hasGuess) {
+        elements.btnPickBoy.classList.toggle('selected', STATE.userGuess === 'boy');
+        elements.btnPickGirl.classList.toggle('selected', STATE.userGuess === 'girl');
+      }
       updateGuessHeading();
       updatePollUI();
     } else if (step === 3) {
@@ -1157,6 +1170,12 @@
       magicEffects.emitLanguageSparkle('en', rect.left + rect.width / 2, rect.top + rect.height / 2);
       lockLanguage('en');
     });
+
+    if (elements.userNameInput && STATE.guestName) {
+      elements.userNameInput.value = STATE.guestName;
+      elements.btnToStep2.classList.remove('is-disabled');
+      elements.btnToStep2.setAttribute('aria-disabled', 'false');
+    }
 
     // Lock language on user input interaction
     elements.userNameInput.addEventListener('focus', () => {
@@ -1227,6 +1246,9 @@
         lockLanguage(STATE.lang);
       }
       STATE.guestName = name;
+      try {
+        localStorage.setItem('baby_guest_name', name);
+      } catch (e) { }
       updateGuessHeading();
       if (elements.displayGuestName) {
         elements.displayGuestName.textContent = name;
@@ -1251,6 +1273,13 @@
       });
     }
 
+    if (STATE.userGuess) {
+      elements.btnPickBoy.classList.toggle('selected', STATE.userGuess === 'boy');
+      elements.btnPickGirl.classList.toggle('selected', STATE.userGuess === 'girl');
+      elements.btnToStep3.classList.remove('is-disabled');
+      elements.btnToStep3.setAttribute('aria-disabled', 'false');
+    }
+
     elements.btnPickBoy.addEventListener('click', () => {
       selectGuess('boy');
     });
@@ -1269,9 +1298,22 @@
       }
       audio.playSelect();
 
-      STATE.votes[STATE.userGuess]++;
+      // Avoid duplicate count if re-voting
+      const prevGuess = localStorage.getItem('baby_user_guess');
+      if (prevGuess && STATE.votes[prevGuess] && prevGuess !== STATE.userGuess) {
+        STATE.votes[prevGuess] = Math.max(0, STATE.votes[prevGuess] - 1);
+      }
+      if (!prevGuess || prevGuess !== STATE.userGuess) {
+        STATE.votes[STATE.userGuess]++;
+      }
+
       try {
         localStorage.setItem('baby_votes_data', JSON.stringify(STATE.votes));
+        localStorage.setItem('baby_has_voted', 'true');
+        localStorage.setItem('baby_user_guess', STATE.userGuess);
+        if (STATE.guestName) {
+          localStorage.setItem('baby_guest_name', STATE.guestName);
+        }
       } catch (e) { }
 
       goToStep(3);
@@ -1545,6 +1587,14 @@
           }
           triggerDuoSignaturesAnimation();
         }
+      });
+    }
+
+    if (elements.userGuessSummary) {
+      elements.userGuessSummary.setAttribute('title', STATE.lang === 'en' ? 'Click to change your guess' : 'Klicken, um Tipp zu ändern');
+      elements.userGuessSummary.addEventListener('click', () => {
+        audio.playClick();
+        goToStep(2);
       });
     }
 
@@ -2728,9 +2778,17 @@
     if (elements.btnResetAllVotes) {
       elements.btnResetAllVotes.addEventListener('click', () => {
         STATE.votes = { boy: 12, girl: 14 };
-        localStorage.removeItem('baby_votes_data');
+        STATE.userGuess = null;
+        STATE.guestName = '';
+        try {
+          localStorage.removeItem('baby_votes_data');
+          localStorage.removeItem('baby_has_voted');
+          localStorage.removeItem('baby_user_guess');
+          localStorage.removeItem('baby_guest_name');
+        } catch (e) { }
         updatePollUI();
         audio.playClick();
+        goToStep(1);
       });
     }
   }
@@ -3462,7 +3520,21 @@
       document.body.classList.add('dev-mode-active');
     }
 
-    goToStep(1);
+    // Direct jump to reveal page (Step 3) if user has already voted
+    const hasVoted = (localStorage.getItem('baby_has_voted') === 'true') || Boolean(STATE.userGuess);
+    if (hasVoted && (STATE.userGuess === 'boy' || STATE.userGuess === 'girl')) {
+      goToStep(3, false);
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({ step: 3 }, '');
+      }
+    } else {
+      goToStep(1);
+    }
+
+    if (document.documentElement.classList.contains('has-voted-init')) {
+      document.documentElement.classList.remove('has-voted-init');
+    }
+
     refreshIcons();
     updateScalingContainer();
   }
