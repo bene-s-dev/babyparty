@@ -23,23 +23,23 @@
       stepGuess: 'Tippen',
       stepReveal: 'Reveal',
       heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word" style="--w-idx: 1;">zum</span> <span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Gender Reveal</span>',
-      heroSubtitle: 'Ein neues Kapitel für Alina & Kevin beginnt.<br>Trage Deinen Namen ein und feiere mit uns.',
-      nameLabel: 'Dein Name',
+      heroSubtitle: 'Ein neues Kapitel für Alina & Kevin beginnt.<br>Trage deinen Namen ein und feiere mit uns.',
+      nameLabel: 'dein Name',
       namePlaceholder: 'z. B. Louisa',
       langLabel: 'Sprache:',
       btnToStep2: 'Weiter',
       guestCountPill: n => `${n} Gäste nehmen bereits teil`,
       btnBack: 'Zurück',
       greetingPrefix: 'Hallo, ',
-      guessHeading: 'Was ist Dein Tipp?',
-      guessSubtitle: 'Wähle Deine Intuition:',
+      guessHeading: 'Was ist dein Tipp?',
+      guessSubtitle: 'Wähle deine Intuition:',
       boyLabel: 'Junge',
       girlLabel: 'Mädchen',
       votesSuffix: 'Stimmen',
       btnToStep3: 'Weiter',
-      userGuessLabel: 'Dein Tipp:',
+      userGuessLabel: 'dein Tipp:',
       revealHeading: 'Gender Reveal',
-      revealSubtitle: 'Schön, dass Du mitfieberst! Bald lüften wir das kleine Geheimnis.',
+      revealSubtitle: 'Schön, dass du mitfieberst! Bald lüften wir das kleine Geheimnis.',
       countdownLabel: 'Countdown',
       countdownTargetLabel: 'Reveal am Do., 29. Okt. 2026 • 18:00 Uhr',
       countdownUnlockedLabel: '✨ Jetzt freirubbeln!',
@@ -65,17 +65,17 @@
       boyTitle: 'JUNGE',
       girlQuote: '„Unsere kleine Tochter wird die Welt bereichern.“',
       boyQuote: '„Unser kleiner Sohn wird die Welt bereichern.“',
-      letterMatch: name => `${name ? `${name}, ` : ''}Du hast richtig geraten!<br>Danke, dass Du mitgemacht hast,<br>wir freuen uns mit Dir ☺️<br>Stay tuned für weitere Infos!`,
-      letterNoMatch: name => `${name ? `${name}, ` : ''}${name ? 'knapp' : 'Knapp'} daneben!<br>Danke, dass Du mitgemacht hast,<br>wir freuen uns mit Dir ☺️<br>Stay tuned für weitere Infos!`,
+      letterMatch: name => `${name ? `${name}, ` : ''}du hast richtig geraten!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
+      letterNoMatch: name => `${name ? `${name}, ` : ''}${name ? 'knapp' : 'Knapp'} daneben!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
       stayTunedText: 'Stay tuned – weitere Infos folgen bald',
       letterSalute: 'In freudiger Erwartung',
       sigAlina: 'Alina',
       sigKevin: 'Kevin',
       signatureText: 'Alina Kevin',
       matchTitle: 'Richtig getippt!',
-      matchSub: name => `Glückwunsch ${name}, Dein Bauchgefühl lag genau richtig.`,
+      matchSub: name => `Glückwunsch ${name}, dein Bauchgefühl lag genau richtig.`,
       noMatchTitle: 'Voller Überraschung',
-      noMatchSub: name => `Hauptsache gesund und voller Liebe. Wir freuen uns mit Dir, ${name}.`,
+      noMatchSub: name => `Hauptsache gesund und voller Liebe. Wir freuen uns mit dir, ${name}.`,
       btnConfetti: 'Mehr Konfetti',
       btnShare: 'Story-Karte teilen',
       btnRestart: 'Neu starten',
@@ -102,7 +102,7 @@
       devToastActive: 'Entwicklermodus aktiviert:<br>Countdown ist auf diesem Gerät überspringbar',
       devToastInactive: 'Entwicklermodus deaktiviert',
       btnDevFloatingSkip: 'Countdown für Vorschau überspringen',
-      toastNameReq: 'Bitte trage Deinen Namen ein',
+      toastNameReq: 'Bitte trage deinen Namen ein',
       toastGuessReq: 'Bitte wähle Junge oder Mädchen aus',
       toastTeamBoy: 'Tipp: Junge',
       toastTeamGirl: 'Tipp: Mädchen',
@@ -120,7 +120,7 @@
       stepGuess: 'Guess',
       stepReveal: 'Reveal',
       heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Welcome</span> <span class="title-word" style="--w-idx: 1;">to</span> <span class="title-word" style="--w-idx: 2;">the</span> <span class="highlight-text title-word word-highlight" style="--w-idx: 3;">Gender Reveal</span>',
-      heroSubtitle: 'A new chapter for Alina & Kevin begins.<br>Enter your name and celebrate with us.',
+      heroSubtitle: 'A new chapter is unfolding for Alina & Kevin, and their story is about to get a whole lot sweeter.',
       nameLabel: 'Your Name',
       namePlaceholder: 'e.g. Louisa',
       langLabel: 'Language:',
@@ -603,11 +603,11 @@
     let text = '';
     if (name) {
       text = (STATE.lang === 'de')
-        ? `${name}, was ist Dein Tipp?`
+        ? `${name}, was ist dein Tipp?`
         : `${name}, what is your guess?`;
     } else {
       text = (STATE.lang === 'de')
-        ? 'Was ist Dein Tipp?'
+        ? 'Was ist dein Tipp?'
         : 'What is your guess?';
     }
     const words = text.split(' ').filter(Boolean);
