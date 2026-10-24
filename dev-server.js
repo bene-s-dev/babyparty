@@ -32,9 +32,7 @@ function loadEnv() {
     process.env.DEV_PASSWORD = 'baby2026';
     console.log('[Dev Server] DEV_PASSWORD not set in env, defaulting to: baby2026');
   }
-  if (!process.env.REVEAL_GENDER) {
-    process.env.REVEAL_GENDER = 'boy';
-  }
+
 }
 
 loadEnv();

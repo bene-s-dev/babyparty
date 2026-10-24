@@ -27,7 +27,7 @@ module.exports = async function handler(req, res) {
 
     const submittedPassword = (body && body.password) ? String(body.password).trim() : '';
     const envPassword = process.env.DEV_PASSWORD ? process.env.DEV_PASSWORD.trim() : '';
-    const activeConfig = getActiveConfig();
+    const activeConfig = await getActiveConfig();
 
     // DEV MODE STRICTLY PROTECTED BY ENV - NO FALLBACKS!
     if (!envPassword) {

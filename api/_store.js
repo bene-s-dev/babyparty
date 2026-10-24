@@ -1,5 +1,5 @@
-// Secure server-side store for dev configuration overrides
-// Supports: Vercel KV / Upstash Redis (if configured) -> File Store -> Memory Cache -> ENV Fallback
+// Secure server-side store for dev configuration (Date & Gender)
+// Fully managed through Developer Mode — NO gender in process.env!
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -9,12 +9,13 @@ const TMP_CONFIG_FILE = path.join('/tmp', '.dev-runtime-config.json');
 
 // Default target: Donnerstag 29.10.2026, 18:00 Uhr Berlin time (CET UTC+1)
 const DEFAULT_TARGET_DATE = '2026-10-29T18:00:00+01:00';
+const DEFAULT_GENDER = 'boy';
 
 // In-memory cache across serverless warm invocations
 let memoryConfigCache = null;
 
 function normalizeGender(val) {
-  if (!val) return 'boy';
+  if (!val) return DEFAULT_GENDER;
   const clean = String(val).toLowerCase().trim();
   if (['girl', 'mädchen', 'maedchen', 'w', 'female'].includes(clean)) {
     return 'girl';
@@ -29,7 +30,6 @@ function verifyDevToken(token) {
   return token === expectedToken;
 }
 
-// Check if Vercel KV / Upstash Redis credentials are present
 function getKvConfig() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -39,44 +39,56 @@ function getKvConfig() {
   return null;
 }
 
+async function kvExecute(commandArray) {
+  const kv = getKvConfig();
+  if (!kv) return null;
+  try {
+    const res = await fetch(kv.url, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + kv.token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(commandArray)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.result;
+    }
+  } catch (err) {
+    console.warn('[DevStore] KV error:', err.message);
+  }
+  return null;
+}
+
 async function getActiveConfig() {
   let targetDate = DEFAULT_TARGET_DATE;
-  let gender = normalizeGender(process.env.REVEAL_GENDER || 'boy');
+  let gender = DEFAULT_GENDER;
   let isCustom = false;
 
   // 1. Try Vercel KV / Upstash Redis if configured
-  const kv = getKvConfig();
-  if (kv) {
-    try {
-      const res = await fetch(`${kv.url}/get/baby_reveal_config`, {
-        headers: { Authorization: `Bearer ${kv.token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        let val = data.result;
-        if (typeof val === 'string') {
-          try { val = JSON.parse(val); } catch (e) {}
-        }
-        if (val && typeof val === 'object') {
-          if (val.targetDate && !isNaN(new Date(val.targetDate).getTime())) {
-            targetDate = val.targetDate;
-            isCustom = true;
-          }
-          if (val.gender) {
-            gender = normalizeGender(val.gender);
-            isCustom = true;
-          }
-          memoryConfigCache = { targetDate, gender, isCustom };
-          return {
-            targetDate,
-            targetTimeMs: new Date(targetDate).getTime(),
-            gender,
-            isCustom
-          };
-        }
+  const kvResult = await kvExecute(['GET', 'baby_reveal_config']);
+  if (kvResult) {
+    let val = kvResult;
+    if (typeof val === 'string') {
+      try { val = JSON.parse(val); } catch (e) {}
+    }
+    if (val && typeof val === 'object') {
+      if (val.targetDate && !isNaN(new Date(val.targetDate).getTime())) {
+        targetDate = val.targetDate;
+        isCustom = true;
       }
-    } catch (err) {
-      console.warn('[DevStore] KV read error:', err.message);
+      if (val.gender) {
+        gender = normalizeGender(val.gender);
+        isCustom = true;
+      }
+      memoryConfigCache = { targetDate, gender, isCustom };
+      return {
+        targetDate,
+        targetTimeMs: new Date(targetDate).getTime(),
+        gender,
+        isCustom
+      };
     }
   }
 
@@ -108,7 +120,7 @@ async function getActiveConfig() {
     }
   }
 
-  // 3. Try in-memory cache if file wasn't available
+  // 3. Try in-memory cache if file was not available
   if (memoryConfigCache) {
     return {
       targetDate: memoryConfigCache.targetDate,
@@ -118,7 +130,7 @@ async function getActiveConfig() {
     };
   }
 
-  // 4. Default / ENV fallback
+  // 4. Default fallback
   return {
     targetDate,
     targetTimeMs: new Date(targetDate).getTime(),
@@ -141,29 +153,13 @@ async function setActiveConfig(newConfig) {
   memoryConfigCache = updated;
 
   // 1. Persist to Vercel KV / Upstash Redis if available
-  const kv = getKvConfig();
-  if (kv) {
-    try {
-      await fetch(`${kv.url}/set/baby_reveal_config`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${kv.token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updated)
-      });
-    } catch (err) {
-      console.warn('[DevStore] KV write error:', err.message);
-    }
-  }
+  await kvExecute(['SET', 'baby_reveal_config', JSON.stringify(updated)]);
 
   // 2. Persist to file system (Primary or /tmp fallback)
   const candidateFiles = [PRIMARY_CONFIG_FILE, TMP_CONFIG_FILE];
-  let fileSaved = false;
   for (const filePath of candidateFiles) {
     try {
       fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), 'utf8');
-      fileSaved = true;
       break;
     } catch (err) {
       // EROFS on serverless -> try next path (/tmp)
@@ -179,15 +175,7 @@ async function setActiveConfig(newConfig) {
 async function resetActiveConfig() {
   memoryConfigCache = null;
 
-  const kv = getKvConfig();
-  if (kv) {
-    try {
-      await fetch(`${kv.url}/del/baby_reveal_config`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${kv.token}` }
-      });
-    } catch (err) {}
-  }
+  await kvExecute(['DEL', 'baby_reveal_config']);
 
   const candidateFiles = [PRIMARY_CONFIG_FILE, TMP_CONFIG_FILE];
   for (const filePath of candidateFiles) {
