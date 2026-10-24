@@ -11,7 +11,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const config = getActiveConfig();
+    const config = await getActiveConfig();
     const isTimeReached = Date.now() >= config.targetTimeMs;
 
     const devToken = req.headers['x-dev-token'];

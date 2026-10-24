@@ -19,7 +19,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const config = getActiveConfig();
+    const config = await getActiveConfig();
     return res.status(200).json({
       success: true,
       config: {
@@ -43,7 +43,7 @@ module.exports = async function handler(req, res) {
     }
 
     const { targetDate, gender } = body || {};
-    const updated = setActiveConfig({ targetDate, gender });
+    const updated = await setActiveConfig({ targetDate, gender });
 
     return res.status(200).json({
       success: true,
@@ -58,7 +58,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'DELETE') {
-    const reset = resetActiveConfig();
+    const reset = await resetActiveConfig();
     return res.status(200).json({
       success: true,
       message: 'Dev-Konfiguration auf Standard zurückgesetzt.',
