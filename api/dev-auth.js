@@ -1,15 +1,6 @@
 // Vercel Serverless Function: Developer Authentication
-// Environment Variable: DEV_PASSWORD, REVEAL_GENDER
 const crypto = require('crypto');
-
-function normalizeGender(val) {
-  if (!val) return 'boy';
-  const clean = String(val).toLowerCase().trim();
-  if (['girl', 'mädchen', 'maedchen', 'w', 'female'].includes(clean)) {
-    return 'girl';
-  }
-  return 'boy';
-}
+const { getActiveConfig } = require('./_store');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -36,7 +27,7 @@ module.exports = async function handler(req, res) {
 
     const submittedPassword = (body && body.password) ? String(body.password).trim() : '';
     const envPassword = process.env.DEV_PASSWORD ? process.env.DEV_PASSWORD.trim() : '';
-    const finalGender = normalizeGender(process.env.REVEAL_GENDER || 'boy');
+    const activeConfig = getActiveConfig();
 
     // DEV MODE STRICTLY PROTECTED BY ENV - NO FALLBACKS!
     if (!envPassword) {
@@ -51,7 +42,9 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({
         success: true,
         token: token,
-        gender: finalGender,
+        gender: activeConfig.gender,
+        targetDate: activeConfig.targetDate,
+        targetTimeMs: activeConfig.targetTimeMs,
         message: 'Developer options unlocked'
       });
     }

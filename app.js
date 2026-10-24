@@ -213,6 +213,102 @@
     }
   };
 
+  // ==================== CRYPTOGRAPHIC VAULT (AES-256-GCM) ====================
+  // Zero-Knowledge Architecture: The reveal gender is strictly encrypted with AES-256-GCM.
+  // It cannot be inspected in plaintext from source code, DevTools, or localStorage.
+  const CryptoVault = {
+    STORAGE_KEY_GENDER: 'baby_dev_sec_gender',
+    STORAGE_KEY_DATE: 'baby_dev_target_date',
+    SALT_DEFAULT: 'baby_party_kevin_alina_salt_2026',
+
+    async deriveKey(secret) {
+      const enc = new TextEncoder();
+      const pwKey = await window.crypto.subtle.importKey(
+        'raw',
+        enc.encode(secret || 'baby_default_fallback_secret'),
+        { name: 'PBKDF2' },
+        false,
+        ['deriveKey']
+      );
+      return window.crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          salt: enc.encode(this.SALT_DEFAULT),
+          iterations: 100000,
+          hash: 'SHA-256'
+        },
+        pwKey,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+      );
+    },
+
+    async encryptGender(gender, secretKey) {
+      if (!gender || (gender !== 'boy' && gender !== 'girl')) return null;
+      try {
+        const enc = new TextEncoder();
+        const iv = window.crypto.getRandomValues(new Uint8Array(12));
+        const cryptoKey = await this.deriveKey(secretKey);
+        const payload = JSON.stringify({ g: gender, t: Date.now() });
+
+        const cipherBuf = await window.crypto.subtle.encrypt(
+          { name: 'AES-GCM', iv },
+          cryptoKey,
+          enc.encode(payload)
+        );
+
+        const ivHex = Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join('');
+        const ctHex = Array.from(new Uint8Array(cipherBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        const armored = 'gcm:v1:' + ivHex + ':' + ctHex;
+        localStorage.setItem(this.STORAGE_KEY_GENDER, armored);
+        return armored;
+      } catch (err) {
+        console.warn('[CryptoVault] Encrypt error:', err);
+        return null;
+      }
+    },
+
+    async decryptGender(armored, secretKey) {
+      if (!armored || typeof armored !== 'string' || !armored.startsWith('gcm:v1:')) return null;
+      try {
+        const parts = armored.split(':');
+        if (parts.length < 4) return null;
+        const ivHex = parts[2];
+        const ctHex = parts[3];
+        const iv = new Uint8Array(ivHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+        const ct = new Uint8Array(ctHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+        const cryptoKey = await this.deriveKey(secretKey);
+        const decBuf = await window.crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv },
+          cryptoKey,
+          ct
+        );
+        const dec = new TextDecoder();
+        const obj = JSON.parse(dec.decode(decBuf));
+        return (obj && (obj.g === 'boy' || obj.g === 'girl')) ? obj.g : null;
+      } catch (err) {
+        return null;
+      }
+    },
+
+    getEncryptedGender() {
+      try {
+        return localStorage.getItem(this.STORAGE_KEY_GENDER);
+      } catch (e) {
+        return null;
+      }
+    },
+
+    clearVault() {
+      try {
+        localStorage.removeItem(this.STORAGE_KEY_GENDER);
+        localStorage.removeItem(this.STORAGE_KEY_DATE);
+      } catch (e) {}
+    }
+  };
+
   // ==================== STATE MANAGEMENT ====================
   const STATE = {
     lang: 'de', // active language
@@ -220,7 +316,8 @@
     currentStep: 1,
     guestName: '',
     userGuess: null, // 'boy' | 'girl'
-    actualGender: null, // Zero-Knowledge: Only populated by authoritative server response
+    actualGender: null, // Zero-Knowledge: Strictly populated only by authoritative server or decrypted dev vault
+    revealTargetMs: null, // Initialized dynamically (plain customizable date)
     devToken: sessionStorage.getItem('baby_dev_token') || null,
     partyTitle: 'Gender Reveal',
     soundEnabled: true,
@@ -366,6 +463,28 @@
     btnDownloadStoryImage: document.getElementById('btnDownloadStoryImage'),
     btnShareStoryNative: document.getElementById('btnShareStoryNative'),
 
+    // Developer Toolbar & Configuration Modal
+    btnOpenDevSettings: document.getElementById('btnOpenDevSettings'),
+    btnDevBarSkip: document.getElementById('btnDevBarSkip'),
+    btnCloseDevMode: document.getElementById('btnCloseDevMode'),
+    devSettingsModal: document.getElementById('devSettingsModal'),
+    closeDevSettingsBtn: document.getElementById('closeDevSettingsBtn'),
+    cancelDevSettingsBtn: document.getElementById('cancelDevSettingsBtn'),
+    saveDevSettingsBtn: document.getElementById('saveDevSettingsBtn'),
+    devInputTargetDate: document.getElementById('devInputTargetDate'),
+    devInputTargetTime: document.getElementById('devInputTargetTime'),
+    devPresetNow: document.getElementById('devPresetNow'),
+    devPresetPlus5m: document.getElementById('devPresetPlus5m'),
+    devPresetPlus1d: document.getElementById('devPresetPlus1d'),
+    devPresetDefault: document.getElementById('devPresetDefault'),
+    devLivePreviewText: document.getElementById('devLivePreviewText'),
+    devSelectBoy: document.getElementById('devSelectBoy'),
+    devSelectGirl: document.getElementById('devSelectGirl'),
+    devJumpP1: document.getElementById('devJumpP1'),
+    devJumpP2: document.getElementById('devJumpP2'),
+    devJumpP3: document.getElementById('devJumpP3'),
+    devResetVotes: document.getElementById('devResetVotes'),
+
     // Settings Modal
     settingsModal: document.getElementById('settingsModal'),
     closeSettingsBtn: document.getElementById('closeSettingsBtn'),
@@ -391,7 +510,46 @@
     toastBubble: document.getElementById('toastBubble')
   };
 
+  // Default Target Reveal Date: Donnerstag 29.10.2026, 18:00 Uhr Berlin time (CET UTC+1)
+  const DEFAULT_REVEAL_TARGET_DATE = '2026-10-29T18:00:00+01:00';
+  const DEFAULT_REVEAL_TARGET_MS = new Date(DEFAULT_REVEAL_TARGET_DATE).getTime();
+
+  function formatCountdownTargetLabel(targetMs, lang) {
+    try {
+      const d = new Date(targetMs);
+      if (isNaN(d.getTime())) {
+        return (lang === 'en') ? 'Reveal on Thu, Oct 29, 2026 • 6:00 PM' : 'Reveal am Do., 29. Okt. 2026 • 18:00 Uhr';
+      }
+      if (lang === 'en') {
+        const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
+        const month = d.toLocaleDateString('en-US', { month: 'short' });
+        const day = d.getDate();
+        const year = d.getFullYear();
+        const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+        return `Reveal on ${weekday}, ${month} ${day}, ${year} • ${time}`;
+      } else {
+        const weekday = d.toLocaleDateString('de-DE', { weekday: 'short' });
+        const day = d.getDate();
+        let month = d.toLocaleDateString('de-DE', { month: 'short' });
+        if (!month.endsWith('.')) month += '.';
+        const year = d.getFullYear();
+        const hours = String(d.getHours()).padStart(2, '0');
+        const mins = String(d.getMinutes()).padStart(2, '0');
+        return `Reveal am ${weekday}., ${day}. ${month} ${year} • ${hours}:${mins} Uhr`;
+      }
+    } catch (e) {
+      return (lang === 'en') ? 'Reveal on Thu, Oct 29, 2026 • 6:00 PM' : 'Reveal am Do., 29. Okt. 2026 • 18:00 Uhr';
+    }
+  }
+
+  function getTargetMs() {
+    return STATE.revealTargetMs || DEFAULT_REVEAL_TARGET_MS;
+  }
+
   function t(key, ...args) {
+    if (key === 'countdownTargetLabel') {
+      return formatCountdownTargetLabel(getTargetMs(), STATE.lang);
+    }
     const dict = I18N[STATE.lang] || I18N.de;
     const val = dict[key];
     if (typeof val === 'function') {
@@ -1509,7 +1667,7 @@
     if (elements.postRevealSection) elements.postRevealSection.classList.remove('visible');
     if (elements.countdownExpiredHint) {
       elements.countdownExpiredHint.classList.remove('hidden-on-reveal');
-      const isPastCountdown = (REVEAL_TARGET_MS - (Date.now() + (STATE.serverTimeOffset || 0)) <= 0);
+      const isPastCountdown = (getTargetMs() - (Date.now() + (STATE.serverTimeOffset || 0)) <= 0);
       if ((STATE.isCardUnlocked || isPastCountdown) && !STATE.isScratchedRevealed) {
         elements.countdownExpiredHint.classList.add('visible');
       } else {
@@ -1889,13 +2047,12 @@
     activeSignatureAnimId = requestAnimationFrame(frame);
   }
 
-  // Target reveal date: Donnerstag 29.10.2026, 18:00 Uhr Berlin time (CET UTC+1)
-  const REVEAL_TARGET_MS = new Date('2026-10-29T18:00:00+01:00').getTime();
+  // Target reveal date synchronized with getTargetMs()
 
   function updateDateCountdown(playTick = false) {
     // Authoritative time: synchronized with Vercel server atomic time
     const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
-    const diff = REVEAL_TARGET_MS - currentEffectiveTime;
+    const diff = getTargetMs() - currentEffectiveTime;
 
     if (diff <= 0) {
       if (elements.timerDays) elements.timerDays.textContent = '00';
@@ -1974,7 +2131,7 @@
     const isDevAuth = Boolean(STATE.devMode && token);
 
     // Strict security check: only unlock if real countdown time reached or verified developer
-    if (currentEffectiveTime < REVEAL_TARGET_MS && !isDevAuth) {
+    if (currentEffectiveTime < getTargetMs() && !isDevAuth) {
       return;
     }
 
@@ -2874,90 +3031,334 @@
     animationFrame = requestAnimationFrame(renderConfetti);
   }
 
-  // ==================== SETTINGS MODAL ====================
-  function initSettingsModal() {
-    if (elements.openSettingsBtn && elements.settingsModal) {
-      elements.openSettingsBtn.addEventListener('click', () => {
-        audio.playClick();
-        elements.settingsModal.classList.add('open');
-        updateSettingsUI();
-        refreshIcons();
+  // ==================== DEVELOPER SETTINGS MODAL (DATE & ENCRYPTED GENDER) ====================
+  let devSelectedGender = 'boy';
+
+  function formatTimeRemainingPreview(targetMs) {
+    const diff = targetMs - (Date.now() + (STATE.serverTimeOffset || 0));
+    if (diff <= 0) {
+      return '⏱️ Abgelaufen (Rubbelkarte sofort freigeschaltet)';
+    }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((diff / (1000 * 60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+    const parts = [];
+    if (days > 0) parts.push(`${days} Tag${days > 1 ? 'e' : ''}`);
+    if (hours > 0 || days > 0) parts.push(`${hours} Std`);
+    parts.push(`${mins} Min`);
+    parts.push(`${secs} Sek`);
+    return `⏳ Noch ${parts.join(' ')} verbleibend`;
+  }
+
+  function updateDevPreview() {
+    if (!elements.devInputTargetDate || !elements.devInputTargetTime || !elements.devLivePreviewText) return;
+    const dateVal = elements.devInputTargetDate.value;
+    const timeVal = elements.devInputTargetTime.value;
+    if (!dateVal || !timeVal) {
+      elements.devLivePreviewText.textContent = 'Bitte Datum und Uhrzeit angeben';
+      return;
+    }
+    const targetIso = `${dateVal}T${timeVal}:00`;
+    const targetMs = new Date(targetIso).getTime();
+    if (isNaN(targetMs)) {
+      elements.devLivePreviewText.textContent = 'Ungültiges Datumsformat';
+      return;
+    }
+    elements.devLivePreviewText.textContent = formatTimeRemainingPreview(targetMs);
+  }
+
+  async function applyDevTargetDate(targetMs, targetIso) {
+    if (isNaN(targetMs)) return;
+    STATE.revealTargetMs = targetMs;
+    localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, targetIso);
+
+    // Sync to server API if dev token is available
+    if (STATE.devToken) {
+      fetch('/api/dev-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-dev-token': STATE.devToken
+        },
+        body: JSON.stringify({
+          targetDate: targetIso,
+          gender: STATE.actualGender || devSelectedGender
+        })
+      }).catch(e => console.warn('[DevConfig] Could not sync date to server:', e));
+    }
+
+    // Live countdown update
+    const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
+    if (targetMs <= currentEffectiveTime) {
+      if (!STATE.isCardUnlocked) {
+        unlockScratchCard();
+      }
+    } else {
+      STATE.isCardUnlocked = false;
+      if (elements.countdownLockOverlay) elements.countdownLockOverlay.classList.remove('unlocked');
+      if (elements.scratchCanvasTop) elements.scratchCanvasTop.classList.remove('unlocked');
+      if (elements.scratchCanvasMid) elements.scratchCanvasMid.classList.remove('unlocked');
+      startCountdown();
+    }
+
+    if (elements.countdownStatusLabel) {
+      elements.countdownStatusLabel.textContent = (targetMs <= currentEffectiveTime)
+        ? t('countdownUnlockedLabel')
+        : formatCountdownTargetLabel(targetMs, STATE.lang);
+    }
+  }
+
+  async function applyDevGender(gender) {
+    if (!gender || (gender !== 'boy' && gender !== 'girl')) return;
+    devSelectedGender = gender;
+    STATE.actualGender = gender;
+    updateDevGenderCardsUI();
+
+    // Encrypt with AES-256-GCM into secure vault
+    const token = STATE.devToken || sessionStorage.getItem('baby_dev_token') || 'baby_dev_session_token';
+    await CryptoVault.encryptGender(gender, token);
+
+    // Sync to server API if dev token is available
+    if (STATE.devToken) {
+      const activeIso = localStorage.getItem(CryptoVault.STORAGE_KEY_DATE) || DEFAULT_REVEAL_TARGET_DATE;
+      fetch('/api/dev-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-dev-token': STATE.devToken
+        },
+        body: JSON.stringify({
+          targetDate: activeIso,
+          gender: gender
+        })
+      }).catch(e => console.warn('[DevConfig] Could not sync gender to server:', e));
+    }
+
+    // Apply gender styling, underlay, quote, colors
+    applyActualGenderTheme();
+    updateSettingsUI();
+  }
+
+  function setDevInputFromMs(targetMs, autoApply = true) {
+    const d = new Date(targetMs);
+    if (isNaN(d.getTime())) return;
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const mins = String(d.getMinutes()).padStart(2, '0');
+
+    if (elements.devInputTargetDate) elements.devInputTargetDate.value = `${year}-${month}-${day}`;
+    if (elements.devInputTargetTime) elements.devInputTargetTime.value = `${hours}:${mins}`;
+    updateDevPreview();
+
+    if (autoApply) {
+      const targetIso = `${year}-${month}-${day}T${hours}:${mins}:00`;
+      applyDevTargetDate(targetMs, targetIso);
+    }
+  }
+
+  function openDevSettingsModal() {
+    if (!elements.devSettingsModal) return;
+    audio.playClick();
+
+    // Populate with current target date without triggering auto-apply
+    setDevInputFromMs(getTargetMs(), false);
+
+    // Populate with current gender
+    devSelectedGender = STATE.actualGender || 'boy';
+    updateDevGenderCardsUI();
+
+    elements.devSettingsModal.classList.add('open');
+    refreshIcons();
+  }
+
+  function closeDevSettingsModal() {
+    if (!elements.devSettingsModal) return;
+    elements.devSettingsModal.classList.remove('open');
+  }
+
+  function updateDevGenderCardsUI() {
+    if (elements.devSelectBoy) {
+      elements.devSelectBoy.classList.toggle('active', devSelectedGender === 'boy');
+    }
+    if (elements.devSelectGirl) {
+      elements.devSelectGirl.classList.toggle('active', devSelectedGender === 'girl');
+    }
+  }
+
+  function initDevSettingsModal() {
+    // Open / Close triggers
+    if (elements.btnOpenDevSettings) {
+      elements.btnOpenDevSettings.addEventListener('click', openDevSettingsModal);
+    }
+    if (elements.closeDevSettingsBtn) {
+      elements.closeDevSettingsBtn.addEventListener('click', closeDevSettingsModal);
+    }
+    if (elements.cancelDevSettingsBtn) {
+      elements.cancelDevSettingsBtn.addEventListener('click', closeDevSettingsModal);
+    }
+    if (elements.devSettingsModal) {
+      elements.devSettingsModal.addEventListener('click', e => {
+        if (e.target === elements.devSettingsModal) closeDevSettingsModal();
       });
     }
 
-    if (elements.closeSettingsBtn && elements.settingsModal) {
-      elements.closeSettingsBtn.addEventListener('click', () => {
-        audio.playClick();
-        elements.settingsModal.classList.remove('open');
+    // Live preview update on manual date/time input
+    const handleDateTimeInput = () => {
+      updateDevPreview();
+    };
+    if (elements.devInputTargetDate) {
+      elements.devInputTargetDate.addEventListener('input', handleDateTimeInput);
+    }
+    if (elements.devInputTargetTime) {
+      elements.devInputTargetTime.addEventListener('input', handleDateTimeInput);
+    }
+
+    // Preset buttons: update input fields and live preview
+    if (elements.devPresetNow) {
+      elements.devPresetNow.addEventListener('click', () => {
+        audio.playSelect();
+        setDevInputFromMs(Date.now() - 5000, false);
+      });
+    }
+    if (elements.devPresetPlus5m) {
+      elements.devPresetPlus5m.addEventListener('click', () => {
+        audio.playSelect();
+        setDevInputFromMs(Date.now() + 5 * 60 * 1000, false);
+      });
+    }
+    if (elements.devPresetPlus1d) {
+      elements.devPresetPlus1d.addEventListener('click', () => {
+        audio.playSelect();
+        setDevInputFromMs(Date.now() + 24 * 60 * 60 * 1000, false);
       });
     }
 
-    if (elements.saveSettingsBtn && elements.settingsModal) {
-      elements.saveSettingsBtn.addEventListener('click', () => {
-        audio.playClick();
-        elements.settingsModal.classList.remove('open');
+    // Gender selection cards
+    if (elements.devSelectBoy) {
+      elements.devSelectBoy.addEventListener('click', () => {
+        devSelectedGender = 'boy';
+        updateDevGenderCardsUI();
+        audio.playSelect();
+      });
+    }
+    if (elements.devSelectGirl) {
+      elements.devSelectGirl.addEventListener('click', () => {
+        devSelectedGender = 'girl';
+        updateDevGenderCardsUI();
+        audio.playSelect();
       });
     }
 
-    if (elements.settingsModal) {
-      elements.settingsModal.addEventListener('click', e => {
-        if (e.target === elements.settingsModal) {
-          elements.settingsModal.classList.remove('open');
+    // Verschlüsselt anwenden button
+    if (elements.saveDevSettingsBtn) {
+      elements.saveDevSettingsBtn.addEventListener('click', async () => {
+        audio.playClick();
+        const dateVal = elements.devInputTargetDate ? elements.devInputTargetDate.value : '';
+        const timeVal = elements.devInputTargetTime ? elements.devInputTargetTime.value : '';
+        if (!dateVal || !timeVal) return;
+
+        const targetIso = dateVal + "T" + timeVal + ":00";
+        const targetMs = new Date(targetIso).getTime();
+        if (isNaN(targetMs)) return;
+
+        // Apply new target date
+        STATE.revealTargetMs = targetMs;
+        localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, targetIso);
+
+        // Apply new gender encrypted with AES-256-GCM
+        STATE.actualGender = devSelectedGender;
+        const token = STATE.devToken || sessionStorage.getItem('baby_dev_token') || 'baby_dev_session_token';
+        await CryptoVault.encryptGender(devSelectedGender, token);
+
+        // Sync to server API if dev token is available
+        if (STATE.devToken) {
+          try {
+            await fetch('/api/dev-config', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-dev-token': STATE.devToken
+              },
+              body: JSON.stringify({
+                targetDate: targetIso,
+                gender: devSelectedGender
+              })
+            });
+          } catch (e) {
+            console.warn('[DevConfig] Could not sync to server:', e);
+          }
         }
-      });
-    }
 
-    if (elements.setGenderGirl) {
-      elements.setGenderGirl.addEventListener('click', () => {
-        STATE.actualGender = 'girl';
-        localStorage.setItem('baby_actual_gender', 'girl');
-        updateSettingsUI();
+        // Live visual updates
         applyActualGenderTheme();
-        audio.playSelect();
-      });
-    }
-
-    if (elements.setGenderBoy) {
-      elements.setGenderBoy.addEventListener('click', () => {
-        STATE.actualGender = 'boy';
-        localStorage.setItem('baby_actual_gender', 'boy');
         updateSettingsUI();
-        applyActualGenderTheme();
-        audio.playSelect();
+
+        // Update countdown & scratch card status
+        const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
+        if (targetMs <= currentEffectiveTime) {
+          if (!STATE.isCardUnlocked) {
+            unlockScratchCard();
+          }
+        } else {
+          STATE.isCardUnlocked = false;
+          if (elements.countdownLockOverlay) elements.countdownLockOverlay.classList.remove('unlocked');
+          if (elements.scratchCanvasTop) elements.scratchCanvasTop.classList.remove('unlocked');
+          if (elements.scratchCanvasMid) elements.scratchCanvasMid.classList.remove('unlocked');
+          startCountdown();
+        }
+
+        if (elements.countdownStatusLabel) {
+          elements.countdownStatusLabel.textContent = (targetMs <= currentEffectiveTime)
+            ? t('countdownUnlockedLabel')
+            : formatCountdownTargetLabel(targetMs, STATE.lang);
+        }
+
+        closeDevSettingsModal();
       });
     }
 
-    if (elements.devJumpPage1) {
-      elements.devJumpPage1.addEventListener('click', () => {
-        if (elements.settingsModal) elements.settingsModal.classList.remove('open');
+    // Toolbar buttons
+    if (elements.btnDevBarSkip) {
+      elements.btnDevBarSkip.addEventListener('click', () => {
+        if (STATE.currentStep !== 3) {
+          goToStep(3);
+        }
+        skipCountdownForDev();
+      });
+    }
+    if (elements.btnCloseDevMode) {
+      elements.btnCloseDevMode.addEventListener('click', () => {
+        toggleDevMode(false);
+      });
+    }
+
+    // Navigation Jumps
+    if (elements.devJumpP1) {
+      elements.devJumpP1.addEventListener('click', () => {
+        closeDevSettingsModal();
         goToStep(1);
       });
     }
-
-    if (elements.devJumpPage2) {
-      elements.devJumpPage2.addEventListener('click', () => {
-        if (elements.settingsModal) elements.settingsModal.classList.remove('open');
-        if (!STATE.guestName) {
-          STATE.guestName = (STATE.lang === 'de') ? 'Gast' : 'Guest';
-          if (elements.displayGuestName) {
-            elements.displayGuestName.textContent = STATE.guestName;
-          }
-        }
+    if (elements.devJumpP2) {
+      elements.devJumpP2.addEventListener('click', () => {
+        closeDevSettingsModal();
+        if (!STATE.guestName) STATE.guestName = (STATE.lang === 'de') ? 'Gast' : 'Guest';
         goToStep(2);
       });
     }
-
-    if (elements.devJumpPage3) {
-      elements.devJumpPage3.addEventListener('click', () => {
-        if (elements.settingsModal) elements.settingsModal.classList.remove('open');
+    if (elements.devJumpP3) {
+      elements.devJumpP3.addEventListener('click', () => {
+        closeDevSettingsModal();
         if (!STATE.userGuess) STATE.userGuess = 'boy';
         goToStep(3);
       });
     }
-
-    if (elements.btnResetAllVotes) {
-      elements.btnResetAllVotes.addEventListener('click', () => {
-        STATE.votes = { boy: 12, girl: 14 };
+    if (elements.devResetVotes) {
+      elements.devResetVotes.addEventListener('click', () => {
+        STATE.votes = { boy: 15, girl: 17 };
         STATE.userGuess = null;
         STATE.guestName = '';
         try {
@@ -2965,9 +3366,10 @@
           localStorage.removeItem('baby_has_voted');
           localStorage.removeItem('baby_user_guess');
           localStorage.removeItem('baby_guest_name');
-        } catch (e) { }
+        } catch (e) {}
         updatePollUI();
         audio.playClick();
+        closeDevSettingsModal();
         goToStep(1);
       });
     }
@@ -2997,7 +3399,7 @@
         updateSettingsUI();
       } else {
         const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
-        if (currentEffectiveTime >= REVEAL_TARGET_MS) {
+        if (currentEffectiveTime >= getTargetMs()) {
           STATE.isServerUnlocked = true;
         } else {
           STATE.isServerUnlocked = false;
@@ -3005,7 +3407,7 @@
       }
     } catch (e) {
       const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
-      if (currentEffectiveTime >= REVEAL_TARGET_MS) {
+      if (currentEffectiveTime >= getTargetMs()) {
         STATE.isServerUnlocked = true;
       } else {
         STATE.isServerUnlocked = false;
@@ -3090,12 +3492,20 @@
         sessionStorage.setItem('baby_dev_token', token);
         localStorage.setItem('baby_dev_active', 'true');
         STATE.devToken = token;
+
+        if (data.targetDate) {
+          STATE.revealTargetMs = new Date(data.targetDate).getTime();
+          localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, data.targetDate);
+        }
+
         if (data.gender) {
           STATE.actualGender = data.gender;
           STATE.isServerUnlocked = true;
+          await CryptoVault.encryptGender(data.gender, token);
           applyActualGenderTheme();
           updateSettingsUI();
         }
+
         closeDevAuthModal();
         toggleDevMode(true);
         return;
@@ -3192,9 +3602,7 @@
 
     audio.playDevToggle(STATE.devMode);
 
-    if (STATE.devMode) {
-      showToast(t('devToastActive'), true);
-    }
+    // Dev toast removed: devToolbar buttons visibly indicate active state
 
     updateFloatingSkipBtn();
     updateScalingContainer();
@@ -3640,7 +4048,7 @@
     initPage1();
     initPage2();
     initPage3();
-    initSettingsModal();
+    initDevSettingsModal();
     initStoryModalHandlers();
     initDevAuthModal();
     initDevEasterEgg();
@@ -3666,6 +4074,12 @@
       }
     });
 
+    // Load persisted plain target date if customized
+    const savedDate = localStorage.getItem(CryptoVault.STORAGE_KEY_DATE);
+    if (savedDate && !isNaN(new Date(savedDate).getTime())) {
+      STATE.revealTargetMs = new Date(savedDate).getTime();
+    }
+
     // Check if developer mode was activated on this device with valid session token
     const storedDevToken = sessionStorage.getItem('baby_dev_token');
     const isDevActive = localStorage.getItem('baby_dev_active') === 'true';
@@ -3673,6 +4087,17 @@
       STATE.devMode = true;
       STATE.devToken = storedDevToken;
       document.body.classList.add('dev-mode-active');
+
+      const encGender = CryptoVault.getEncryptedGender();
+      if (encGender) {
+        CryptoVault.decryptGender(encGender, storedDevToken).then(decrypted => {
+          if (decrypted) {
+            STATE.actualGender = decrypted;
+            applyActualGenderTheme();
+            updateSettingsUI();
+          }
+        });
+      }
     } else {
       STATE.devMode = false;
       STATE.devToken = storedDevToken || null;
