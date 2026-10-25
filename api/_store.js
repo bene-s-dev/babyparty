@@ -126,7 +126,7 @@ async function getActiveConfig() {
     }
     if (val && typeof val === 'object') {
       if (val.targetDate && !isNaN(new Date(val.targetDate).getTime())) {
-        targetDate = val.targetDate;
+        targetDate = new Date(val.targetDate).toISOString();
         isCustom = true;
       }
       if (val.gender) {
@@ -143,6 +143,20 @@ async function getActiveConfig() {
     }
   }
 
+  // Fallback: check dedicated baby_countdown_date key if baby_reveal_config was missing date
+  const kvDateResult = await kvExecute(['GET', 'baby_countdown_date']);
+  if (kvDateResult && !isNaN(new Date(kvDateResult).getTime())) {
+    targetDate = new Date(kvDateResult).toISOString();
+    isCustom = true;
+    memoryConfigCache = { targetDate, gender, isCustom };
+    return {
+      targetDate,
+      targetTimeMs: new Date(targetDate).getTime(),
+      gender,
+      isCustom
+    };
+  }
+
   // 2. Try file system (.dev-runtime-config.json or /tmp)
   const candidateFiles = [PRIMARY_CONFIG_FILE, TMP_CONFIG_FILE];
   for (const filePath of candidateFiles) {
@@ -151,7 +165,7 @@ async function getActiveConfig() {
         const raw = fs.readFileSync(filePath, 'utf8');
         const parsed = JSON.parse(raw);
         if (parsed.targetDate && !isNaN(new Date(parsed.targetDate).getTime())) {
-          targetDate = parsed.targetDate;
+          targetDate = new Date(parsed.targetDate).toISOString();
           isCustom = true;
         }
         if (parsed.gender) {
@@ -192,10 +206,12 @@ async function getActiveConfig() {
 
 async function setActiveConfig(newConfig) {
   const current = await getActiveConfig();
+  const updatedTargetDate = (newConfig.targetDate && !isNaN(new Date(newConfig.targetDate).getTime()))
+    ? new Date(newConfig.targetDate).toISOString()
+    : current.targetDate;
+
   const updated = {
-    targetDate: (newConfig.targetDate && !isNaN(new Date(newConfig.targetDate).getTime()))
-      ? newConfig.targetDate
-      : current.targetDate,
+    targetDate: updatedTargetDate,
     gender: newConfig.gender ? normalizeGender(newConfig.gender) : current.gender,
     isCustom: true,
     updatedAt: new Date().toISOString()
@@ -204,7 +220,9 @@ async function setActiveConfig(newConfig) {
   memoryConfigCache = updated;
 
   // 1. Persist to Vercel KV / Upstash Redis if available
+  // Save both the full config bundle and a dedicated countdown date key for clear cloud visibility
   await kvExecute(['SET', 'baby_reveal_config', JSON.stringify(updated)]);
+  await kvExecute(['SET', 'baby_countdown_date', updated.targetDate]);
 
   // 2. Persist to file system (Primary or /tmp fallback)
   const candidateFiles = [PRIMARY_CONFIG_FILE, TMP_CONFIG_FILE];
@@ -227,6 +245,7 @@ async function resetActiveConfig() {
   memoryConfigCache = null;
 
   await kvExecute(['DEL', 'baby_reveal_config']);
+  await kvExecute(['DEL', 'baby_countdown_date']);
 
   const candidateFiles = [PRIMARY_CONFIG_FILE, TMP_CONFIG_FILE];
   for (const filePath of candidateFiles) {

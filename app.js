@@ -471,6 +471,7 @@
     closeDevSettingsBtn: document.getElementById('closeDevSettingsBtn'),
     cancelDevSettingsBtn: document.getElementById('cancelDevSettingsBtn'),
     saveDevSettingsBtn: document.getElementById('saveDevSettingsBtn'),
+    saveDevSettingsBtnText: document.getElementById('saveDevSettingsBtnText'),
     devInputTargetDate: document.getElementById('devInputTargetDate'),
     devInputTargetTime: document.getElementById('devInputTargetTime'),
     devPresetNow: document.getElementById('devPresetNow'),
@@ -3060,8 +3061,8 @@
       elements.devLivePreviewText.textContent = 'Bitte Datum und Uhrzeit angeben';
       return;
     }
-    const targetIso = `${dateVal}T${timeVal}:00`;
-    const targetMs = new Date(targetIso).getTime();
+    const targetDateObj = new Date(`${dateVal}T${timeVal}`);
+    const targetMs = targetDateObj.getTime();
     if (isNaN(targetMs)) {
       elements.devLivePreviewText.textContent = 'Ungültiges Datumsformat';
       return;
@@ -3075,12 +3076,14 @@
     localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, targetIso);
 
     // Sync to server API if dev token is available
-    if (STATE.devToken) {
+    const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    if (devToken) {
+      STATE.devToken = devToken;
       fetch('/api/dev-config', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-dev-token': STATE.devToken
+          'x-dev-token': devToken
         },
         body: JSON.stringify({
           targetDate: targetIso,
@@ -3121,13 +3124,15 @@
     await CryptoVault.encryptGender(gender, token);
 
     // Sync to server API if dev token is available
-    if (STATE.devToken) {
+    const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    if (devToken) {
+      STATE.devToken = devToken;
       const activeIso = localStorage.getItem(CryptoVault.STORAGE_KEY_DATE) || DEFAULT_REVEAL_TARGET_DATE;
       fetch('/api/dev-config', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-dev-token': STATE.devToken
+          'x-dev-token': devToken
         },
         body: JSON.stringify({
           targetDate: activeIso,
@@ -3155,7 +3160,7 @@
     updateDevPreview();
 
     if (autoApply) {
-      const targetIso = `${year}-${month}-${day}T${hours}:${mins}:00`;
+      const targetIso = d.toISOString();
       applyDevTargetDate(targetMs, targetIso);
     }
   }
@@ -3278,7 +3283,7 @@
       });
     }
 
-    // Verschlüsselt anwenden button
+    // In Datenbank sichern button
     if (elements.saveDevSettingsBtn) {
       elements.saveDevSettingsBtn.addEventListener('click', async () => {
         audio.playClick();
@@ -3286,9 +3291,17 @@
         const timeVal = elements.devInputTargetTime ? elements.devInputTargetTime.value : '';
         if (!dateVal || !timeVal) return;
 
-        const targetIso = dateVal + "T" + timeVal + ":00";
-        const targetMs = new Date(targetIso).getTime();
-        if (isNaN(targetMs)) return;
+        const targetDateObj = new Date(`${dateVal}T${timeVal}`);
+        if (isNaN(targetDateObj.getTime())) return;
+        const targetMs = targetDateObj.getTime();
+        const targetIso = targetDateObj.toISOString();
+
+        // UI Loading state
+        const btn = elements.saveDevSettingsBtn;
+        const btnText = document.getElementById('saveDevSettingsBtnText');
+        const origBtnText = btnText ? btnText.textContent : '';
+        if (btn) btn.disabled = true;
+        if (btnText) btnText.textContent = 'Speichern...';
 
         // Apply new target date
         STATE.revealTargetMs = targetMs;
@@ -3299,23 +3312,50 @@
         const token = STATE.devToken || sessionStorage.getItem('baby_dev_token') || 'baby_dev_session_token';
         await CryptoVault.encryptGender(devSelectedGender, token);
 
-        // Sync to server API if dev token is available
-        if (STATE.devToken) {
+        // Sync to server API / Upstash Redis database
+        const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+        let saveSuccess = false;
+
+        if (devToken) {
+          STATE.devToken = devToken;
           try {
-            await fetch('/api/dev-config', {
+            const res = await fetch('/api/dev-config', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'x-dev-token': STATE.devToken
+                'x-dev-token': devToken
               },
               body: JSON.stringify({
                 targetDate: targetIso,
                 gender: devSelectedGender
               })
             });
+
+            const data = await res.json().catch(() => null);
+            if (res.ok && data && data.success) {
+              saveSuccess = true;
+              if (data.config && data.config.targetTimeMs) {
+                STATE.revealTargetMs = Number(data.config.targetTimeMs);
+              }
+              if (data.config && data.config.targetDate) {
+                localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, data.config.targetDate);
+              }
+              if (elements.devCryptoBadgeText && data.config && data.config.storage) {
+                elements.devCryptoBadgeText.textContent = `AES-256-GCM • ${data.config.storage}`;
+              }
+            }
           } catch (e) {
             console.warn('[DevConfig] Could not sync to server:', e);
           }
+        }
+
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = origBtnText || 'Speichern';
+
+        if (saveSuccess) {
+          showToast('✅ Erfolgreich gespeichert!', true);
+        } else if (devToken) {
+          showToast('⚠️ Konnte nicht gespeichert werden', true);
         }
 
         // Live visual updates
@@ -3342,6 +3382,7 @@
             : formatCountdownTargetLabel(targetMs, STATE.lang);
         }
 
+        updateDateCountdown(false);
         closeDevSettingsModal();
       });
     }
@@ -3421,11 +3462,25 @@
       // Target countdown synchronization: updates countdown for all visitors from Upstash Cloud DB
       if (data && data.targetTimeMs && !isNaN(data.targetTimeMs)) {
         STATE.revealTargetMs = Number(data.targetTimeMs);
+        if (data.targetTime) {
+          localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, data.targetTime);
+        } else {
+          localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, new Date(STATE.revealTargetMs).toISOString());
+        }
+
+        const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
         if (elements.countdownStatusLabel) {
-          const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
           elements.countdownStatusLabel.textContent = (STATE.revealTargetMs <= currentEffectiveTime)
             ? t('countdownUnlockedLabel')
             : formatCountdownTargetLabel(STATE.revealTargetMs, STATE.lang);
+        }
+
+        // Live update countdown display & unlock status
+        updateDateCountdown(false);
+        if (STATE.revealTargetMs <= currentEffectiveTime) {
+          if (!STATE.isCardUnlocked) {
+            unlockScratchCard();
+          }
         }
       }
       if (data && data.unlocked && data.gender) {
@@ -4079,6 +4134,12 @@
 
   // ==================== INITIALIZATION ====================
   function init() {
+    // Instant initial target date fallback from local storage cache
+    const savedDate = localStorage.getItem(CryptoVault.STORAGE_KEY_DATE);
+    if (savedDate && !isNaN(new Date(savedDate).getTime())) {
+      STATE.revealTargetMs = new Date(savedDate).getTime();
+    }
+
     magicEffects.init();
     initVideoBackground();
     initPage1();
@@ -4109,12 +4170,6 @@
         goToStep(1, false);
       }
     });
-
-    // Load persisted plain target date if customized
-    const savedDate = localStorage.getItem(CryptoVault.STORAGE_KEY_DATE);
-    if (savedDate && !isNaN(new Date(savedDate).getTime())) {
-      STATE.revealTargetMs = new Date(savedDate).getTime();
-    }
 
     // Check if developer mode was activated on this device with valid session token
     const storedDevToken = sessionStorage.getItem('baby_dev_token');
