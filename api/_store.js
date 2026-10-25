@@ -31,11 +31,57 @@ function verifyDevToken(token) {
 }
 
 function getKvConfig() {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (url && token) {
-    return { url, token };
+  // 1. Direct explicit environment variable checks
+  const explicitPairs = [
+    // Database: upstash-kv-lime-notebook (common Vercel Marketplace naming conventions)
+    ['UPSTASH_KV_LIME_NOTEBOOK_REST_API_URL', 'UPSTASH_KV_LIME_NOTEBOOK_REST_API_TOKEN'],
+    ['UPSTASH_KV_LIME_NOTEBOOK_REST_URL', 'UPSTASH_KV_LIME_NOTEBOOK_REST_TOKEN'],
+    ['UPSTASH_KV_LIME_NOTEBOOK_URL', 'UPSTASH_KV_LIME_NOTEBOOK_TOKEN'],
+    ['UPSTASH_KV_LIME_NOTEBOOK_KV_REST_API_URL', 'UPSTASH_KV_LIME_NOTEBOOK_KV_REST_API_TOKEN'],
+    // Generic Upstash & Vercel KV defaults
+    ['KV_REST_API_URL', 'KV_REST_API_TOKEN'],
+    ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'],
+    ['UPSTASH_REST_API_URL', 'UPSTASH_REST_API_TOKEN'],
+    ['REDIS_REST_API_URL', 'REDIS_REST_API_TOKEN']
+  ];
+
+  for (const [urlKey, tokenKey] of explicitPairs) {
+    const url = process.env[urlKey];
+    const token = process.env[tokenKey];
+    if (url && token) {
+      return {
+        url: url.trim().replace(/\/+$/, ''),
+        token: token.trim(),
+        source: urlKey
+      };
+    }
   }
+
+  // 2. Dynamic auto-discovery for any Upstash / KV environment variables
+  const envKeys = Object.keys(process.env);
+  
+  // Specific match for lime notebook
+  const limeUrlKey = envKeys.find(k => k.includes('LIME_NOTEBOOK') && (k.includes('URL') || k.includes('REST')));
+  const limeTokenKey = envKeys.find(k => k.includes('LIME_NOTEBOOK') && (k.includes('TOKEN') || k.includes('PASSWORD')));
+  if (limeUrlKey && limeTokenKey && process.env[limeUrlKey] && process.env[limeTokenKey]) {
+    return {
+      url: process.env[limeUrlKey].trim().replace(/\/+$/, ''),
+      token: process.env[limeTokenKey].trim(),
+      source: limeUrlKey
+    };
+  }
+
+  // Generic match for any Upstash / KV REST endpoints
+  const genericUrlKey = envKeys.find(k => (k.includes('UPSTASH') || k.includes('KV')) && k.endsWith('_URL'));
+  const genericTokenKey = envKeys.find(k => (k.includes('UPSTASH') || k.includes('KV')) && (k.endsWith('_TOKEN') || k.endsWith('_KEY')));
+  if (genericUrlKey && genericTokenKey && process.env[genericUrlKey] && process.env[genericTokenKey]) {
+    return {
+      url: process.env[genericUrlKey].trim().replace(/\/+$/, ''),
+      token: process.env[genericTokenKey].trim(),
+      source: genericUrlKey
+    };
+  }
+
   return null;
 }
 
@@ -53,10 +99,13 @@ async function kvExecute(commandArray) {
     });
     if (res.ok) {
       const data = await res.json();
-      return data.result;
+      return (data && data.result !== undefined) ? data.result : data;
+    } else {
+      const errText = await res.text().catch(() => '');
+      console.warn(`[DevStore] Upstash KV (${kv.source}) HTTP ${res.status}:`, errText);
     }
   } catch (err) {
-    console.warn('[DevStore] KV error:', err.message);
+    console.warn(`[DevStore] Upstash KV (${kv.source}) error:`, err.message);
   }
   return null;
 }
@@ -193,6 +242,7 @@ module.exports = {
   DEFAULT_TARGET_DATE,
   normalizeGender,
   verifyDevToken,
+  getKvConfig,
   getActiveConfig,
   setActiveConfig,
   resetActiveConfig

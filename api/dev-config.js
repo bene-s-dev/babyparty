@@ -1,5 +1,5 @@
 // Vercel Serverless Function: Developer Reveal Configuration (Secure Date & Gender)
-const { verifyDevToken, getActiveConfig, setActiveConfig, resetActiveConfig } = require('./_store');
+const { verifyDevToken, getActiveConfig, setActiveConfig, resetActiveConfig, getKvConfig } = require('./_store');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +18,9 @@ module.exports = async function handler(req, res) {
     });
   }
 
+  const kv = getKvConfig();
+  const storageInfo = kv ? `Upstash Redis Cloud (${kv.source})` : 'Local Fallback / Temp Memory';
+
   if (req.method === 'GET') {
     const config = await getActiveConfig();
     return res.status(200).json({
@@ -26,7 +29,9 @@ module.exports = async function handler(req, res) {
         targetDate: config.targetDate,
         targetTimeMs: config.targetTimeMs,
         gender: config.gender,
-        isCustom: config.isCustom
+        isCustom: config.isCustom,
+        storage: storageInfo,
+        hasKv: Boolean(kv)
       },
       serverTime: new Date().toISOString()
     });
@@ -47,11 +52,15 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: 'Dev-Konfiguration erfolgreich aktualisiert.',
+      message: kv 
+        ? `Erfolgreich dauerhaft in Upstash Redis (${kv.source}) gespeichert.` 
+        : 'Dev-Konfiguration aktualisiert (Achtung: Kein Upstash aktiv, temporärer Speicher).',
       config: {
         targetDate: updated.targetDate,
         targetTimeMs: updated.targetTimeMs,
-        gender: updated.gender
+        gender: updated.gender,
+        storage: storageInfo,
+        hasKv: Boolean(kv)
       },
       serverTime: new Date().toISOString()
     });

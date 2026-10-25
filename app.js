@@ -484,6 +484,7 @@
     devJumpP2: document.getElementById('devJumpP2'),
     devJumpP3: document.getElementById('devJumpP3'),
     devResetVotes: document.getElementById('devResetVotes'),
+    devCryptoBadgeText: document.getElementById('devCryptoBadgeText'),
 
     // Settings Modal
     settingsModal: document.getElementById('settingsModal'),
@@ -3170,6 +3171,31 @@
     devSelectedGender = STATE.actualGender || 'boy';
     updateDevGenderCardsUI();
 
+    // Query active Upstash / server config to ensure dev mode matches cloud state
+    const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    if (devToken) {
+      fetch('/api/dev-config', {
+        headers: { 'x-dev-token': devToken }
+      })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d && d.success && d.config) {
+          if (d.config.targetTimeMs) {
+            setDevInputFromMs(d.config.targetTimeMs, false);
+          }
+          if (d.config.gender) {
+            devSelectedGender = d.config.gender;
+            STATE.actualGender = d.config.gender;
+            updateDevGenderCardsUI();
+          }
+          if (elements.devCryptoBadgeText && d.config.storage) {
+            elements.devCryptoBadgeText.textContent = `AES-256-GCM • ${d.config.storage}`;
+          }
+        }
+      })
+      .catch(() => {});
+    }
+
     elements.devSettingsModal.classList.add('open');
     refreshIcons();
   }
@@ -3391,6 +3417,16 @@
       // Server time synchronization: prevents clock spoofing on guest devices
       if (data && data.serverTime) {
         STATE.serverTimeOffset = Date.parse(data.serverTime) - Date.now();
+      }
+      // Target countdown synchronization: updates countdown for all visitors from Upstash Cloud DB
+      if (data && data.targetTimeMs && !isNaN(data.targetTimeMs)) {
+        STATE.revealTargetMs = Number(data.targetTimeMs);
+        if (elements.countdownStatusLabel) {
+          const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
+          elements.countdownStatusLabel.textContent = (STATE.revealTargetMs <= currentEffectiveTime)
+            ? t('countdownUnlockedLabel')
+            : formatCountdownTargetLabel(STATE.revealTargetMs, STATE.lang);
+        }
       }
       if (data && data.unlocked && data.gender) {
         STATE.isServerUnlocked = true;
