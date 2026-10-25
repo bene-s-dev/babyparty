@@ -33,6 +33,8 @@ function verifyDevToken(token) {
 function getKvConfig() {
   // 1. Direct explicit environment variable checks
   const explicitPairs = [
+    // Exact Vercel Storage connection prefix
+    ['STORAGE_KV_REST_API_URL', 'STORAGE_KV_REST_API_TOKEN'],
     // Database: upstash-kv-lime-notebook (common Vercel Marketplace naming conventions)
     ['UPSTASH_KV_LIME_NOTEBOOK_REST_API_URL', 'UPSTASH_KV_LIME_NOTEBOOK_REST_API_TOKEN'],
     ['UPSTASH_KV_LIME_NOTEBOOK_REST_URL', 'UPSTASH_KV_LIME_NOTEBOOK_REST_TOKEN'],
