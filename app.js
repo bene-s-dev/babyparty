@@ -997,91 +997,8 @@
 
     lastPianoIdx: -1,
 
-    // Warm, elegant acoustic piano note sound on keystroke (rich multi-string resonance & hammer transient)
-    playTypeDroplet(charLength = 1) {
-      if (!STATE.soundEnabled) return;
-      this.init();
-      if (!this.ctx) return;
-
-      try {
-        const now = this.ctx.currentTime;
-        // Warm lyrical piano scale palette (C5, D5, E5, G5, A5, C6, D6, E6)
-        const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51];
-        
-        let noteIdx;
-        do {
-          noteIdx = Math.floor(Math.random() * notes.length);
-        } while (noteIdx === this.lastPianoIdx && notes.length > 1);
-        this.lastPianoIdx = noteIdx;
-
-        const freq = notes[noteIdx];
-
-        // 1. Primary string fundamental (triangle body for natural acoustic string harmonics)
-        const osc1 = this.ctx.createOscillator();
-        const gain1 = this.ctx.createGain();
-        osc1.type = 'triangle';
-        osc1.frequency.setValueAtTime(freq, now);
-
-        // 2. Harmonic overtone / unison double-string chorus (subtle 2 mHz detune)
-        const osc2 = this.ctx.createOscillator();
-        const gain2 = this.ctx.createGain();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(freq * 2.002, now);
-
-        // 3. Hammer felt impact transient (gives the authentic tactile wooden/felt piano strike)
-        const osc3 = this.ctx.createOscillator();
-        const gain3 = this.ctx.createGain();
-        osc3.type = 'sine';
-        osc3.frequency.setValueAtTime(freq * 3.5, now);
-
-        // Acoustic soundboard lowpass filter: strikes bright and naturally warms up
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(4200, now);
-        filter.frequency.exponentialRampToValueAtTime(1200, now + 0.35);
-
-        // Master output gain for smooth mixing
-        const masterGain = this.ctx.createGain();
-
-        // ADSR Envelopes:
-        // Osc 1: Sharp piano attack (2.5ms), rich sustain decay to 420ms
-        gain1.gain.setValueAtTime(0.0001, now);
-        gain1.gain.linearRampToValueAtTime(0.08, now + 0.0025);
-        gain1.gain.exponentialRampToValueAtTime(0.026, now + 0.12);
-        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
-
-        // Osc 2 (Octave chime): quick decay for piano brilliance
-        gain2.gain.setValueAtTime(0.0001, now);
-        gain2.gain.linearRampToValueAtTime(0.038, now + 0.0025);
-        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-
-        // Osc 3 (Hammer transient): 30ms quick felt strike
-        gain3.gain.setValueAtTime(0.0001, now);
-        gain3.gain.linearRampToValueAtTime(0.022, now + 0.0015);
-        gain3.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
-
-        // Connections
-        osc1.connect(gain1);
-        osc2.connect(gain2);
-        osc3.connect(gain3);
-
-        gain1.connect(filter);
-        gain2.connect(filter);
-        gain3.connect(filter);
-
-        filter.connect(masterGain);
-        masterGain.connect(this.ctx.destination);
-
-        const stopTime = now + 0.45;
-        osc1.start(now);
-        osc2.start(now);
-        osc3.start(now);
-
-        osc1.stop(stopTime);
-        osc2.stop(stopTime);
-        osc3.stop(stopTime);
-      } catch (e) { }
-    },
+    // Disabled per user request: no typing sound on name input
+    playTypeDroplet() { },
 
     // Idea 4: Soft playful wooden wobble feedback when tapping incomplete action
     playWobble() {
@@ -4585,7 +4502,7 @@
       }
 
       if (elements.showerInviteVerb) {
-        elements.showerInviteVerb.textContent = totalGuests >= 2 ? 'ihr seid eingeladen ✨' : 'du bist eingeladen ✨';
+        elements.showerInviteVerb.textContent = totalGuests >= 2 ? 'wir wollen mit euch feiern ✨' : 'wir wollen mit dir feiern ✨';
       }
 
       if (elements.showerPromptText) {
@@ -4749,7 +4666,7 @@
       const hasPlus = rsvpData.plusOnes && rsvpData.plusOnes.length > 0;
       elements.showerSuccessDesc.textContent = isAttending 
         ? (hasPlus ? 'Wir freuen uns riesig auf euch!' : 'Wir freuen uns riesig auf dich!') 
-        : 'Schade, dass du es nicht schaffst. Wir denken fest an dich und schicken ganz liebe Grüße!';
+        : (hasPlus ? 'Wir denken fest an euch und schicken ganz liebe Grüße!' : 'Wir denken fest an dich und schicken ganz liebe Grüße!');
     }
 
     if (elements.showerSuccessGuestName) {
@@ -4784,12 +4701,14 @@
     const dateLabel = formatEventDateLabel(shower.date);
     const timeLabel = shower.time ? `ab ${shower.time} Uhr` : 'ab 14:30 Uhr';
     const loc = shower.location || 'Bergstr. 33, 79539 Lörrach';
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`;
 
     const text = [
       'Babyshower von Alina & Kevin',
       `Datum: ${dateLabel}`,
       `Uhrzeit: ${timeLabel}`,
-      `Adresse: ${loc}`
+      `Adresse: ${loc}`,
+      `Google Maps: ${mapsUrl}`
     ].join('\n');
 
     const fallbackCopy = (str) => {
@@ -4823,6 +4742,7 @@
     const dateStr = shower.date || '2026-01-08';
     const timeStr = shower.time || '14:30';
     const loc = shower.location || 'Bergstr. 33, 79539 Lörrach';
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`;
 
     const cleanDate = dateStr.replace(/-/g, '');
     const cleanTime = timeStr.replace(/:/g, '') + '00';
@@ -4840,8 +4760,9 @@
       `DTSTART:${startDt}`,
       `DTEND:${endDt}`,
       `SUMMARY:Babyshower von Alina & Kevin`,
-      `DESCRIPTION:Feiere mit uns die Babyshower! Wir freuen uns auf dich.`,
+      `DESCRIPTION:Feiere mit uns die Babyshower! Wir freuen uns auf dich.\\n\\nGoogle Maps: ${mapsUrl}`,
       `LOCATION:${loc}`,
+      `URL:${mapsUrl}`,
       'STATUS:CONFIRMED',
       'END:VEVENT',
       'END:VCALENDAR'
@@ -4859,7 +4780,7 @@
     const guideToastHtml = `
       <div class="ics-toast-box">
         <div class="ics-toast-header">
-          <span>📅</span> <strong>Termin heruntergeladen!</strong>
+          <span>📅</span> <strong>Termin speichern</strong>
         </div>
         <div class="ics-toast-desc">
           Öffne die heruntergeladene Datei, um den Termin im iPhone- oder Android-Kalender zu speichern.

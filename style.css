@@ -3954,9 +3954,21 @@ body.dev-mode-active .dev-floating-bar,
 }
 
 /* ==================== Babyshower Step 2: Einladungskarte ==================== */
+body.mode-babyshower .scaling-container {
+  max-width: min(96vw, 680px);
+}
+
+#pageShower2 .minimal-card,
 .shower-invite-card {
-  max-width: 480px;
-  margin: 0 auto;
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.shower-card-flow {
+  width: 100%;
 }
 
 /* Unified Headline: Ein vollständiger, dynamischer Satz */
