@@ -18,7 +18,7 @@ const DEFAULT_BABYSHOWER_CONFIG = {
   date: '2026-01-08',
   time: '14:30',
   location: 'Bergstr. 33, 79539 Lörrach',
-  message: 'Bald halten wir unser kleines Wunder in den Armen!\nDiese ganz besondere Vorfreude möchten wir mit unseren liebsten Menschen feiern. Lass uns bitte wissen, ob du dabei bist!'
+  message: 'Bald halten wir unser kleines Wunder in den Armen!\nDiese ganz besondere Vorfreude möchten wir mit unseren liebsten Menschen feiern.'
 };
 
 // In-memory cache across serverless warm invocations

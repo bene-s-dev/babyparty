@@ -338,7 +338,7 @@
       date: '2026-01-08',
       time: '14:30',
       location: 'Bergstr. 33, 79539 Lörrach',
-      message: 'Bald halten wir unser kleines Wunder in den Armen!\nDiese ganz besondere Vorfreude möchten wir mit unseren liebsten Menschen feiern. Lass uns bitte wissen, ob du dabei bist!'
+      message: 'Bald halten wir unser kleines Wunder in den Armen!\nDiese ganz besondere Vorfreude möchten wir mit unseren liebsten Menschen feiern.'
     },
     showerGuestName: '',
     showerPlusOnes: [],
@@ -4393,22 +4393,20 @@
       elements.btnRsvpAccept.addEventListener('click', () => {
         audio.playSelect();
         setShowerChoice('accept');
-        const pastelRedBlue = ['#f28b9c', '#f4a6b8', '#f7b2bd', '#9ec5f8', '#7db8eb', '#b8daf5'];
+        const colorfulConfetti = ['#f472b6', '#60a5fa', '#fbbf24', '#34d399', '#a78bfa', '#fb7185', '#38bdf8'];
         if (typeof window.confetti === 'function') {
           const rect = elements.btnRsvpAccept.getBoundingClientRect();
           window.confetti({
-            particleCount: 70,
-            spread: 75,
+            particleCount: 75,
+            spread: 80,
             startVelocity: 32,
             origin: {
               x: (rect.left + rect.width / 2) / window.innerWidth,
               y: (rect.top + rect.height / 2) / window.innerHeight
             },
-            colors: pastelRedBlue,
+            colors: colorfulConfetti,
             disableForReducedMotion: true
           });
-        } else {
-          magicEffects.triggerConfettiBurst(60);
         }
       });
     }
@@ -4572,7 +4570,7 @@
       }
 
       if (elements.showerInviteVerb) {
-        elements.showerInviteVerb.textContent = totalGuests >= 2 ? 'ihr seid eingeladen!' : 'du bist eingeladen!';
+        elements.showerInviteVerb.textContent = totalGuests >= 2 ? 'ihr seid eingeladen ✨' : 'du bist eingeladen ✨';
       }
 
       if (elements.showerPromptText) {
@@ -4614,7 +4612,9 @@
                  .replace(/diesen ganz besonderen Meilenstein/g, 'diese ganz besondere Vorfreude')
                  .replace(/Meilenstein/g, 'Moment der Vorfreude');
       }
-      msg = msg.replace(/Armen!\s+Diese/g, 'Armen!\nDiese');
+      msg = msg.replace(/Armen!\s+Diese/g, 'Armen!\nDiese')
+               .replace(/\s*Lass uns bitte wissen,?\s*ob du dabei bist!?/gi, '')
+               .trim();
       const isZusageMsg = msg.toLowerCase().includes('freuen') || msg.toLowerCase().includes('riesig');
       if (msg && !isZusageMsg) {
         elements.showerCustomMessage.innerHTML = escapeHtml(msg).replace(/\n/g, '<br>');
@@ -4679,8 +4679,6 @@
 
       const data = await res.json().catch(() => null);
       if (res.ok && data && data.success) {
-        audio.playRevealSuccess();
-
         const returnedId = (data.rsvp && data.rsvp.id) || STATE.showerRsvpId || null;
         STATE.showerRsvpId = returnedId;
 
@@ -4692,11 +4690,12 @@
           note: note,
           submittedAt: new Date().toISOString()
         };
-        localStorage.setItem('baby_shower_rsvp', JSON.stringify(savedData));
+        try {
+          localStorage.setItem('baby_shower_rsvp', JSON.stringify(savedData));
+        } catch (e) {}
 
         renderSuccessView(savedData);
         if (isAttending) {
-          magicEffects.triggerConfettiBurst(60);
           showToast('Zusage erfolgreich gespeichert! 🎉', 3000);
         } else {
           showToast('Rückmeldung gespeichert. Vielen Dank!', 3000);

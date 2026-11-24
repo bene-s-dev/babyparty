@@ -3995,6 +3995,31 @@ body.dev-mode-active .dev-floating-bar,
   text-shadow: 0 1px 10px rgba(255, 255, 255, 0.9);
 }
 
+/* Gestaffeltes Fade-In für alle Items der Terminseite */
+@keyframes showerItemFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#pageShower2.active .shower-card-flow > * {
+  opacity: 0;
+  animation: showerItemFadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#pageShower2.active .shower-card-flow > *:nth-child(1) { animation-delay: 0ms; }
+#pageShower2.active .shower-card-flow > *:nth-child(2) { animation-delay: 120ms; }
+#pageShower2.active .shower-card-flow > *:nth-child(3) { animation-delay: 240ms; }
+#pageShower2.active .shower-card-flow > *:nth-child(4) { animation-delay: 360ms; }
+#pageShower2.active .shower-card-flow > *:nth-child(5) { animation-delay: 480ms; }
+#pageShower2.active .shower-card-flow > *:nth-child(6) { animation-delay: 600ms; }
+#pageShower2.active .shower-card-flow > *:nth-child(7) { animation-delay: 720ms; }
+
 /* Event Details Box: Standalone Frosted Card on Ambient Background */
 .shower-event-details-card {
   display: flex;
@@ -4121,24 +4146,55 @@ body.dev-mode-active .dev-floating-bar,
 .detail-actions-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: 4px;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
   border-top: 1px solid rgba(35, 67, 134, 0.08);
   margin-top: 2px;
 }
 
+@keyframes pastelBtnShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .detail-action-full {
-  width: 100%;
+  width: fit-content;
+  padding: 7px 14px;
+  background: linear-gradient(
+    120deg,
+    rgba(226, 240, 252, 0.92) 0%,
+    rgba(253, 236, 242, 0.92) 35%,
+    rgba(254, 246, 224, 0.92) 70%,
+    rgba(226, 240, 252, 0.92) 100%
+  );
+  background-size: 240% 240%;
+  animation: pastelBtnShift 7s ease-in-out infinite;
+  border-color: rgba(35, 67, 134, 0.18);
+}
+
+.detail-action-full:hover {
+  background: linear-gradient(
+    120deg,
+    rgba(216, 234, 250, 0.98) 0%,
+    rgba(251, 226, 235, 0.98) 35%,
+    rgba(253, 241, 212, 0.98) 70%,
+    rgba(216, 234, 250, 0.98) 100%
+  );
+  background-size: 240% 240%;
 }
 
 .detail-actions-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
 .detail-actions-pair .detail-action-btn {
-  width: 100%;
+  width: auto;
+  padding: 7px 13px;
 }
 
 .maps-mini-icon {
