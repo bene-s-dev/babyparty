@@ -904,6 +904,11 @@
     refreshIcons();
   }
 
+  // AudioContext bereits beim allerersten Tippen/Tastendruck lautlos aufwecken,
+  // damit der erste Sound nicht abgehackt klingt.
+  document.addEventListener('pointerdown', () => audio.init(), { once: true, passive: true });
+  document.addEventListener('keydown', () => audio.init(), { once: true, passive: true });
+
   // ==================== WARM ACOUSTIC CHIME & ASMR SYNTHESIZER ====================
   const audio = {
     ctx: null,
@@ -915,56 +920,66 @@
         if (AudioCtx) this.ctx = new AudioCtx();
       }
       if (this.ctx && this.ctx.state === 'suspended') {
-        this.ctx.resume().catch(() => { });
+        return this.ctx.resume().catch(() => { });
       }
+      return Promise.resolve();
     },
 
     // Warm acoustic chime/bell with soft attack envelope, harmonic overtones, and smooth decay
     playAcousticBell(freq, duration = 0.55, volume = 0.14) {
       if (!STATE.soundEnabled) return;
-      this.init();
+      const resumePromise = this.init();
       if (!this.ctx) return;
 
-      try {
-        const now = this.ctx.currentTime;
+      const scheduleNote = () => {
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime + 0.012;
 
-        // Master gain for this note with soft attack (18ms) to avoid clicks/harsh transients
-        const masterGain = this.ctx.createGain();
-        masterGain.gain.setValueAtTime(0.0001, now);
-        masterGain.gain.linearRampToValueAtTime(volume, now + 0.018);
-        masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          // Master gain for this note with soft attack (18ms) to avoid clicks/harsh transients
+          const masterGain = this.ctx.createGain();
+          masterGain.gain.setValueAtTime(0.0001, now);
+          masterGain.gain.linearRampToValueAtTime(volume, now + 0.018);
+          masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-        // Gentle lowpass filter to produce a silky, warm acoustic timbre
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(2600, now);
-        filter.Q.value = 0.65;
+          // Gentle lowpass filter to produce a silky, warm acoustic timbre
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(2600, now);
+          filter.Q.value = 0.65;
 
-        masterGain.connect(filter);
-        filter.connect(this.ctx.destination);
+          masterGain.connect(filter);
+          filter.connect(this.ctx.destination);
 
-        // Fundamental tone (pure sine)
-        const osc1 = this.ctx.createOscillator();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(freq, now);
-        osc1.connect(masterGain);
-        osc1.start(now);
-        osc1.stop(now + duration + 0.06);
+          // Fundamental tone (pure sine)
+          const osc1 = this.ctx.createOscillator();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(freq, now);
+          osc1.connect(masterGain);
+          osc1.start(now);
+          osc1.stop(now + duration + 0.06);
 
-        // Subtle harmonic overtone (octave chime harmonic) for depth and warmth
-        const harmGain = this.ctx.createGain();
-        harmGain.gain.setValueAtTime(0.0001, now);
-        harmGain.gain.linearRampToValueAtTime(volume * 0.22, now + 0.014);
-        harmGain.gain.exponentialRampToValueAtTime(0.0001, now + Math.min(duration * 0.45, 0.28));
+          // Subtle harmonic overtone (octave chime harmonic) for depth and warmth
+          const harmGain = this.ctx.createGain();
+          harmGain.gain.setValueAtTime(0.0001, now);
+          harmGain.gain.linearRampToValueAtTime(volume * 0.22, now + 0.014);
+          harmGain.gain.exponentialRampToValueAtTime(0.0001, now + Math.min(duration * 0.45, 0.28));
 
-        const osc2 = this.ctx.createOscillator();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(freq * 2.0, now);
-        osc2.connect(harmGain);
-        harmGain.connect(filter);
-        osc2.start(now);
-        osc2.stop(now + duration + 0.06);
-      } catch (e) { }
+          const osc2 = this.ctx.createOscillator();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(freq * 2.0, now);
+          osc2.connect(harmGain);
+          harmGain.connect(filter);
+          osc2.start(now);
+          osc2.stop(now + duration + 0.06);
+        } catch (e) { }
+      };
+
+      if (this.ctx.state === 'suspended' && resumePromise && typeof resumePromise.then === 'function') {
+        resumePromise.then(scheduleNote);
+      } else {
+        scheduleNote();
+      }
     },
 
     // Soft warm marimba tap for button clicks
