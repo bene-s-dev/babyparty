@@ -1,5 +1,5 @@
 /**
- * Minimalist Editorial Gender Reveal — Kevin & Alina
+ * Minimalist Editorial Gender Reveal — Alina & Kevin
  * - Pure Lucide icons (no emojis)
  * - Two base colors (Deep Charcoal & Luxe Cream) with Pastel Blue & Pastel Pink accents
  * - Alternating bilingual text (DE/EN) on start page until active user selection
@@ -24,7 +24,7 @@
       stepReveal: 'Reveal',
       heroTitleHtml: '<span class="title-word" style="--w-idx: 0;">Willkommen</span> <span class="title-word" style="--w-idx: 1;">zum</span> <span class="highlight-text title-word word-highlight" style="--w-idx: 2;">Gender Reveal</span>',
       heroSubtitle: 'Ein neues Kapitel für Alina & Kevin beginnt.<br>Trage deinen Namen ein und feiere mit uns.',
-      nameLabel: 'dein Name',
+      nameLabel: 'Dein Name',
       namePlaceholder: 'z. B. Louisa',
       langLabel: 'Sprache:',
       btnToStep2: 'Weiter',
@@ -37,7 +37,7 @@
       girlLabel: 'Mädchen',
       votesSuffix: 'Stimmen',
       btnToStep3: 'Weiter',
-      userGuessLabel: 'dein Tipp:',
+      userGuessLabel: 'Dein Tipp:',
       revealHeading: 'Gender Reveal',
       revealSubtitle: 'Schön, dass du mitfieberst! Bald lüften wir das kleine Geheimnis.',
       countdownLabel: 'Countdown',
@@ -65,7 +65,7 @@
       boyTitle: 'JUNGE',
       girlQuote: '„Unsere kleine Tochter wird die Welt bereichern.“',
       boyQuote: '„Unser kleiner Sohn wird die Welt bereichern.“',
-      letterMatch: name => `${name ? `${name}, ` : ''}du hast richtig geraten!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
+      letterMatch: name => `${name ? `${name}, du` : 'Du'} hast richtig geraten!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
       letterNoMatch: name => `${name ? `${name}, ` : ''}${name ? 'knapp' : 'Knapp'} daneben!<br>Danke, dass du mitgemacht hast,<br>wir freuen uns mit dir ☺️<br>Stay tuned für weitere Infos!`,
       stayTunedText: 'Stay tuned – weitere Infos folgen bald',
       letterSalute: 'In freudiger Erwartung',
@@ -331,7 +331,21 @@
     votes: {
       boy: 15,
       girl: 17
-    }
+    },
+    // Mode: 'babyparty' (Gender Reveal) | 'babyshower' (RSVP)
+    mode: (function () { try { return localStorage.getItem('app_active_mode') || 'babyshower'; } catch (e) { return 'babyshower'; } })(),
+    babyshower: {
+      date: '2026-01-08',
+      time: '14:30',
+      location: 'Bergstr. 33, 79539 Lörrach',
+      message: 'Bald halten wir unser kleines Wunder in den Armen!\nDiese ganz besondere Vorfreude möchten wir mit unseren liebsten Menschen feiern. Lass uns bitte wissen, ob du dabei bist!'
+    },
+    showerGuestName: '',
+    showerPlusOnes: [],
+    showerChoice: null, // 'accept' | 'decline'
+    showerRsvpId: null,
+    showerStep: 1,
+    cachedRsvps: []
   };
 
   // Check if user previously saved custom votes, guess or guest name
@@ -462,6 +476,66 @@
     storyCardCanvas: document.getElementById('storyCardCanvas'),
     btnDownloadStoryImage: document.getElementById('btnDownloadStoryImage'),
     btnShareStoryNative: document.getElementById('btnShareStoryNative'),
+
+    // Babyshower Elements
+    pageShower1: document.getElementById('pageShower1'),
+    pageShower2: document.getElementById('pageShower2'),
+    showerGuestNameInput: document.getElementById('showerGuestNameInput'),
+    plusOnesSection: document.getElementById('plusOnesSection'),
+    plusOnesBadgeList: document.getElementById('plusOnesBadgeList'),
+    showerPlusOneInput: document.getElementById('showerPlusOneInput'),
+    btnAddPlusOne: document.getElementById('btnAddPlusOne'),
+    btnShowerToStep2: document.getElementById('btnShowerToStep2'),
+    showerCardFlow: document.getElementById('showerCardFlow'),
+    showerInviteTitle: document.getElementById('showerInviteTitle'),
+    showerGuestGreeting: document.getElementById('showerGuestGreeting'),
+    showerInviteVerb: document.getElementById('showerInviteVerb'),
+    showerPromptText: document.getElementById('showerPromptText'),
+    showerCustomMessage: document.getElementById('showerCustomMessage'),
+    showerDisplayDate: document.getElementById('showerDisplayDate'),
+    showerDisplayTime: document.getElementById('showerDisplayTime'),
+    showerDisplayLocation: document.getElementById('showerDisplayLocation'),
+    showerAttendeeSummary: document.getElementById('showerAttendeeSummary'),
+    btnRsvpAccept: document.getElementById('btnRsvpAccept'),
+    btnRsvpDecline: document.getElementById('btnRsvpDecline'),
+    rsvpAcceptLabel: document.getElementById('rsvpAcceptLabel'),
+    rsvpDeclineLabel: document.getElementById('rsvpDeclineLabel'),
+    rsvpAcceptSublabel: document.getElementById('rsvpAcceptSublabel'),
+    showerRsvpNote: document.getElementById('showerRsvpNote'),
+    btnShowerBackToStep1: document.getElementById('btnShowerBackToStep1'),
+    btnSubmitRsvp: document.getElementById('btnSubmitRsvp'),
+    btnSubmitRsvpText: document.getElementById('btnSubmitRsvpText'),
+    showerSuccessView: document.getElementById('showerSuccessView'),
+    showerSuccessBadge: document.getElementById('showerSuccessBadge'),
+    showerSuccessTitle: document.getElementById('showerSuccessTitle'),
+    showerSuccessDesc: document.getElementById('showerSuccessDesc'),
+    showerSuccessGuestName: document.getElementById('showerSuccessGuestName'),
+    showerSuccessPlusOnesRow: document.getElementById('showerSuccessPlusOnesRow'),
+    showerSuccessPlusOnesList: document.getElementById('showerSuccessPlusOnesList'),
+    showerSuccessStatusTag: document.getElementById('showerSuccessStatusTag'),
+    btnDownloadIcs: document.getElementById('btnDownloadIcs'),
+    btnSuccessCopyCalendar: document.getElementById('btnSuccessCopyCalendar'),
+    btnEditRsvpResponse: document.getElementById('btnEditRsvpResponse'),
+    btnQuickSaveCalendar: document.getElementById('btnQuickSaveCalendar'),
+    btnQuickCopyCalendar: document.getElementById('btnQuickCopyCalendar'),
+    btnQuickRoute: document.getElementById('btnQuickRoute'),
+
+    // Dev Mode Switch & Babyshower RSVP Admin
+    devSelectModeBabyparty: document.getElementById('devSelectModeBabyparty'),
+    devSelectModeBabyshower: document.getElementById('devSelectModeBabyshower'),
+    devBabyshowerConfigSection: document.getElementById('devBabyshowerConfigSection'),
+    devInputShowerDate: document.getElementById('devInputShowerDate'),
+    devInputShowerTime: document.getElementById('devInputShowerTime'),
+    devInputShowerLocation: document.getElementById('devInputShowerLocation'),
+    devInputShowerMessage: document.getElementById('devInputShowerMessage'),
+    devRsvpAdminSection: document.getElementById('devRsvpAdminSection'),
+    btnRefreshRsvps: document.getElementById('btnRefreshRsvps'),
+    statAcceptedGuests: document.getElementById('statAcceptedGuests'),
+    statDeclinedGuests: document.getElementById('statDeclinedGuests'),
+    statTotalResponses: document.getElementById('statTotalResponses'),
+    devGuestList: document.getElementById('devGuestList'),
+    btnCopyGuestList: document.getElementById('btnCopyGuestList'),
+    btnDownloadGuestCsv: document.getElementById('btnDownloadGuestCsv'),
 
     // Developer Toolbar & Configuration Modal
     btnOpenDevSettings: document.getElementById('btnOpenDevSettings'),
@@ -1457,10 +1531,6 @@
       }
       if (val.length > 0) {
         placeholderAnimator.clear();
-        // Idea 6: Melodisches Marimba-Droplet Feedback beim Tippen
-        if (e && e.inputType !== 'deleteContentBackward' && e.inputType !== 'deleteContentForward') {
-          audio.playTypeDroplet(val.length);
-        }
       }
 
       // Feature 3: Funkelnde Buchstaben bei der Namenseingabe (präzise Caret-Position)
@@ -2829,6 +2899,9 @@
     },
 
     getAmbientColors() {
+      if (STATE.mode === 'babyshower') {
+        return ['#ffd700', '#fff3b0', '#ffffff', '#fcd5ce', '#e88ea4', '#a0c4ff', '#6ca1d7', '#eed9f2'];
+      }
       if (!STATE.isScratchedRevealed) {
         // Harmonious blend while countdown runs: warm gold, shimmering white, pastel pink & pastel blue
         return ['#ffd700', '#fff3b0', '#ffffff', '#fcd5ce', '#e88ea4', '#a0c4ff', '#6ca1d7'];
@@ -2848,7 +2921,7 @@
       const colors = this.getAmbientColors();
 
       this.ambientParticles = [];
-      for (let i = 0; i < 42; i++) {
+      for (let i = 0; i < 55; i++) {
         this.ambientParticles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
@@ -3165,6 +3238,8 @@
     }
   }
 
+  let devSelectedMode = 'babyparty';
+
   function openDevSettingsModal() {
     if (!elements.devSettingsModal) return;
     audio.playClick();
@@ -3172,11 +3247,24 @@
     // Populate with current target date without triggering auto-apply
     setDevInputFromMs(getTargetMs(), false);
 
-    // Populate with current gender
+    // Populate with current mode & gender
+    devSelectedMode = STATE.mode || 'babyparty';
+    updateDevModeUI();
+
     devSelectedGender = STATE.actualGender || 'boy';
     updateDevGenderCardsUI();
 
-    // Query active Upstash / server config to ensure dev mode matches cloud state
+    // Populate Babyshower fields
+    const shower = STATE.babyshower || {};
+    if (elements.devInputShowerDate) elements.devInputShowerDate.value = shower.date || '2026-01-08';
+    if (elements.devInputShowerTime) elements.devInputShowerTime.value = shower.time || '14:30';
+    if (elements.devInputShowerLocation) elements.devInputShowerLocation.value = shower.location || 'Bergstr. 33, 79539 Lörrach';
+    if (elements.devInputShowerMessage) elements.devInputShowerMessage.value = shower.message || '';
+
+    // Load Live RSVP guest list
+    loadAdminRsvps();
+
+    // Query active server config to ensure dev mode matches cloud state
     const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
     if (devToken) {
       fetch('/api/dev-config', {
@@ -3193,6 +3281,19 @@
             STATE.actualGender = d.config.gender;
             updateDevGenderCardsUI();
           }
+          if (d.config.mode) {
+            devSelectedMode = d.config.mode;
+            STATE.mode = d.config.mode;
+            updateDevModeUI();
+          }
+          if (d.config.babyshower) {
+            STATE.babyshower = { ...STATE.babyshower, ...d.config.babyshower };
+            const s = STATE.babyshower;
+            if (elements.devInputShowerDate && s.date) elements.devInputShowerDate.value = s.date;
+            if (elements.devInputShowerTime && s.time) elements.devInputShowerTime.value = s.time;
+            if (elements.devInputShowerLocation && s.location) elements.devInputShowerLocation.value = s.location;
+            if (elements.devInputShowerMessage && s.message) elements.devInputShowerMessage.value = s.message;
+          }
           if (elements.devCryptoBadgeText && d.config.storage) {
             elements.devCryptoBadgeText.textContent = `AES-256-GCM • ${d.config.storage}`;
           }
@@ -3208,6 +3309,15 @@
   function closeDevSettingsModal() {
     if (!elements.devSettingsModal) return;
     elements.devSettingsModal.classList.remove('open');
+  }
+
+  function updateDevModeUI() {
+    if (elements.devSelectModeBabyparty) {
+      elements.devSelectModeBabyparty.classList.toggle('selected', devSelectedMode === 'babyparty');
+    }
+    if (elements.devSelectModeBabyshower) {
+      elements.devSelectModeBabyshower.classList.toggle('selected', devSelectedMode === 'babyshower');
+    }
   }
 
   function updateDevGenderCardsUI() {
@@ -3233,6 +3343,22 @@
     if (elements.devSettingsModal) {
       elements.devSettingsModal.addEventListener('click', e => {
         if (e.target === elements.devSettingsModal) closeDevSettingsModal();
+      });
+    }
+
+    // Mode selection toggles
+    if (elements.devSelectModeBabyparty) {
+      elements.devSelectModeBabyparty.addEventListener('click', () => {
+        audio.playSelect();
+        devSelectedMode = 'babyparty';
+        updateDevModeUI();
+      });
+    }
+    if (elements.devSelectModeBabyshower) {
+      elements.devSelectModeBabyshower.addEventListener('click', () => {
+        audio.playSelect();
+        devSelectedMode = 'babyshower';
+        updateDevModeUI();
       });
     }
 
@@ -3296,6 +3422,14 @@
         const targetMs = targetDateObj.getTime();
         const targetIso = targetDateObj.toISOString();
 
+        // Collect Babyshower config
+        const showerConfig = {
+          date: elements.devInputShowerDate ? elements.devInputShowerDate.value : '2026-01-08',
+          time: elements.devInputShowerTime ? elements.devInputShowerTime.value : '14:30',
+          location: elements.devInputShowerLocation ? elements.devInputShowerLocation.value.trim() : 'Bergstr. 33, 79539 Lörrach',
+          message: elements.devInputShowerMessage ? elements.devInputShowerMessage.value.trim() : ''
+        };
+
         // UI Loading state
         const btn = elements.saveDevSettingsBtn;
         const btnText = document.getElementById('saveDevSettingsBtnText');
@@ -3303,16 +3437,17 @@
         if (btn) btn.disabled = true;
         if (btnText) btnText.textContent = 'Speichern...';
 
-        // Apply new target date
+        // Apply state locally
         STATE.revealTargetMs = targetMs;
         localStorage.setItem(CryptoVault.STORAGE_KEY_DATE, targetIso);
-
-        // Apply new gender encrypted with AES-256-GCM
         STATE.actualGender = devSelectedGender;
+        STATE.mode = devSelectedMode;
+        STATE.babyshower = showerConfig;
+
         const token = STATE.devToken || sessionStorage.getItem('baby_dev_token') || 'baby_dev_session_token';
         await CryptoVault.encryptGender(devSelectedGender, token);
 
-        // Sync to server API / Upstash Redis database
+        // Sync to server API / Supabase database
         const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
         let saveSuccess = false;
 
@@ -3327,7 +3462,9 @@
               },
               body: JSON.stringify({
                 targetDate: targetIso,
-                gender: devSelectedGender
+                gender: devSelectedGender,
+                mode: devSelectedMode,
+                babyshower: showerConfig
               })
             });
 
@@ -3353,14 +3490,15 @@
         if (btnText) btnText.textContent = origBtnText || 'Speichern';
 
         if (saveSuccess) {
-          showToast('✅ Erfolgreich gespeichert!', true);
+          showToast('✅ Erfolgreich in Supabase gespeichert!', true);
         } else if (devToken) {
-          showToast('⚠️ Konnte nicht gespeichert werden', true);
+          showToast('⚠️ Gespeichert (Offline / Lokaler Fallback)', true);
         }
 
         // Live visual updates
         applyActualGenderTheme();
         updateSettingsUI();
+        applyAppMode();
 
         // Update countdown & scratch card status
         const currentEffectiveTime = Date.now() + (STATE.serverTimeOffset || 0);
@@ -3483,6 +3621,14 @@
           }
         }
       }
+      if (data && data.mode) {
+        STATE.mode = data.mode;
+      }
+      if (data && data.babyshower) {
+        STATE.babyshower = { ...STATE.babyshower, ...data.babyshower };
+      }
+      applyAppMode();
+
       if (data && data.unlocked && data.gender) {
         STATE.isServerUnlocked = true;
         STATE.actualGender = data.gender;
@@ -3597,6 +3743,14 @@
           updateSettingsUI();
         }
 
+        if (data.mode) {
+          STATE.mode = data.mode;
+        }
+        if (data.babyshower) {
+          STATE.babyshower = { ...STATE.babyshower, ...data.babyshower };
+        }
+        applyAppMode();
+
         closeDevAuthModal();
         toggleDevMode(true);
         return;
@@ -3647,6 +3801,11 @@
     // Primary target: 'Willkommen' header on page 1
     if (elements.heroTitle) {
       elements.heroTitle.addEventListener('click', handleEasterEggClick);
+    }
+
+    const showerHero = document.getElementById('showerHeroTitle');
+    if (showerHero) {
+      showerHero.addEventListener('click', handleEasterEggClick);
     }
 
     // Also allow on page 2 & 3 editorial headings so developer options can be toggled anywhere
@@ -3706,20 +3865,19 @@
 
   // ==================== TOAST HELPER ====================
   let toastTimeout;
-  function showToast(msg, isDevActivation = false) {
-    // Exclusively show toast for developer mode activation per user request
-    if (!isDevActivation) return;
+  function showToast(msg, duration = 3800) {
     const bubble = elements.toastBubble || document.getElementById('toastBubble');
     if (!bubble || !msg) return;
     clearTimeout(toastTimeout);
     bubble.innerHTML = msg;
     bubble.classList.add('show');
+    const delay = typeof duration === 'number' ? duration : 3800;
     toastTimeout = setTimeout(() => {
       const el = elements.toastBubble || document.getElementById('toastBubble');
       if (el) {
         el.classList.remove('show');
       }
-    }, 3800);
+    }, delay);
   }
 
   // ==================== RESPONSIVE LAYOUT & SCRATCH RESIZE ====================
@@ -3943,10 +4101,10 @@
       ctx.fillText('✦', padX + 48, h - padY - 44);
       ctx.fillText('✦', w - padX - 48, h - padY - 44);
 
-      // 1. Top names: Kevin & Alina
+      // 1. Top names: Alina & Kevin
       ctx.font = '700 28px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = isGirl ? '#b8546c' : '#3a6fa0';
-      ctx.fillText('✦ KEVIN & ALINA ✦', w / 2, 205);
+      ctx.fillText('✦ ALINA & KEVIN ✦', w / 2, 205);
 
       // 1b. Prominent, larger Gender Reveal title below names
       ctx.font = 'italic 700 66px "Playfair Display", Georgia, serif';
@@ -4062,7 +4220,7 @@
         const canvas = elements.storyCardCanvas;
         if (!canvas) return;
         const link = document.createElement('a');
-        link.download = `gender-reveal-kevin-alina-${STATE.actualGender}.png`;
+        link.download = `gender-reveal-alina-kevin-${STATE.actualGender}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
       });
@@ -4077,13 +4235,13 @@
         try {
           canvas.toBlob(async blob => {
             if (!blob) return;
-            const file = new File([blob], `gender-reveal-kevin-alina-${STATE.actualGender}.png`, { type: 'image/png' });
+            const file = new File([blob], `gender-reveal-alina-kevin-${STATE.actualGender}.png`, { type: 'image/png' });
             const shareText = t('shareText', STATE.actualGender);
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
               try {
                 await navigator.share({
-                  title: 'Kevin & Alina • Gender Reveal',
+                  title: 'Alina & Kevin • Gender Reveal',
                   text: shareText,
                   files: [file]
                 });
@@ -4094,7 +4252,7 @@
             if (navigator.share) {
               try {
                 await navigator.share({
-                  title: 'Kevin & Alina • Gender Reveal',
+                  title: 'Alina & Kevin • Gender Reveal',
                   text: shareText,
                   url: window.location.href
                 });
@@ -4104,7 +4262,7 @@
 
             // Fallback: download PNG & copy text
             const link = document.createElement('a');
-            link.download = `gender-reveal-kevin-alina-${STATE.actualGender}.png`;
+            link.download = `gender-reveal-alina-kevin-${STATE.actualGender}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
             if (navigator.clipboard) {
@@ -4132,6 +4290,795 @@
     }, 150);
   });
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // ==================== BABYSHOWER & RSVP FLOW ====================
+  // Validierungsfunktion für Seite 1:
+  // Gastname muss mind. 2 Zeichen lang sein.
+  // Sobald 1 Buchstabe im Begleitperson-Feld getippt wurde, darf man erst weitergehen,
+  // wenn die Person hinzugefügt wurde oder das Feld wieder leer ist.
+  function updateShowerStep1Validity() {
+    const guestName = elements.showerGuestNameInput ? elements.showerGuestNameInput.value.trim() : '';
+    const plusOneDraft = elements.showerPlusOneInput ? elements.showerPlusOneInput.value.trim() : '';
+    STATE.showerGuestName = guestName;
+
+    const isNameValid = guestName.length >= 2;
+    const hasPendingDraft = plusOneDraft.length > 0;
+    const canProceed = isNameValid && !hasPendingDraft;
+
+    if (elements.btnShowerToStep2) {
+      elements.btnShowerToStep2.classList.toggle('is-disabled', !canProceed);
+      elements.btnShowerToStep2.setAttribute('aria-disabled', !canProceed);
+    }
+
+    if (elements.btnAddPlusOne) {
+      elements.btnAddPlusOne.classList.toggle('has-draft', hasPendingDraft);
+    }
+  }
+
+  function initBabyshower() {
+    if (!elements.pageShower1 || !elements.pageShower2) return;
+
+    if (elements.showerGuestNameInput) {
+      elements.showerGuestNameInput.addEventListener('input', updateShowerStep1Validity);
+    }
+    if (elements.showerPlusOneInput) {
+      elements.showerPlusOneInput.addEventListener('input', updateShowerStep1Validity);
+    }
+
+    // Add plus one
+    const handleAddPlusOne = () => {
+      if (!elements.showerPlusOneInput) return;
+      const pName = elements.showerPlusOneInput.value.trim();
+      if (!pName) return;
+      if (STATE.showerPlusOnes.length >= 8) {
+        showToast('Maximal 8 Begleitpersonen möglich', 2500);
+        return;
+      }
+      STATE.showerPlusOnes.push(pName);
+      elements.showerPlusOneInput.value = '';
+      renderPlusOnesBadges();
+      updateShowerStep1Validity();
+      elements.showerPlusOneInput.focus();
+    };
+
+    if (elements.btnAddPlusOne) {
+      elements.btnAddPlusOne.addEventListener('click', handleAddPlusOne);
+    }
+    if (elements.showerPlusOneInput) {
+      elements.showerPlusOneInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleAddPlusOne();
+        }
+      });
+    }
+
+    // Step 1 -> Step 2
+    if (elements.btnShowerToStep2) {
+      elements.btnShowerToStep2.addEventListener('click', () => {
+        const guestName = elements.showerGuestNameInput ? elements.showerGuestNameInput.value.trim() : '';
+        const plusOneDraft = elements.showerPlusOneInput ? elements.showerPlusOneInput.value.trim() : '';
+        if (guestName.length < 2) return;
+        if (plusOneDraft.length > 0) {
+          showToast('Bitte Begleitperson erst mit „+ Person hinzufügen“ übernehmen oder das Feld leeren', 3000);
+          if (elements.btnAddPlusOne) {
+            elements.btnAddPlusOne.classList.add('pulse-attention');
+            setTimeout(() => elements.btnAddPlusOne.classList.remove('pulse-attention'), 600);
+          }
+          return;
+        }
+        goToShowerStep(2);
+      });
+    }
+
+    // Step 2: Back button
+    if (elements.btnShowerBackToStep1) {
+      elements.btnShowerBackToStep1.addEventListener('click', () => {
+        audio.playClick();
+        goToShowerStep(1);
+      });
+    }
+
+    // RSVP Decisions (Accept vs Decline)
+    if (elements.btnRsvpAccept) {
+      elements.btnRsvpAccept.addEventListener('click', () => {
+        audio.playSelect();
+        setShowerChoice('accept');
+        const pastelRedBlue = ['#f28b9c', '#f4a6b8', '#f7b2bd', '#9ec5f8', '#7db8eb', '#b8daf5'];
+        if (typeof window.confetti === 'function') {
+          const rect = elements.btnRsvpAccept.getBoundingClientRect();
+          window.confetti({
+            particleCount: 70,
+            spread: 75,
+            startVelocity: 32,
+            origin: {
+              x: (rect.left + rect.width / 2) / window.innerWidth,
+              y: (rect.top + rect.height / 2) / window.innerHeight
+            },
+            colors: pastelRedBlue,
+            disableForReducedMotion: true
+          });
+        } else {
+          magicEffects.triggerConfettiBurst(60);
+        }
+      });
+    }
+    if (elements.btnRsvpDecline) {
+      elements.btnRsvpDecline.addEventListener('click', () => {
+        audio.playSelect();
+        setShowerChoice('decline');
+      });
+    }
+
+    // Submit RSVP
+    if (elements.btnSubmitRsvp) {
+      elements.btnSubmitRsvp.addEventListener('click', submitRsvp);
+    }
+
+    // Calendar .ics download
+    if (elements.btnDownloadIcs) {
+      elements.btnDownloadIcs.addEventListener('click', generateIcsFile);
+    }
+    if (elements.btnQuickSaveCalendar) {
+      elements.btnQuickSaveCalendar.addEventListener('click', () => {
+        audio.playClick();
+        generateIcsFile();
+      });
+    }
+    if (elements.btnQuickCopyCalendar) {
+      elements.btnQuickCopyCalendar.addEventListener('click', () => {
+        audio.playClick();
+        copyShowerEventDetails();
+      });
+    }
+    if (elements.btnSuccessCopyCalendar) {
+      elements.btnSuccessCopyCalendar.addEventListener('click', () => {
+        audio.playClick();
+        copyShowerEventDetails();
+      });
+    }
+
+    // Edit response button in success view
+    if (elements.btnEditRsvpResponse) {
+      elements.btnEditRsvpResponse.addEventListener('click', () => {
+        audio.playClick();
+        let existingRsvp = null;
+        try {
+          const raw = localStorage.getItem('baby_shower_rsvp');
+          if (raw) existingRsvp = JSON.parse(raw);
+        } catch (e) {}
+
+        if (existingRsvp) {
+          STATE.showerGuestName = existingRsvp.name || STATE.showerGuestName;
+          STATE.showerPlusOnes = existingRsvp.plusOnes || STATE.showerPlusOnes;
+          STATE.showerRsvpId = existingRsvp.id || STATE.showerRsvpId;
+          STATE.showerChoice = existingRsvp.attending ? 'accept' : 'decline';
+
+          if (elements.showerRsvpNote) {
+            elements.showerRsvpNote.value = existingRsvp.note || '';
+          }
+          if (elements.showerGuestNameInput) {
+            elements.showerGuestNameInput.value = STATE.showerGuestName;
+          }
+          renderPlusOnesBadges();
+
+          // Set choice card active
+          if (elements.btnRsvpAccept) {
+            elements.btnRsvpAccept.classList.toggle('selected', STATE.showerChoice === 'accept');
+          }
+          if (elements.btnRsvpDecline) {
+            elements.btnRsvpDecline.classList.toggle('selected', STATE.showerChoice === 'decline');
+          }
+
+          if (elements.btnSubmitRsvp) {
+            elements.btnSubmitRsvp.classList.remove('is-disabled');
+            elements.btnSubmitRsvp.removeAttribute('aria-disabled');
+          }
+          if (elements.btnSubmitRsvpText) {
+            elements.btnSubmitRsvpText.textContent = 'Änderung speichern';
+          }
+        }
+
+        if (elements.showerCardFlow) elements.showerCardFlow.style.display = 'block';
+        if (elements.showerSuccessView) elements.showerSuccessView.style.display = 'none';
+        goToShowerStep(2);
+      });
+    }
+  }
+
+  function renderPlusOnesBadges() {
+    if (!elements.plusOnesBadgeList) return;
+    elements.plusOnesBadgeList.innerHTML = '';
+
+    STATE.showerPlusOnes.forEach((name, idx) => {
+      const badge = document.createElement('div');
+      badge.className = 'plus-one-badge';
+      badge.innerHTML = `
+        <span>+ ${escapeHtml(name)}</span>
+        <button type="button" class="btn-remove-plus-one" data-idx="${idx}" title="Entfernen">✕</button>
+      `;
+      badge.querySelector('.btn-remove-plus-one').addEventListener('click', () => {
+        STATE.showerPlusOnes.splice(idx, 1);
+        renderPlusOnesBadges();
+        updateShowerStep1Validity();
+      });
+      elements.plusOnesBadgeList.appendChild(badge);
+    });
+
+    updateShowerAttendeeSummary();
+  }
+
+  function updateShowerAttendeeSummary() {
+    if (!elements.showerAttendeeSummary) return;
+    const total = 1 + STATE.showerPlusOnes.length;
+    const allNames = [STATE.showerGuestName, ...STATE.showerPlusOnes].filter(Boolean);
+    if (total === 1) {
+      elements.showerAttendeeSummary.textContent = 'Rückmeldung für 1 Person';
+    } else {
+      elements.showerAttendeeSummary.textContent = `Rückmeldung für ${total} Personen (${allNames.join(', ')})`;
+    }
+  }
+
+  function setShowerChoice(choice) {
+    STATE.showerChoice = choice;
+    if (elements.btnRsvpAccept) {
+      elements.btnRsvpAccept.classList.toggle('selected', choice === 'accept');
+    }
+    if (elements.btnRsvpDecline) {
+      elements.btnRsvpDecline.classList.toggle('selected', choice === 'decline');
+    }
+    if (elements.btnSubmitRsvp) {
+      elements.btnSubmitRsvp.classList.remove('is-disabled');
+      elements.btnSubmitRsvp.removeAttribute('aria-disabled');
+    }
+    if (elements.btnSubmitRsvpText) {
+      elements.btnSubmitRsvpText.textContent = 'Antwort absenden';
+    }
+    refreshIcons();
+  }
+
+  function goToShowerStep(step) {
+    STATE.showerStep = step;
+
+    // Video off: hide video and display calm pastel gradient background with moving glitter
+    document.body.classList.add('clean-bg');
+    if (activeVid) activeVid.pause();
+    if (inactiveVid) inactiveVid.pause();
+
+    if (elements.pageShower1) elements.pageShower1.classList.toggle('active', step === 1);
+    if (elements.pageShower2) elements.pageShower2.classList.toggle('active', step === 2);
+
+    if (step === 2) {
+      const totalGuests = 1 + STATE.showerPlusOnes.length;
+      if (elements.showerGuestGreeting) {
+        if (totalGuests === 1) {
+          elements.showerGuestGreeting.textContent = `${STATE.showerGuestName},`;
+        } else if (totalGuests === 2) {
+          elements.showerGuestGreeting.textContent = `${STATE.showerGuestName} & ${STATE.showerPlusOnes[0]},`;
+        } else {
+          const others = [...STATE.showerPlusOnes];
+          const last = others.pop();
+          elements.showerGuestGreeting.textContent = `${STATE.showerGuestName}, ${others.join(', ')} & ${last},`;
+        }
+      }
+
+      if (elements.showerInviteVerb) {
+        elements.showerInviteVerb.textContent = totalGuests >= 2 ? 'ihr seid eingeladen!' : 'du bist eingeladen!';
+      }
+
+      if (elements.showerPromptText) {
+        elements.showerPromptText.textContent = totalGuests >= 2 ? 'Seid ihr dabei?' : 'Bist du dabei?';
+      }
+
+      if (elements.rsvpAcceptLabel) {
+        elements.rsvpAcceptLabel.textContent = totalGuests >= 2 ? 'Wir sind dabei!' : 'Ich bin dabei!';
+      }
+      if (elements.rsvpDeclineLabel) {
+        elements.rsvpDeclineLabel.textContent = totalGuests >= 2 ? 'Wir können leider nicht' : 'Ich kann leider nicht';
+      }
+
+      updateShowerEventDetailsUI();
+      updateShowerAttendeeSummary();
+      magicEffects.startAmbientStarfall();
+    } else {
+      magicEffects.startAmbientStarfall();
+    }
+
+    refreshIcons();
+  }
+
+  function updateShowerEventDetailsUI() {
+    const shower = STATE.babyshower || {};
+    if (elements.showerDisplayDate) {
+      elements.showerDisplayDate.textContent = formatEventDateLabel(shower.date);
+    }
+    if (elements.showerDisplayTime) {
+      elements.showerDisplayTime.textContent = shower.time ? `ab ${shower.time} Uhr` : 'ab 14:30 Uhr';
+    }
+    if (elements.showerDisplayLocation) {
+      elements.showerDisplayLocation.textContent = shower.location || 'Bergstr. 33, 79539 Lörrach';
+    }
+    if (elements.showerCustomMessage) {
+      let msg = shower.message || '';
+      if (msg.includes('Meilenstein')) {
+        msg = msg.replace(/Diesen ganz besonderen Meilenstein/g, 'Diese ganz besondere Vorfreude')
+                 .replace(/diesen ganz besonderen Meilenstein/g, 'diese ganz besondere Vorfreude')
+                 .replace(/Meilenstein/g, 'Moment der Vorfreude');
+      }
+      msg = msg.replace(/Armen!\s+Diese/g, 'Armen!\nDiese');
+      const isZusageMsg = msg.toLowerCase().includes('freuen') || msg.toLowerCase().includes('riesig');
+      if (msg && !isZusageMsg) {
+        elements.showerCustomMessage.innerHTML = escapeHtml(msg).replace(/\n/g, '<br>');
+      } else {
+        elements.showerCustomMessage.innerHTML = 'Bald halten wir unser kleines Wunder in den Armen!<br>Diese ganz besondere Vorfreude möchten wir mit unseren liebsten Menschen feiern.';
+      }
+    }
+    if (elements.btnQuickRoute) {
+      const loc = shower.location || 'Bergstr. 33, 79539 Lörrach';
+      elements.btnQuickRoute.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`;
+    }
+  }
+
+  function formatEventDateLabel(dateStr) {
+    if (!dateStr) return 'Donnerstag, 8. Januar 2026';
+    try {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 12, 0, 0);
+        return d.toLocaleDateString('de-DE', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+      }
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString('de-DE', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  async function submitRsvp() {
+    if (!STATE.showerGuestName || !STATE.showerChoice) return;
+    const isAttending = (STATE.showerChoice === 'accept');
+    const note = elements.showerRsvpNote ? elements.showerRsvpNote.value.trim() : '';
+
+    const btn = elements.btnSubmitRsvp;
+    const btnText = elements.btnSubmitRsvpText;
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Wird gesendet...';
+
+    try {
+      const res = await fetch('/api/rsvp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: STATE.showerRsvpId || null,
+          name: STATE.showerGuestName,
+          plusOnes: STATE.showerPlusOnes,
+          attending: isAttending,
+          note: note
+        })
+      });
+
+      const data = await res.json().catch(() => null);
+      if (res.ok && data && data.success) {
+        audio.playRevealSuccess();
+
+        const returnedId = (data.rsvp && data.rsvp.id) || STATE.showerRsvpId || null;
+        STATE.showerRsvpId = returnedId;
+
+        const savedData = {
+          id: returnedId,
+          name: STATE.showerGuestName,
+          plusOnes: STATE.showerPlusOnes,
+          attending: isAttending,
+          note: note,
+          submittedAt: new Date().toISOString()
+        };
+        localStorage.setItem('baby_shower_rsvp', JSON.stringify(savedData));
+
+        renderSuccessView(savedData);
+        if (isAttending) {
+          magicEffects.triggerConfettiBurst(60);
+          showToast('Zusage erfolgreich gespeichert! 🎉', 3000);
+        } else {
+          showToast('Rückmeldung gespeichert. Vielen Dank!', 3000);
+        }
+      } else {
+        showToast((data && data.error) ? data.error : 'Fehler beim Senden', 3000);
+      }
+    } catch (err) {
+      console.warn('[RSVP error]', err);
+      showToast('Verbindungsfehler beim Absenden', 3000);
+    } finally {
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.textContent = (isAttending ? 'Zusage absenden' : 'Absage absenden');
+    }
+  }
+
+  function renderSuccessView(rsvpData) {
+    if (!elements.showerCardFlow || !elements.showerSuccessView) return;
+    elements.showerCardFlow.style.display = 'none';
+    elements.showerSuccessView.style.display = 'flex';
+
+    const isAttending = rsvpData.attending;
+    const totalCount = 1 + (rsvpData.plusOnes ? rsvpData.plusOnes.length : 0);
+
+    if (elements.showerSuccessBadge) {
+      elements.showerSuccessBadge.classList.toggle('decline-badge', !isAttending);
+      elements.showerSuccessBadge.innerHTML = isAttending 
+        ? '<i data-lucide="sparkles" class="icon-lg"></i>'
+        : '<i data-lucide="heart" class="icon-lg"></i>';
+    }
+
+    if (elements.showerSuccessTitle) {
+      elements.showerSuccessTitle.textContent = isAttending ? 'YAY, wie schön!' : 'Danke fürs Bescheid geben!';
+    }
+    if (elements.showerSuccessDesc) {
+      const hasPlus = rsvpData.plusOnes && rsvpData.plusOnes.length > 0;
+      elements.showerSuccessDesc.textContent = isAttending 
+        ? (hasPlus ? 'Wir freuen uns riesig auf euch!' : 'Wir freuen uns riesig auf dich!') 
+        : 'Schade, dass du es nicht schaffst. Wir denken fest an dich und schicken ganz liebe Grüße!';
+    }
+
+    if (elements.showerSuccessGuestName) {
+      elements.showerSuccessGuestName.textContent = rsvpData.name;
+    }
+
+    if (elements.showerSuccessPlusOnesRow && elements.showerSuccessPlusOnesList) {
+      if (rsvpData.plusOnes && rsvpData.plusOnes.length > 0) {
+        elements.showerSuccessPlusOnesRow.style.display = 'flex';
+        elements.showerSuccessPlusOnesList.textContent = rsvpData.plusOnes.join(', ');
+      } else {
+        elements.showerSuccessPlusOnesRow.style.display = 'none';
+      }
+    }
+
+    if (elements.showerSuccessStatusTag) {
+      elements.showerSuccessStatusTag.classList.toggle('declined', !isAttending);
+      elements.showerSuccessStatusTag.textContent = isAttending 
+        ? `Zugesagt (${totalCount} Person${totalCount > 1 ? 'en' : ''})` 
+        : 'Abgesagt';
+    }
+
+    if (elements.btnDownloadIcs) {
+      elements.btnDownloadIcs.style.display = isAttending ? 'inline-flex' : 'none';
+    }
+
+    refreshIcons();
+  }
+
+  function copyShowerEventDetails() {
+    const shower = STATE.babyshower || {};
+    const dateLabel = formatEventDateLabel(shower.date);
+    const timeLabel = shower.time ? `ab ${shower.time} Uhr` : 'ab 14:30 Uhr';
+    const loc = shower.location || 'Bergstr. 33, 79539 Lörrach';
+
+    const text = [
+      'Babyshower von Alina & Kevin',
+      `Datum: ${dateLabel}`,
+      `Uhrzeit: ${timeLabel}`,
+      `Adresse: ${loc}`
+    ].join('\n');
+
+    const fallbackCopy = (str) => {
+      const ta = document.createElement('textarea');
+      ta.value = str;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('Infos kopiert! 📋', 2800);
+      } catch (e) {
+        showToast('Kopieren fehlgeschlagen', 2200);
+      }
+      document.body.removeChild(ta);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Infos kopiert! 📋', 2800);
+      }).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function generateIcsFile() {
+    const shower = STATE.babyshower || {};
+    const dateStr = shower.date || '2026-01-08';
+    const timeStr = shower.time || '14:30';
+    const loc = shower.location || 'Bergstr. 33, 79539 Lörrach';
+
+    const cleanDate = dateStr.replace(/-/g, '');
+    const cleanTime = timeStr.replace(/:/g, '') + '00';
+    const startDt = `${cleanDate}T${cleanTime}`;
+    const endHours = String(parseInt(timeStr.slice(0, 2), 10) + 4).padStart(2, '0');
+    const endDt = `${cleanDate}T${endHours}${timeStr.slice(3, 5)}00`;
+
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Babyparty//Babyshower Event//DE',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `DTSTART:${startDt}`,
+      `DTEND:${endDt}`,
+      `SUMMARY:Babyshower von Alina & Kevin`,
+      `DESCRIPTION:Feiere mit uns die Babyshower! Wir freuen uns auf dich.`,
+      `LOCATION:${loc}`,
+      'STATUS:CONFIRMED',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'babyshower-alina-kevin.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Kurze Erklärung im Toast
+    const guideToastHtml = `
+      <div class="ics-toast-box">
+        <div class="ics-toast-header">
+          <span>📅</span> <strong>Termin heruntergeladen!</strong>
+        </div>
+        <div class="ics-toast-desc">
+          Öffne die heruntergeladene Datei, um den Termin im iPhone- oder Android-Kalender zu speichern.
+        </div>
+      </div>
+    `;
+
+    showToast(guideToastHtml, 6500);
+  }
+
+  function applyAppMode() {
+    const isShower = (STATE.mode === 'babyshower');
+    try { localStorage.setItem('app_active_mode', STATE.mode); } catch (e) {}
+
+    document.documentElement.classList.remove('mode-babyshower-init', 'has-shower-rsvp-init');
+    document.body.classList.toggle('mode-babyshower', isShower);
+    document.body.classList.toggle('mode-babyparty', !isShower);
+
+    if (isShower) {
+      document.body.classList.add('clean-bg');
+      if (activeVid) activeVid.pause();
+      if (inactiveVid) inactiveVid.pause();
+      magicEffects.startAmbientStarfall();
+
+      if (elements.page1) elements.page1.classList.remove('active');
+      if (elements.page2) elements.page2.classList.remove('active');
+      if (elements.page3) elements.page3.classList.remove('active');
+
+      let existingRsvp = null;
+      try {
+        const raw = localStorage.getItem('baby_shower_rsvp');
+        if (raw) existingRsvp = JSON.parse(raw);
+      } catch (e) {}
+
+      if (existingRsvp && existingRsvp.name) {
+        STATE.showerGuestName = existingRsvp.name;
+        STATE.showerPlusOnes = existingRsvp.plusOnes || [];
+        STATE.showerRsvpId = existingRsvp.id || null;
+        goToShowerStep(2);
+        renderSuccessView(existingRsvp);
+      } else if (!elements.pageShower2 || !elements.pageShower2.classList.contains('active')) {
+        goToShowerStep(1);
+      }
+    } else {
+      document.body.classList.remove('clean-bg');
+      if (activeVid && activeVid.paused) {
+        activeVid.play().catch(() => {});
+      }
+      if (elements.pageShower1) elements.pageShower1.classList.remove('active');
+      if (elements.pageShower2) elements.pageShower2.classList.remove('active');
+
+      const hasVoted = (localStorage.getItem('baby_has_voted') === 'true') || Boolean(STATE.userGuess);
+      if (hasVoted && (STATE.userGuess === 'boy' || STATE.userGuess === 'girl')) {
+        goToStep(3, false);
+      } else {
+        goToStep(STATE.currentStep || 1, false);
+      }
+    }
+  }
+
+  // ==================== ADMIN DEV RSVP MANAGEMENT ====================
+  function initDevRsvpAdmin() {
+    if (elements.btnRefreshRsvps) {
+      elements.btnRefreshRsvps.addEventListener('click', () => {
+        audio.playClick();
+        loadAdminRsvps();
+      });
+    }
+
+    if (elements.btnCopyGuestList) {
+      elements.btnCopyGuestList.addEventListener('click', copyAdminGuestList);
+    }
+
+    if (elements.btnDownloadGuestCsv) {
+      elements.btnDownloadGuestCsv.addEventListener('click', downloadAdminGuestCsv);
+    }
+  }
+
+  async function loadAdminRsvps() {
+    const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    if (!devToken || !elements.devGuestList) return;
+
+    elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Lade Rückmeldungen...</div>';
+
+    try {
+      const res = await fetch('/api/rsvp', {
+        headers: { 'x-dev-token': devToken }
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok && data && data.success) {
+        STATE.cachedRsvps = data.rsvps || [];
+
+        const stats = data.stats || {};
+        if (elements.statAcceptedGuests) elements.statAcceptedGuests.textContent = stats.totalAttendingGuests || 0;
+        if (elements.statDeclinedGuests) elements.statDeclinedGuests.textContent = stats.declinedResponses || 0;
+        if (elements.statTotalResponses) elements.statTotalResponses.textContent = stats.totalResponses || 0;
+
+        renderAdminGuestList(STATE.cachedRsvps);
+      } else {
+        elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Keine Rückmeldungen oder Zugriff verweigert.</div>';
+      }
+    } catch (e) {
+      elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Fehler beim Laden der Gästeliste.</div>';
+    }
+  }
+
+  function renderAdminGuestList(list) {
+    if (!elements.devGuestList) return;
+    if (!list || list.length === 0) {
+      elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Noch keine Rückmeldungen vorhanden.</div>';
+      return;
+    }
+
+    elements.devGuestList.innerHTML = '';
+    list.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'dev-guest-item';
+
+      const count = Number(item.total_persons) || (1 + (Array.isArray(item.plus_ones) ? item.plus_ones.length : 0));
+      const plusText = (item.plus_ones && item.plus_ones.length > 0)
+        ? `+ ${item.plus_ones.join(', ')}`
+        : '';
+      const noteHtml = item.note 
+        ? `<div class="dev-guest-note">„${escapeHtml(item.note)}“</div>` 
+        : '';
+
+      const statusClass = item.attending ? 'status-attending' : 'status-declined';
+      const statusText = item.attending ? `Zusage (${count} P.)` : 'Absage';
+
+      row.innerHTML = `
+        <div class="dev-guest-info">
+          <div class="dev-guest-name-row">
+            <span class="dev-guest-name">${escapeHtml(item.name)}</span>
+            <span class="dev-guest-count-badge">${count} P.</span>
+          </div>
+          ${plusText ? `<div class="dev-guest-plus">${escapeHtml(plusText)}</div>` : ''}
+          ${noteHtml}
+        </div>
+        <div class="dev-guest-right">
+          <span class="dev-guest-status ${statusClass}">${statusText}</span>
+          <button type="button" class="btn-delete-guest" data-id="${item.id}" title="Löschen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
+        </div>
+      `;
+
+      row.querySelector('.btn-delete-guest').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (confirm(`Eintrag von "${item.name}" wirklich löschen?`)) {
+          await deleteAdminRsvp(item.id);
+        }
+      });
+
+      elements.devGuestList.appendChild(row);
+    });
+  }
+
+  async function deleteAdminRsvp(id) {
+    const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
+    if (!devToken || !id) return;
+    try {
+      const res = await fetch(`/api/rsvp?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { 'x-dev-token': devToken }
+      });
+      if (res.ok) {
+        showToast('Eintrag gelöscht', 2000);
+        loadAdminRsvps();
+      }
+    } catch (e) {
+      showToast('Fehler beim Löschen', 2000);
+    }
+  }
+
+  function copyAdminGuestList() {
+    const list = STATE.cachedRsvps || [];
+    if (list.length === 0) {
+      showToast('Keine Rückmeldungen vorhanden', 2000);
+      return;
+    }
+
+    let text = '💌 BABYSCHOWER GÄSTELISTE (Alina & Kevin)\n==============================\n\n';
+    let zusagen = list.filter(r => r.attending);
+    let absagen = list.filter(r => !r.attending);
+    let totalZusagenPersonen = zusagen.reduce((acc, r) => acc + (Number(r.total_persons) || 1), 0);
+
+    text += `🟢 ZUSAGEN (${totalZusagenPersonen} Personen):\n`;
+    zusagen.forEach((r, idx) => {
+      const plus = (r.plus_ones && r.plus_ones.length > 0) ? ` (+ ${r.plus_ones.join(', ')})` : '';
+      const note = r.note ? ` [Notiz: ${r.note}]` : '';
+      text += `${idx + 1}. ${r.name}${plus}${note}\n`;
+    });
+
+    text += `\n🔴 ABSAGEN (${absagen.length}):\n`;
+    absagen.forEach((r, idx) => {
+      const note = r.note ? ` [Notiz: ${r.note}]` : '';
+      text += `${idx + 1}. ${r.name}${note}\n`;
+    });
+
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Gästeliste in Zwischenablage kopiert! 📋', 3000);
+    }).catch(() => {
+      showToast('Kopieren fehlgeschlagen', 2000);
+    });
+  }
+
+  function downloadAdminGuestCsv() {
+    const list = STATE.cachedRsvps || [];
+    if (list.length === 0) {
+      showToast('Keine Daten zum Exportieren', 2000);
+      return;
+    }
+
+    let csv = 'Name;Begleitpersonen;Gesamtanzahl;Status;Notiz;Datum\n';
+    list.forEach(r => {
+      const count = Number(r.total_persons) || 1;
+      const plus = (r.plus_ones || []).join(', ');
+      const status = r.attending ? 'Zusage' : 'Absage';
+      const cleanNote = (r.note || '').replace(/[\r\n;]/g, ' ');
+      const date = r.created_at ? new Date(r.created_at).toLocaleString('de-DE') : '';
+      csv += `"${r.name}";"${plus}";${count};"${status}";"${cleanNote}";"${date}"\n`;
+    });
+
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'babyshower-gaesteliste.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('CSV-Datei heruntergeladen!', 2500);
+  }
+
   // ==================== INITIALIZATION ====================
   function init() {
     // Instant initial target date fallback from local storage cache
@@ -4145,7 +5092,9 @@
     initPage1();
     initPage2();
     initPage3();
+    initBabyshower();
     initDevSettingsModal();
+    initDevRsvpAdmin();
     initStoryModalHandlers();
     initDevAuthModal();
     initDevEasterEgg();
@@ -4196,15 +5145,20 @@
       localStorage.removeItem('baby_dev_active');
     }
 
-    // Direct jump to reveal page (Step 3) if user has already voted
-    const hasVoted = (localStorage.getItem('baby_has_voted') === 'true') || Boolean(STATE.userGuess);
-    if (hasVoted && (STATE.userGuess === 'boy' || STATE.userGuess === 'girl')) {
-      goToStep(3, false);
-      if (window.history && window.history.replaceState) {
-        window.history.replaceState({ step: 3 }, '');
-      }
+    // Initial view based on mode
+    if (STATE.mode === 'babyshower') {
+      applyAppMode();
     } else {
-      goToStep(1);
+      // Direct jump to reveal page (Step 3) if user has already voted
+      const hasVoted = (localStorage.getItem('baby_has_voted') === 'true') || Boolean(STATE.userGuess);
+      if (hasVoted && (STATE.userGuess === 'boy' || STATE.userGuess === 'girl')) {
+        goToStep(3, false);
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({ step: 3 }, '');
+        }
+      } else {
+        goToStep(1);
+      }
     }
 
     if (document.documentElement.classList.contains('has-voted-init')) {

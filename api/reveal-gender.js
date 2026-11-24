@@ -1,4 +1,4 @@
-// Vercel Serverless Function: Secure Reveal Gender
+// Vercel Serverless Function: Secure Reveal Gender & Public Mode Config
 const { verifyDevToken, getActiveConfig } = require('./_store');
 
 module.exports = async function handler(req, res) {
@@ -21,6 +21,8 @@ module.exports = async function handler(req, res) {
     if (isTimeReached || isDevAuthorized) {
       return res.status(200).json({
         unlocked: true,
+        mode: config.mode || 'babyparty',
+        babyshower: config.babyshower,
         gender: config.gender,
         targetTime: config.targetDate,
         targetTimeMs: config.targetTimeMs,
@@ -31,6 +33,8 @@ module.exports = async function handler(req, res) {
     // Countdown still active and not authorized as developer: Keep gender secret!
     return res.status(200).json({
       unlocked: false,
+      mode: config.mode || 'babyparty',
+      babyshower: config.babyshower,
       targetTime: config.targetDate,
       targetTimeMs: config.targetTimeMs,
       serverTime: new Date().toISOString()

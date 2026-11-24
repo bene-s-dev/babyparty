@@ -1,5 +1,5 @@
-// Vercel Serverless Function: Developer Reveal Configuration (Secure Date & Gender)
-const { verifyDevToken, getActiveConfig, setActiveConfig, resetActiveConfig, getKvConfig } = require('./_store');
+// Vercel Serverless Function: Developer Reveal & Babyshower Configuration
+const { verifyDevToken, getActiveConfig, setActiveConfig, resetActiveConfig, getSupabaseConfig, getKvConfig } = require('./_store');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,8 +18,11 @@ module.exports = async function handler(req, res) {
     });
   }
 
+  const sb = getSupabaseConfig();
   const kv = getKvConfig();
-  const storageInfo = kv ? `Upstash Redis Cloud (${kv.source})` : 'Local Fallback / Temp Memory';
+  const storageInfo = sb 
+    ? 'Supabase PostgreSQL Cloud' 
+    : (kv ? `Upstash Redis Cloud (${kv.source})` : 'Lokale JSON-Datei / Cache');
 
   if (req.method === 'GET') {
     const config = await getActiveConfig();
@@ -29,8 +32,11 @@ module.exports = async function handler(req, res) {
         targetDate: config.targetDate,
         targetTimeMs: config.targetTimeMs,
         gender: config.gender,
+        mode: config.mode || 'babyparty',
+        babyshower: config.babyshower,
         isCustom: config.isCustom,
         storage: storageInfo,
+        hasSupabase: Boolean(sb),
         hasKv: Boolean(kv)
       },
       serverTime: new Date().toISOString()
@@ -47,19 +53,20 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    const { targetDate, gender } = body || {};
-    const updated = await setActiveConfig({ targetDate, gender });
+    const { targetDate, gender, mode, babyshower } = body || {};
+    const updated = await setActiveConfig({ targetDate, gender, mode, babyshower });
 
     return res.status(200).json({
       success: true,
-      message: kv 
-        ? `Erfolgreich dauerhaft in Upstash Redis (${kv.source}) gespeichert.` 
-        : 'Dev-Konfiguration aktualisiert (Achtung: Kein Upstash aktiv, temporärer Speicher).',
+      message: `Konfiguration erfolgreich gespeichert (${storageInfo}).`,
       config: {
         targetDate: updated.targetDate,
         targetTimeMs: updated.targetTimeMs,
         gender: updated.gender,
+        mode: updated.mode,
+        babyshower: updated.babyshower,
         storage: storageInfo,
+        hasSupabase: Boolean(sb),
         hasKv: Boolean(kv)
       },
       serverTime: new Date().toISOString()

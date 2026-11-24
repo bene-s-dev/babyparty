@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rückmeldungen • Babyshower Alina & Kevin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="PIN-geschützte Gästeliste &amp; Übersicht aller Zu- und Absagen zur Babyshower von Alina &amp; Kevin.">
+  <meta name="theme-color" content="#faf8f5">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://babyparty.benedrive.de/antworten">
+  <meta property="og:title" content="Gästeliste &amp; Antworten • Alina &amp; Kevin">
+  <meta property="og:description" content="PIN-geschützte Übersicht aller Zu- und Absagen zur Babyshower von Alina &amp; Kevin.">
+  <meta property="og:image" content="https://babyparty.benedrive.de/og-antworten.jpg?v=1">
+  <meta property="og:image:secure_url" content="https://babyparty.benedrive.de/og-antworten.jpg?v=1">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Geschützte Gästeliste • Babyshower Alina &amp; Kevin">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gästeliste &amp; Antworten • Alina &amp; Kevin">
+  <meta name="twitter:description" content="PIN-geschützte Übersicht aller Zu- und Absagen zur Babyshower von Alina &amp; Kevin.">
+  <meta name="twitter:image" content="https://babyparty.benedrive.de/og-antworten.jpg?v=1">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Fraunces / Playfair -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --color-deep-indigo: #1e293b;
+      --ink-primary: #1e293b;
+      --ink-secondary: #64748b;
+      --ink-muted: #94a3b8;
+      --border-subtle: rgba(226, 232, 240, 0.9);
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --green-dark: #276749;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --red-dark: #991b1b;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--ink-primary);
+      background-color: #faf8f5;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(254, 237, 243, 0.75) 0px, transparent 55%),
+        radial-gradient(at 100% 0%, rgba(230, 242, 255, 0.8) 0px, transparent 55%),
+        radial-gradient(at 50% 100%, rgba(255, 244, 230, 0.7) 0px, transparent 65%);
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px 16px 48px;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .canvas-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Header Nav */
+    .header-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink-secondary);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(8px);
+      transition: all 0.15s ease;
+    }
+
+    .btn-back:hover {
+      color: var(--color-deep-indigo);
+      background: #ffffff;
+      border-color: #cbd5e1;
+      transform: translateX(-2px);
+    }
+
+    .event-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Page Titles */
+    .title-block {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 4.5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--color-deep-indigo);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      text-shadow: 0 1px 12px rgba(255, 255, 255, 0.9);
+    }
+
+    .page-subtitle {
+      font-size: 0.88rem;
+      color: var(--ink-secondary);
+    }
+
+    /* Stats Grid: Zusagen als große Hauptkarte, die zwei rechten Badges/Karten insgesamt kompakter */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 16px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    /* Große Hauptkarte: Zusagen */
+    .stat-card.accepted {
+      background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%);
+      border-color: var(--green-border);
+      border-radius: 16px;
+      padding: 16px 10px;
+      min-height: 84px;
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.12);
+    }
+
+    .stat-card.accepted .stat-value {
+      font-family: var(--font-sans);
+      font-size: 2.05rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      line-height: 1.05;
+      margin-bottom: 3px;
+    }
+
+    .stat-card.accepted .stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    /* Die zwei rechten Badges/Karten: insgesamt deutlich kleiner (Höhe, Breite & Rahmen) */
+    .stat-card.declined,
+    .stat-card.secondary {
+      border-radius: 12px;
+      padding: 7px 4px;
+      min-height: 58px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .stat-card.declined {
+      background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+      border: 1.5px solid var(--red-border);
+    }
+
+    .stat-card.declined .stat-value {
+      font-family: var(--font-sans);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--red-dark);
+      line-height: 1.05;
+      margin-bottom: 2px;
+    }
+
+    .stat-card.declined .stat-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #991b1b;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    .stat-card.secondary {
+      background: #ffffff;
+      border: 1.5px solid var(--border-subtle);
+    }
+
+    .stat-card.secondary .stat-value {
+      font-family: var(--font-sans);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--color-deep-indigo);
+      line-height: 1.05;
+      margin-bottom: 2px;
+    }
+
+    .stat-card.secondary .stat-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    @media (max-width: 380px) {
+      .stats-grid {
+        grid-template-columns: 1.6fr 1fr 1fr;
+        gap: 6px;
+      }
+      .stat-card.accepted {
+        padding: 12px 6px;
+        min-height: 76px;
+      }
+      .stat-card.accepted .stat-value {
+        font-size: 1.85rem;
+      }
+      .stat-card.declined,
+      .stat-card.secondary {
+        min-height: 54px;
+        padding: 6px 3px;
+      }
+      .stat-card.declined .stat-value,
+      .stat-card.secondary .stat-value {
+        font-size: 1.3rem;
+      }
+      .stat-card.declined .stat-label,
+      .stat-card.secondary .stat-label {
+        font-size: 0.60rem;
+      }
+    }
+
+    /* Actions Bar */
+    .actions-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .btn-action:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .btn-action.btn-refresh {
+      margin-left: auto;
+    }
+
+    /* Filter & Search Bar */
+    .filter-wrapper {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(12px);
+    }
+
+    .search-input-wrap {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px solid #e2e8f0;
+      padding: 0 12px 0 36px;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      background: #ffffff;
+      color: var(--ink-primary);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .tabs-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      color: var(--color-deep-indigo);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Guest List Cards */
+    .guest-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .guest-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .guest-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
+
+    .guest-card.is-accepted {
+      border-left: 4px solid #22c55e;
+    }
+
+    .guest-card.is-declined {
+      border-left: 4px solid #f97316;
+      opacity: 0.92;
+    }
+
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .guest-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .guest-name {
+      font-family: var(--font-sans);
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--color-deep-indigo);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge-count {
+      font-size: 0.70rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #334155;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-pill.accepted {
+      background: var(--green-bg);
+      color: var(--green-dark);
+      border: 1px solid var(--green-border);
+    }
+
+    .status-pill.declined {
+      background: var(--red-bg);
+      color: var(--red-dark);
+      border: 1px solid var(--red-border);
+    }
+
+    /* Begleitpersonen – übersichtliche eigene Zeilen */
+    .companions-box {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .companion-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .companion-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #475569;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 2px 7px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .companion-tag svg {
+      stroke: #64748b;
+    }
+
+    .companion-name {
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--color-deep-indigo);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .guest-note-box {
+      background: #fdfaf6;
+      border: 1px dashed #fed7aa;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #9a3412;
+      font-style: italic;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .guest-note-icon {
+      flex-shrink: 0;
+      stroke: #ea580c;
+      margin-top: 2px;
+    }
+
+    .card-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.72rem;
+      color: var(--ink-secondary);
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-delete:hover {
+      color: #dc2626;
+      background: #fee2e2;
+    }
+
+    /* Empty state */
+    .empty-state {
+      background: var(--card-bg);
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 36px 16px;
+      text-align: center;
+      color: var(--ink-secondary);
+      font-size: 0.88rem;
+    }
+
+    .empty-state svg {
+      color: var(--ink-muted);
+      margin-bottom: 8px;
+    }
+
+    /* Custom Delete Confirmation Modal */
+    .confirm-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.58);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .confirm-modal-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .confirm-modal-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 24px 20px 20px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.28);
+      transform: scale(0.94);
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .confirm-modal-backdrop.show .confirm-modal-card {
+      transform: scale(1);
+    }
+
+    .confirm-modal-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+    }
+
+    .confirm-modal-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-deep-indigo);
+      margin-bottom: 6px;
+    }
+
+    .confirm-modal-desc {
+      font-size: 0.86rem;
+      color: var(--ink-secondary);
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .confirm-modal-desc strong {
+      color: var(--color-deep-indigo);
+    }
+
+    .confirm-modal-warning {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #c2410c;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .confirm-modal-warning svg {
+      flex-shrink: 0;
+      stroke: #ea580c;
+    }
+
+    .confirm-modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-modal-cancel {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-modal-cancel:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .btn-modal-confirm-delete {
+      background: #dc2626;
+      color: #ffffff;
+      border: 1px solid #b91c1c;
+      border-radius: 10px;
+      padding: 10px;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+      transition: all 0.15s ease;
+    }
+
+    .btn-modal-confirm-delete:hover {
+      background: #b91c1c;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+      transform: translateY(-1px);
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background: rgba(30, 41, 59, 0.95);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* PIN Auth Screen Overlay */
+    .pin-auth-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 99998;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .pin-auth-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .pin-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 22px;
+      padding: 30px 24px 26px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 48px -10px rgba(15, 23, 42, 0.4);
+      animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pin-card.vault-shake {
+      animation: vaultShake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes vaultShake {
+      10%, 90% { transform: translateX(-3px); }
+      20%, 80% { transform: translateX(5px); }
+      30%, 50%, 70% { transform: translateX(-7px); }
+      40%, 60% { transform: translateX(7px); }
+    }
+
+    .pin-icon-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(35, 67, 134, 0.08);
+      color: var(--color-deep-indigo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      border: 1.5px solid rgba(35, 67, 134, 0.16);
+    }
+
+    .pin-title {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-deep-indigo);
+      margin-bottom: 6px;
+    }
+
+    .pin-desc {
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      line-height: 1.45;
+      margin-bottom: 20px;
+    }
+
+    .pin-input-wrap {
+      margin-bottom: 12px;
+    }
+
+    .pin-input {
+      width: 100%;
+      box-sizing: border-box;
+      height: 48px;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      font-family: var(--font-sans);
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 0.35em;
+      text-align: center;
+      color: var(--color-deep-indigo);
+      outline: none;
+      transition: all 0.18s ease;
+    }
+
+    .pin-input:focus {
+      border-color: var(--color-deep-indigo);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(35, 67, 134, 0.12);
+    }
+
+    .pin-error-msg {
+      font-size: 0.78rem;
+      color: #dc2626;
+      font-weight: 600;
+      margin-bottom: 12px;
+      background: #fee2e2;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    /* Helles Nummernfeld passend zur Karte */
+    .pin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 0;
+    }
+
+    .pin-key {
+      height: 46px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      color: var(--color-deep-indigo);
+      font-family: var(--font-sans);
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 0 #e2e8f0;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .pin-key:hover {
+      background: #ffffff;
+      border-color: #cbd5e1;
+    }
+
+    .pin-key:active {
+      transform: translateY(2px);
+      box-shadow: 0 0 0 #e2e8f0;
+      background: #f1f5f9;
+    }
+
+    .pin-key.key-action {
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      background: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <canvas class="canvas-bg" id="ambientCanvas"></canvas>
+
+  <!-- PIN Protection Overlay -->
+  <div class="pin-auth-screen" id="pinAuthScreen">
+    <div class="pin-card" id="pinVaultCard">
+      <div class="pin-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2 class="pin-title">Gästeliste geschützt</h2>
+      <p class="pin-desc">Bitte gib die 4-stellige PIN ein, um die Rückmeldungen einzusehen.</p>
+      
+      <form id="pinForm" onsubmit="event.preventDefault(); verifyPin();">
+        <div class="pin-input-wrap">
+          <input type="password" inputmode="numeric" maxlength="6" pattern="[0-9]*" class="pin-input" id="pinInput" placeholder="••••" autocomplete="off" autofocus>
+        </div>
+        <div class="pin-error-msg" id="pinErrorMsg" style="display: none;">Ungültige PIN. Bitte erneut versuchen.</div>
+        <div class="pin-keypad" id="pinKeypad">
+          <button type="button" class="pin-key" data-key="1">1</button>
+          <button type="button" class="pin-key" data-key="2">2</button>
+          <button type="button" class="pin-key" data-key="3">3</button>
+          <button type="button" class="pin-key" data-key="4">4</button>
+          <button type="button" class="pin-key" data-key="5">5</button>
+          <button type="button" class="pin-key" data-key="6">6</button>
+          <button type="button" class="pin-key" data-key="7">7</button>
+          <button type="button" class="pin-key" data-key="8">8</button>
+          <button type="button" class="pin-key" data-key="9">9</button>
+          <span aria-hidden="true"></span>
+          <button type="button" class="pin-key" data-key="0">0</button>
+          <button type="button" class="pin-key key-action" data-action="clear" title="Löschen">⌫</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Top Header Navigation -->
+    <header class="header-nav">
+      <a href="/" class="btn-back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Zur Einladung</span>
+      </a>
+      <span class="event-badge">Babyshower • Alina &amp; Kevin</span>
+    </header>
+
+    <!-- Page Title -->
+    <div class="title-block">
+      <h1 class="page-title">Rückmeldungen &amp; Gästeliste</h1>
+      <p class="page-subtitle">Übersicht aller Zu- und Absagen</p>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <section class="stats-grid">
+      <div class="stat-card accepted">
+        <span class="stat-value" id="statAcceptedGuests">0</span>
+        <span class="stat-label">Zusagen (Pers.)</span>
+      </div>
+      <div class="stat-card declined">
+        <span class="stat-value" id="statDeclinedGuests">0</span>
+        <span class="stat-label">Absagen</span>
+      </div>
+      <div class="stat-card secondary">
+        <span class="stat-value" id="statTotalResponses">0</span>
+        <span class="stat-label">Antworten gesamt</span>
+      </div>
+    </section>
+
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+      <button type="button" class="btn-action" id="btnCopyList">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Liste kopieren</span>
+      </button>
+      <button type="button" class="btn-action" id="btnDownloadCsv">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>CSV Export (für Excel o. Ä.)</span>
+      </button>
+      <button type="button" class="btn-action btn-refresh" id="btnRefresh" title="Aktualisieren">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" id="refreshIcon"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        <span>Aktualisieren</span>
+      </button>
+    </div>
+
+    <!-- Filter & Search Section -->
+    <div class="filter-wrapper">
+      <div class="search-input-wrap">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Gast oder Begleitung suchen..." autocomplete="off">
+      </div>
+
+      <div class="tabs-row">
+        <button type="button" class="tab-btn active" data-filter="all" id="tabAll">Alle (0)</button>
+        <button type="button" class="tab-btn" data-filter="accepted" id="tabAccepted">Zusagen (0)</button>
+        <button type="button" class="tab-btn" data-filter="declined" id="tabDeclined">Absagen (0)</button>
+      </div>
+    </div>
+
+    <!-- Guest List Cards Container -->
+    <div class="guest-list" id="guestListContainer">
+      <div class="empty-state">Lade Rückmeldungen...</div>
+    </div>
+  </div>
+
+  <!-- Custom Delete Confirmation Modal -->
+  <div class="confirm-modal-backdrop" id="deleteConfirmModal" aria-hidden="true">
+    <div class="confirm-modal-card">
+      <div class="confirm-modal-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 1-2h6c1 0 1 1 1 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      </div>
+      <h3 class="confirm-modal-title">Eintrag löschen?</h3>
+      <p class="confirm-modal-desc">Möchtest du die Rückmeldung von <strong id="deleteTargetName">diesem Gast</strong> wirklich aus der Liste entfernen?</p>
+      <div class="confirm-modal-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Das kann nicht rückgängig gemacht werden.</span>
+      </div>
+      <div class="confirm-modal-actions">
+        <button type="button" class="btn-modal-cancel" id="btnCancelDelete">Abbrechen</button>
+        <button type="button" class="btn-modal-confirm-delete" id="btnConfirmDelete">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>Löschen bestätigen</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let cachedRsvps = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let currentPin = sessionStorage.getItem('guestlist_pin') || '';
+
+    const el = {
+      statAccepted: document.getElementById('statAcceptedGuests'),
+      statDeclined: document.getElementById('statDeclinedGuests'),
+      statTotal: document.getElementById('statTotalResponses'),
+      tabAll: document.getElementById('tabAll'),
+      tabAccepted: document.getElementById('tabAccepted'),
+      tabDeclined: document.getElementById('tabDeclined'),
+      searchInput: document.getElementById('searchInput'),
+      container: document.getElementById('guestListContainer'),
+      btnRefresh: document.getElementById('btnRefresh'),
+      refreshIcon: document.getElementById('refreshIcon'),
+      btnCopyList: document.getElementById('btnCopyList'),
+      btnDownloadCsv: document.getElementById('btnDownloadCsv'),
+      toast: document.getElementById('toast')
+    };
+
+    function showToast(text) {
+      if (!el.toast) return;
+      el.toast.textContent = text;
+      el.toast.classList.add('show');
+      setTimeout(() => el.toast.classList.remove('show'), 2600);
+    }
+
+    let vaultAudioCtx = null;
+
+    function getVaultAudioCtx() {
+      if (!vaultAudioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) vaultAudioCtx = new AudioContext();
+      }
+      if (vaultAudioCtx && vaultAudioCtx.state === 'suspended') {
+        vaultAudioCtx.resume().catch(() => {});
+      }
+      return vaultAudioCtx;
+    }
+
+    const DOOR_DTMF_FREQS = {
+      '1': [697, 1209],
+      '2': [697, 1336],
+      '3': [697, 1477],
+      '4': [770, 1209],
+      '5': [770, 1336],
+      '6': [770, 1477],
+      '7': [852, 1209],
+      '8': [852, 1336],
+      '9': [852, 1477],
+      '0': [941, 1336]
+    };
+
+    // Authentischer Tür-Nummernpad-Sound (DTMF-Dual-Tone + Piezo-Filter)
+    function playDoorPadTone(key) {
+      const ctx = getVaultAudioCtx();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const duration = key === 'clear' ? 0.05 : 0.068;
+      const freqs = DOOR_DTMF_FREQS[key] || [1320];
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1450, now);
+      filter.Q.setValueAtTime(0.9, now);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.09, now + 0.006);
+      gain.gain.setValueAtTime(0.09, now + duration - 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      freqs.forEach((f) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now);
+        osc.connect(filter);
+        osc.start(now);
+        osc.stop(now + duration + 0.005);
+      });
+    }
+
+    // Typischer "Brr"-Fehlerton bei falscher PIN
+    function playVaultBrr() {
+      const ctx = getVaultAudioCtx();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(420, now);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.16, now);
+      gain.gain.setValueAtTime(0.16, now + 0.24);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.34);
+
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      osc1.type = 'sawtooth';
+      osc2.type = 'square';
+      osc1.frequency.setValueAtTime(98, now);
+      osc2.frequency.setValueAtTime(104, now);
+
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 0.35);
+      osc2.stop(now + 0.35);
+    }
+
+    // Typischer Tür-Keypad-Bestätigungssound bei richtiger PIN ("Piep-Piep" + kurzes Relais-Klicken)
+    function playDoorAccessGranted() {
+      const ctx = getVaultAudioCtx();
+      if (!ctx) return;
+      const now = ctx.currentTime + 0.05;
+
+      const beeps = [
+        { freq: 1950, start: 0, dur: 0.055 },
+        { freq: 2550, start: 0.085, dur: 0.09 }
+      ];
+
+      beeps.forEach(({ freq, start, dur }) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + start);
+        gain.gain.setValueAtTime(0.001, now + start);
+        gain.gain.linearRampToValueAtTime(0.09, now + start + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + start + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + start);
+        osc.stop(now + start + dur + 0.01);
+      });
+
+      // Kurzes mechanisches Türschloss-Klicken
+      const clickOsc = ctx.createOscillator();
+      const clickGain = ctx.createGain();
+      clickOsc.type = 'triangle';
+      clickOsc.frequency.setValueAtTime(160, now + 0.19);
+      clickOsc.frequency.exponentialRampToValueAtTime(65, now + 0.22);
+      clickGain.gain.setValueAtTime(0.12, now + 0.19);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
+      clickOsc.connect(clickGain);
+      clickGain.connect(ctx.destination);
+      clickOsc.start(now + 0.19);
+      clickOsc.stop(now + 0.235);
+    }
+
+    function showPinScreen() {
+      const pinScreen = document.getElementById('pinAuthScreen');
+      if (pinScreen) pinScreen.classList.remove('hidden');
+      const errorMsg = document.getElementById('pinErrorMsg');
+      if (errorMsg) errorMsg.style.display = 'none';
+      const pinInput = document.getElementById('pinInput');
+      if (pinInput) {
+        pinInput.value = '';
+        setTimeout(() => pinInput.focus(), 120);
+      }
+    }
+
+    function hidePinScreen() {
+      const pinScreen = document.getElementById('pinAuthScreen');
+      if (pinScreen) pinScreen.classList.add('hidden');
+    }
+
+    function triggerPinShake() {
+      const vaultCard = document.getElementById('pinVaultCard');
+      if (vaultCard) {
+        vaultCard.classList.remove('vault-shake');
+        void vaultCard.offsetWidth;
+        vaultCard.classList.add('vault-shake');
+      }
+    }
+
+    const pinKeypad = document.getElementById('pinKeypad');
+    if (pinKeypad) {
+      pinKeypad.addEventListener('click', (e) => {
+        const keyBtn = e.target.closest('.pin-key');
+        const pinInput = document.getElementById('pinInput');
+        const errorMsg = document.getElementById('pinErrorMsg');
+        if (!keyBtn || !pinInput) return;
+
+        const digit = keyBtn.dataset.key;
+        const action = keyBtn.dataset.action;
+
+        if (digit !== undefined) {
+          if (pinInput.value.length < 4) {
+            if (errorMsg) errorMsg.style.display = 'none';
+            pinInput.value += digit;
+            playDoorPadTone(digit);
+            if (pinInput.value.length === 4) {
+              verifyPin();
+            }
+          }
+        } else if (action === 'clear') {
+          if (pinInput.value.length > 0) {
+            pinInput.value = pinInput.value.slice(0, -1);
+            playDoorPadTone('clear');
+          }
+        }
+      });
+    }
+
+    const pinInputEl = document.getElementById('pinInput');
+    if (pinInputEl) {
+      pinInputEl.addEventListener('input', () => {
+        const clean = pinInputEl.value.replace(/\D/g, '').slice(0, 4);
+        if (pinInputEl.value !== clean) pinInputEl.value = clean;
+        const errorMsg = document.getElementById('pinErrorMsg');
+        if (errorMsg) errorMsg.style.display = 'none';
+        if (clean.length > 0) {
+          playDoorPadTone(clean[clean.length - 1]);
+        }
+        if (clean.length === 4) {
+          verifyPin();
+        }
+      });
+    }
+
+    async function verifyPin() {
+      const pinInput = document.getElementById('pinInput');
+      const errorMsg = document.getElementById('pinErrorMsg');
+      const pin = (pinInput ? pinInput.value.trim() : '');
+      if (!pin) return;
+
+      try {
+        const res = await fetch('/api/rsvp', {
+          headers: { 'x-pin': pin }
+        });
+        const data = await res.json().catch(() => null);
+        if (res.ok && data && data.success) {
+          currentPin = pin;
+          sessionStorage.setItem('guestlist_pin', pin);
+          playDoorAccessGranted();
+          if (errorMsg) errorMsg.style.display = 'none';
+          cachedRsvps = data.rsvps || [];
+          updateStats(data.stats);
+          renderList();
+          hidePinScreen();
+        } else {
+          playVaultBrr();
+          triggerPinShake();
+          if (errorMsg) {
+            errorMsg.style.display = 'block';
+            errorMsg.textContent = (data && data.error) ? data.error : 'Ungültige PIN. Bitte erneut versuchen.';
+          }
+          if (pinInput) {
+            pinInput.value = '';
+            pinInput.focus();
+          }
+        }
+      } catch (err) {
+        playVaultBrr();
+        triggerPinShake();
+        if (errorMsg) {
+          errorMsg.style.display = 'block';
+          errorMsg.textContent = 'Verbindungsfehler beim Prüfen der PIN.';
+        }
+      }
+    }
+
+    async function loadData() {
+      if (!currentPin) {
+        showPinScreen();
+        return;
+      }
+      if (el.refreshIcon) el.refreshIcon.style.animation = 'spin 0.6s linear infinite';
+      try {
+        const res = await fetch('/api/rsvp', {
+          headers: { 'x-pin': currentPin }
+        });
+        const data = await res.json().catch(() => null);
+        if (res.status === 401) {
+          sessionStorage.removeItem('guestlist_pin');
+          currentPin = '';
+          showPinScreen();
+          return;
+        }
+        if (res.ok && data && data.success) {
+          hidePinScreen();
+          cachedRsvps = data.rsvps || [];
+          updateStats(data.stats);
+          renderList();
+        } else {
+          el.container.innerHTML = '<div class="empty-state">Fehler beim Laden der Daten.</div>';
+        }
+      } catch (err) {
+        el.container.innerHTML = '<div class="empty-state">Verbindungsfehler. Bitte erneut versuchen.</div>';
+      } finally {
+        if (el.refreshIcon) el.refreshIcon.style.animation = '';
+      }
+    }
+
+    function updateStats(stats) {
+      if (!stats) return;
+      el.statAccepted.textContent = stats.totalAttendingGuests || 0;
+      el.statDeclined.textContent = stats.declinedResponses || 0;
+      el.statTotal.textContent = stats.totalResponses || 0;
+
+      el.tabAll.textContent = `Alle (${stats.totalResponses || 0})`;
+      el.tabAccepted.textContent = `Zusagen (${stats.attendingResponses || 0})`;
+      el.tabDeclined.textContent = `Absagen (${stats.declinedResponses || 0})`;
+    }
+
+    function renderList() {
+      let filtered = cachedRsvps.filter(r => {
+        if (currentFilter === 'accepted' && !r.attending) return false;
+        if (currentFilter === 'declined' && r.attending) return false;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchName = (r.name || '').toLowerCase().includes(q);
+          const matchPlus = (r.plus_ones || []).some(p => p.toLowerCase().includes(q));
+          const matchNote = (r.note || '').toLowerCase().includes(q);
+          if (!matchName && !matchPlus && !matchNote) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        el.container.innerHTML = `
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <p>Keine Einträge für diese Ansicht gefunden.</p>
+          </div>
+        `;
+        return;
+      }
+
+      el.container.innerHTML = filtered.map(r => {
+        const isAttending = r.attending;
+        const plusOnesList = (r.plus_ones && Array.isArray(r.plus_ones)) ? r.plus_ones.filter(p => p && p.trim()) : [];
+        const totalPersons = r.total_persons || (1 + plusOnesList.length);
+        const createdDate = r.created_at ? formatDateTime(r.created_at) : '';
+
+        return `
+          <div class="guest-card ${isAttending ? 'is-accepted' : 'is-declined'}">
+            <div class="card-header-row">
+              <div class="guest-name-wrap">
+                <span class="guest-name">${escapeHtml(r.name)}</span>
+                <span class="badge-count">${totalPersons} ${totalPersons === 1 ? 'Person' : 'Personen'}</span>
+              </div>
+              <span class="status-pill ${isAttending ? 'accepted' : 'declined'}">
+                ${isAttending ? '✓ Zugesagt' : '✕ Abgesagt'}
+              </span>
+            </div>
+
+            ${plusOnesList.length > 0 ? `
+              <div class="companions-box">
+                ${plusOnesList.map((p, idx) => `
+                  <div class="companion-row">
+                    <span class="companion-tag">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                      <span>Begleitperson ${plusOnesList.length > 1 ? idx + 1 : ''}</span>
+                    </span>
+                    <strong class="companion-name">${escapeHtml(p)}</strong>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            ${r.note ? `
+              <div class="guest-note-box">
+                <svg class="guest-note-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>„${escapeHtml(r.note)}“</span>
+              </div>
+            ` : ''}
+
+            <div class="card-footer-row">
+              <span>${createdDate ? `Eingegangen: ${createdDate}` : ''}</span>
+              <button type="button" class="btn-delete" onclick="openDeleteModal('${r.id}', '${escapeHtml(r.name)}')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <span>Löschen</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    let pendingDeleteId = null;
+    let pendingDeleteName = '';
+
+    function openDeleteModal(id, name) {
+      pendingDeleteId = id;
+      pendingDeleteName = name;
+      const targetEl = document.getElementById('deleteTargetName');
+      if (targetEl) targetEl.textContent = `„${name}“`;
+      const modal = document.getElementById('deleteConfirmModal');
+      if (modal) {
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    function closeDeleteModal() {
+      pendingDeleteId = null;
+      pendingDeleteName = '';
+      const modal = document.getElementById('deleteConfirmModal');
+      if (modal) {
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    const btnCancelDelete = document.getElementById('btnCancelDelete');
+    if (btnCancelDelete) {
+      btnCancelDelete.addEventListener('click', closeDeleteModal);
+    }
+
+    const modalBackdrop = document.getElementById('deleteConfirmModal');
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) {
+          closeDeleteModal();
+        }
+      });
+    }
+
+    const btnConfirmDelete = document.getElementById('btnConfirmDelete');
+    if (btnConfirmDelete) {
+      btnConfirmDelete.addEventListener('click', async () => {
+        if (!pendingDeleteId) return;
+        const idToDelete = pendingDeleteId;
+        const nameToDelete = pendingDeleteName;
+        closeDeleteModal();
+
+        try {
+          const res = await fetch(`/api/rsvp?id=${encodeURIComponent(idToDelete)}`, {
+            method: 'DELETE',
+            headers: { 'x-pin': currentPin }
+          });
+          if (res.ok) {
+            showToast(`Eintrag von ${nameToDelete} gelöscht`);
+            loadData();
+          } else {
+            showToast('Fehler beim Löschen');
+          }
+        } catch (err) {
+          console.error('Delete error:', err);
+          showToast('Verbindungsfehler beim Löschen');
+        }
+      });
+    }
+
+    // Keep fallback for legacy calls
+    async function handleDelete(id, name) {
+      openDeleteModal(id, name);
+    }
+
+    function formatDateTime(isoStr) {
+      try {
+        const d = new Date(isoStr);
+        if (isNaN(d.getTime())) return '';
+        return d.toLocaleDateString('de-DE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }) + ' Uhr';
+      } catch {
+        return '';
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Copy List formatted for WhatsApp
+    function copyList() {
+      const accepted = cachedRsvps.filter(r => r.attending);
+      const declined = cachedRsvps.filter(r => !r.attending);
+      const totalGuests = accepted.reduce((acc, r) => acc + (r.total_persons || (1 + (r.plus_ones ? r.plus_ones.length : 0))), 0);
+
+      let text = `👶 *Babyshower Alina & Kevin – Gästeliste*\n\n`;
+      text += `✅ *ZUSAGEN (${totalGuests} Personen)*\n`;
+      if (accepted.length === 0) {
+        text += `- Noch keine Zusagen\n`;
+      } else {
+        accepted.forEach(r => {
+          const plusList = (r.plus_ones && Array.isArray(r.plus_ones)) ? r.plus_ones.filter(p => p && p.trim()) : [];
+          text += `• *${r.name}* (${1 + plusList.length} ${1 + plusList.length === 1 ? 'Person' : 'Personen'})\n`;
+          if (plusList.length > 0) {
+            plusList.forEach((p, idx) => {
+              text += `   ↳ Begleitung ${plusList.length > 1 ? idx + 1 : ''}: ${p}\n`;
+            });
+          }
+          if (r.note) {
+            text += `   💬 „${r.note}“\n`;
+          }
+        });
+      }
+
+      text += `\n❌ *ABSAGEN (${declined.length})*\n`;
+      if (declined.length === 0) {
+        text += `- Keine Absagen\n`;
+      } else {
+        declined.forEach(r => {
+          text += `• ${r.name}${r.note ? ` [„${r.note}“]` : ''}\n`;
+        });
+      }
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Gästeliste in die Zwischenablage kopiert! 📋');
+      }).catch(() => {
+        showToast('Konnte nicht in Zwischenablage kopieren');
+      });
+    }
+
+    // CSV Export
+    function downloadCsv() {
+      if (!cachedRsvps || cachedRsvps.length === 0) {
+        showToast('Keine Daten zum Exportieren');
+        return;
+      }
+      const headers = ['Name', 'Status', 'Personen', 'Begleitpersonen', 'Nachricht', 'Datum'];
+      const rows = cachedRsvps.map(r => [
+        `"${(r.name || '').replace(/"/g, '""')}"`,
+        r.attending ? '"Zugesagt"' : '"Abgesagt"',
+        r.total_persons || (1 + (r.plus_ones ? r.plus_ones.length : 0)),
+        `"${(r.plus_ones ? r.plus_ones.join(', ') : '').replace(/"/g, '""')}"`,
+        `"${(r.note || '').replace(/"/g, '""')}"`,
+        `"${r.created_at || ''}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map(row => row.join(';'))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `babyshower-alina-kevin-gaesteliste-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV-Datei (für Excel o. Ä.) heruntergeladen 📊');
+    }
+
+    // Tabs filter
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderList();
+      });
+    });
+
+    // Search input
+    el.searchInput.addEventListener('input', e => {
+      searchQuery = e.target.value.trim();
+      renderList();
+    });
+
+    el.btnRefresh.addEventListener('click', loadData);
+    el.btnCopyList.addEventListener('click', copyList);
+    el.btnDownloadCsv.addEventListener('click', downloadCsv);
+
+    // Initial Load
+    loadData();
+
+    // Subtle Ambient Starfall Canvas
+    const canvas = document.getElementById('ambientCanvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const stars = Array.from({ length: 40 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: 0.8 + Math.random() * 1.5,
+        speedY: 0.15 + Math.random() * 0.35,
+        speedX: (Math.random() - 0.5) * 0.2,
+        opacity: 0.2 + Math.random() * 0.5,
+        isGold: Math.random() > 0.5
+      }));
+
+      function renderStars() {
+        ctx.clearRect(0, 0, width, height);
+        stars.forEach(s => {
+          s.y += s.speedY;
+          s.x += s.speedX;
+          if (s.y > height) { s.y = -5; s.x = Math.random() * width; }
+          if (s.x > width) s.x = 0;
+          if (s.x < 0) s.x = width;
+
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+          ctx.fillStyle = s.isGold 
+            ? `rgba(217, 119, 6, ${s.opacity})` 
+            : `rgba(99, 102, 241, ${s.opacity * 0.7})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(renderStars);
+      }
+      renderStars();
+    }
+  </script>
+</body>
+</html>

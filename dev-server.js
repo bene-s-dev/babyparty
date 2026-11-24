@@ -55,6 +55,7 @@ const MIME_TYPES = {
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   let pathname = parsedUrl.pathname;
+  req.query = parsedUrl.query || {};
 
   // Add Vercel response helper methods
   res.status = function(code) {
@@ -102,10 +103,15 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  // Static file serving
+  // Static file serving (with Clean URLs support)
   if (pathname === '/') pathname = '/index.html';
-  const safePath = path.normalize(decodeURIComponent(pathname)).replace(/^(\.\.[\/\\])+/, '');
-  const filePath = path.join(__dirname, safePath);
+  if (pathname === '/antworten') pathname = '/antworten.html';
+  let safePath = path.normalize(decodeURIComponent(pathname)).replace(/^(\.\.[\/\\])+/, '');
+  let filePath = path.join(__dirname, safePath);
+
+  if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {
+    filePath = filePath + '.html';
+  }
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
@@ -145,7 +151,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`Local dev server running on http://127.0.0.1:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Local dev server running on http://localhost:${PORT} and http://127.0.0.1:${PORT}`);
   console.log(`Ready to serve static files and /api/* serverless endpoints.`);
 });

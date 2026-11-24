@@ -42,6 +42,8 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({
         success: true,
         token: token,
+        mode: activeConfig.mode || 'babyparty',
+        babyshower: activeConfig.babyshower,
         gender: activeConfig.gender,
         targetDate: activeConfig.targetDate,
         targetTimeMs: activeConfig.targetTimeMs,
