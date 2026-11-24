@@ -12,7 +12,7 @@ const TMP_RSVP_FILE = path.join('/tmp', '.dev-rsvps.json');
 // Default target: Donnerstag 29.10.2026, 18:00 Uhr Berlin time (CET UTC+1)
 const DEFAULT_TARGET_DATE = '2026-10-29T18:00:00+01:00';
 const DEFAULT_GENDER = 'boy';
-const DEFAULT_MODE = 'babyparty'; // 'babyparty' (Gender Reveal) | 'babyshower' (RSVP)
+const DEFAULT_MODE = 'babyshower'; // 'babyparty' (Gender Reveal) | 'babyshower' (RSVP)
 
 const DEFAULT_BABYSHOWER_CONFIG = {
   date: '2026-01-08',
