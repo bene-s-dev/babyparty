@@ -4666,7 +4666,7 @@
     }
 
     if (elements.showerSuccessTitle) {
-      elements.showerSuccessTitle.textContent = isAttending ? 'YAY, wie schön!' : 'Danke fürs Bescheid geben!';
+      elements.showerSuccessTitle.textContent = isAttending ? 'Wie schön!' : 'Danke fürs Bescheid geben!';
     }
     if (elements.showerSuccessDesc) {
       const hasPlus = rsvpData.plusOnes && rsvpData.plusOnes.length > 0;
