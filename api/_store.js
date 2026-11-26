@@ -51,9 +51,13 @@ function verifyDevToken(token) {
 }
 
 // ----------------- SUPABASE REST INTEGRATION -----------------
+// Public Supabase project URL & publishable anon key (safe fallback when Vercel env vars are not set)
+const DEFAULT_SUPABASE_URL = 'https://odsghowxbgqnfsyjstcb.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kc2dob3d4YmdxbmZzeWpzdGNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4Njk1MTMsImV4cCI6MjA5NDQ0NTUxM30.-3ns3ckkDcBClXix43lek-TKehfv_THqYsqkvGUf1HU';
+
 function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL ? process.env.SUPABASE_URL.trim().replace(/\/+$/, '') : null;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+  const url = (process.env.SUPABASE_URL || DEFAULT_SUPABASE_URL).trim().replace(/\/+$/, '');
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
   if (url && key) {
     return {
       url,
@@ -424,30 +428,17 @@ async function saveRsvp({ id, name, plusOnes, attending, note }) {
     note: cleanNote
   };
 
-  // 1. Primary: Supabase (strictly throw on errors when configured so we never silently lose RSVPs)
+  // 1. Primary: Supabase RPC (works securely with public anon key + RLS)
   if (getSupabaseConfig()) {
-    if (id) {
-      const sbUpdate = await supabaseRequest(`babyparty_rsvps?id=eq.${encodeURIComponent(id)}`, {
-        method: 'PATCH',
-        headers: { 'Prefer': 'return=representation' },
-        body: JSON.stringify({
-          ...rsvpPayload,
-          updated_at: new Date().toISOString()
-        }),
-        throwOnError: true
-      });
-      if (Array.isArray(sbUpdate) && sbUpdate.length > 0) {
-        return sbUpdate[0];
-      }
-      // If ID was deleted on server, fall through cleanly to insert a fresh entry
-    }
-
-    const sbResult = await supabaseRequest('babyparty_rsvps', {
+    const sbResult = await supabaseRequest('rpc/save_rsvp_public', {
       method: 'POST',
-      headers: {
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify(rsvpPayload),
+      body: JSON.stringify({
+        p_id: id || null,
+        p_name: cleanName,
+        p_plus_ones: cleanPlusOnes,
+        p_attending: isAttending,
+        p_note: cleanNote
+      }),
       throwOnError: true
     });
 
@@ -483,6 +474,9 @@ async function saveRsvp({ id, name, plusOnes, attending, note }) {
   }
 
   // 3. Local Dev Fallback (only when neither Supabase nor KV is configured)
+  if (process.env.VERCEL) {
+    throw new Error('Keine Datenbank konfiguriert (SUPABASE_URL oder KV fehlt auf Vercel).');
+  }
   const localList = readLocalRsvps();
   const existingIndex = id ? localList.findIndex(e => String(e.id) === String(id)) : -1;
 
@@ -510,14 +504,22 @@ async function saveRsvp({ id, name, plusOnes, attending, note }) {
 
 async function getRsvps() {
   let list = [];
+  let storage = 'local';
 
   if (getSupabaseConfig()) {
-    const sbRows = await supabaseRequest('babyparty_rsvps?select=*&order=created_at.desc', {
+    const expectedPin = String(process.env.RESPONSES_PIN || process.env.ADMIN_PIN || '0801').trim();
+    const sbRows = await supabaseRequest('rpc/get_rsvps_with_pin', {
+      method: 'POST',
+      body: JSON.stringify({ p_pin: expectedPin }),
       throwOnError: true
     });
     list = Array.isArray(sbRows) ? sbRows : [];
+    storage = 'supabase';
   } else if (getKvConfig()) {
     list = await readKvRsvps();
+    storage = 'kv';
+  } else if (process.env.VERCEL) {
+    throw new Error('Keine Datenbank konfiguriert (SUPABASE_URL oder KV fehlt auf Vercel).');
   } else {
     list = readLocalRsvps();
   }
@@ -540,6 +542,7 @@ async function getRsvps() {
   }
 
   return {
+    storage,
     rsvps: list,
     stats: {
       totalResponses: list.length,
@@ -556,8 +559,10 @@ async function deleteRsvp(id) {
   if (!id) return false;
 
   if (getSupabaseConfig()) {
-    await supabaseRequest(`babyparty_rsvps?id=eq.${encodeURIComponent(id)}`, {
-      method: 'DELETE',
+    const expectedPin = String(process.env.RESPONSES_PIN || process.env.ADMIN_PIN || '0801').trim();
+    await supabaseRequest('rpc/delete_rsvp_with_pin', {
+      method: 'POST',
+      body: JSON.stringify({ p_pin: expectedPin, p_id: id }),
       throwOnError: true
     });
     return true;
