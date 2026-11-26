@@ -305,7 +305,7 @@
       try {
         localStorage.removeItem(this.STORAGE_KEY_GENDER);
         localStorage.removeItem(this.STORAGE_KEY_DATE);
-      } catch (e) {}
+      } catch (e) { }
     }
   };
 
@@ -335,7 +335,7 @@
     // Mode: 'babyparty' (Gender Reveal) | 'babyshower' (RSVP)
     mode: (function () { try { return localStorage.getItem('app_active_mode') || 'babyshower'; } catch (e) { return 'babyshower'; } })(),
     babyshower: {
-      date: '2026-01-08',
+      date: '2027-01-08',
       time: '14:30',
       location: 'Bergstr. 33, 79539 Lörrach',
       message: 'Bald halten wir unser kleines Wunder in den Armen!\nDiese ganz besondere Vorfreude möchten wir mit unseren liebsten Menschen feiern.'
@@ -3179,7 +3179,7 @@
 
     // Populate Babyshower fields
     const shower = STATE.babyshower || {};
-    if (elements.devInputShowerDate) elements.devInputShowerDate.value = shower.date || '2026-01-08';
+    if (elements.devInputShowerDate) elements.devInputShowerDate.value = shower.date || '2027-01-08';
     if (elements.devInputShowerTime) elements.devInputShowerTime.value = shower.time || '14:30';
     if (elements.devInputShowerLocation) elements.devInputShowerLocation.value = shower.location || 'Bergstr. 33, 79539 Lörrach';
     if (elements.devInputShowerMessage) elements.devInputShowerMessage.value = shower.message || '';
@@ -3190,36 +3190,36 @@
       fetch('/api/dev-config', {
         headers: { 'x-dev-token': devToken }
       })
-      .then(r => r.ok ? r.json() : null)
-      .then(d => {
-        if (d && d.success && d.config) {
-          if (d.config.targetTimeMs) {
-            setDevInputFromMs(d.config.targetTimeMs, false);
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+          if (d && d.success && d.config) {
+            if (d.config.targetTimeMs) {
+              setDevInputFromMs(d.config.targetTimeMs, false);
+            }
+            if (d.config.gender) {
+              devSelectedGender = d.config.gender;
+              STATE.actualGender = d.config.gender;
+              updateDevGenderCardsUI();
+            }
+            if (d.config.mode) {
+              devSelectedMode = d.config.mode;
+              STATE.mode = d.config.mode;
+              updateDevModeUI();
+            }
+            if (d.config.babyshower) {
+              STATE.babyshower = { ...STATE.babyshower, ...d.config.babyshower };
+              const s = STATE.babyshower;
+              if (elements.devInputShowerDate && s.date) elements.devInputShowerDate.value = s.date;
+              if (elements.devInputShowerTime && s.time) elements.devInputShowerTime.value = s.time;
+              if (elements.devInputShowerLocation && s.location) elements.devInputShowerLocation.value = s.location;
+              if (elements.devInputShowerMessage && s.message) elements.devInputShowerMessage.value = s.message;
+            }
+            if (elements.devCryptoBadgeText && d.config.storage) {
+              elements.devCryptoBadgeText.textContent = `AES-256-GCM • ${d.config.storage}`;
+            }
           }
-          if (d.config.gender) {
-            devSelectedGender = d.config.gender;
-            STATE.actualGender = d.config.gender;
-            updateDevGenderCardsUI();
-          }
-          if (d.config.mode) {
-            devSelectedMode = d.config.mode;
-            STATE.mode = d.config.mode;
-            updateDevModeUI();
-          }
-          if (d.config.babyshower) {
-            STATE.babyshower = { ...STATE.babyshower, ...d.config.babyshower };
-            const s = STATE.babyshower;
-            if (elements.devInputShowerDate && s.date) elements.devInputShowerDate.value = s.date;
-            if (elements.devInputShowerTime && s.time) elements.devInputShowerTime.value = s.time;
-            if (elements.devInputShowerLocation && s.location) elements.devInputShowerLocation.value = s.location;
-            if (elements.devInputShowerMessage && s.message) elements.devInputShowerMessage.value = s.message;
-          }
-          if (elements.devCryptoBadgeText && d.config.storage) {
-            elements.devCryptoBadgeText.textContent = `AES-256-GCM • ${d.config.storage}`;
-          }
-        }
-      })
-      .catch(() => {});
+        })
+        .catch(() => { });
     }
 
     elements.devSettingsModal.classList.add('open');
@@ -3344,7 +3344,7 @@
 
         // Collect Babyshower config
         const showerConfig = {
-          date: elements.devInputShowerDate ? elements.devInputShowerDate.value : '2026-01-08',
+          date: elements.devInputShowerDate ? elements.devInputShowerDate.value : '2027-01-08',
           time: elements.devInputShowerTime ? elements.devInputShowerTime.value : '14:30',
           location: elements.devInputShowerLocation ? elements.devInputShowerLocation.value.trim() : 'Bergstr. 33, 79539 Lörrach',
           message: elements.devInputShowerMessage ? elements.devInputShowerMessage.value.trim() : ''
@@ -3491,7 +3491,7 @@
           localStorage.removeItem('baby_has_voted');
           localStorage.removeItem('baby_user_guess');
           localStorage.removeItem('baby_guest_name');
-        } catch (e) {}
+        } catch (e) { }
         updatePollUI();
         audio.playClick();
         closeDevSettingsModal();
@@ -4373,7 +4373,7 @@
         try {
           const raw = localStorage.getItem('baby_shower_rsvp');
           if (raw) existingRsvp = JSON.parse(raw);
-        } catch (e) {}
+        } catch (e) { }
 
         if (existingRsvp) {
           STATE.showerGuestName = existingRsvp.name || STATE.showerGuestName;
@@ -4530,12 +4530,12 @@
       let msg = shower.message || '';
       if (msg.includes('Meilenstein')) {
         msg = msg.replace(/Diesen ganz besonderen Meilenstein/g, 'Diese ganz besondere Vorfreude')
-                 .replace(/diesen ganz besonderen Meilenstein/g, 'diese ganz besondere Vorfreude')
-                 .replace(/Meilenstein/g, 'Moment der Vorfreude');
+          .replace(/diesen ganz besonderen Meilenstein/g, 'diese ganz besondere Vorfreude')
+          .replace(/Meilenstein/g, 'Moment der Vorfreude');
       }
       msg = msg.replace(/Armen!\s+Diese/g, 'Armen!\nDiese')
-               .replace(/\s*Lass uns bitte wissen,?\s*ob du dabei bist!?/gi, '')
-               .trim();
+        .replace(/\s*Lass uns bitte wissen,?\s*ob du dabei bist!?/gi, '')
+        .trim();
       const isZusageMsg = msg.toLowerCase().includes('freuen') || msg.toLowerCase().includes('riesig');
       if (msg && !isZusageMsg) {
         elements.showerCustomMessage.innerHTML = escapeHtml(msg).replace(/\n/g, '<br>');
@@ -4550,7 +4550,7 @@
   }
 
   function formatEventDateLabel(dateStr) {
-    if (!dateStr) return 'Donnerstag, 8. Januar 2026';
+    if (!dateStr) return 'Freitag, 8. Januar 2027';
     try {
       const parts = dateStr.split('-');
       if (parts.length === 3) {
@@ -4629,7 +4629,7 @@
         };
         try {
           localStorage.setItem('baby_shower_rsvp', JSON.stringify(savedData));
-        } catch (e) {}
+        } catch (e) { }
 
         renderSuccessView(savedData);
         if (isAttending) {
@@ -4660,7 +4660,7 @@
 
     if (elements.showerSuccessBadge) {
       elements.showerSuccessBadge.classList.toggle('decline-badge', !isAttending);
-      elements.showerSuccessBadge.innerHTML = isAttending 
+      elements.showerSuccessBadge.innerHTML = isAttending
         ? '<i data-lucide="sparkles" class="icon-lg"></i>'
         : '<i data-lucide="heart" class="icon-lg"></i>';
     }
@@ -4670,8 +4670,8 @@
     }
     if (elements.showerSuccessDesc) {
       const hasPlus = rsvpData.plusOnes && rsvpData.plusOnes.length > 0;
-      elements.showerSuccessDesc.textContent = isAttending 
-        ? (hasPlus ? 'Wir freuen uns riesig auf euch!' : 'Wir freuen uns riesig auf dich!') 
+      elements.showerSuccessDesc.textContent = isAttending
+        ? (hasPlus ? 'Wir freuen uns riesig auf euch!' : 'Wir freuen uns riesig auf dich!')
         : (hasPlus ? 'Wir denken fest an euch und schicken ganz liebe Grüße!' : 'Wir denken fest an dich und schicken ganz liebe Grüße!');
     }
 
@@ -4690,8 +4690,8 @@
 
     if (elements.showerSuccessStatusTag) {
       elements.showerSuccessStatusTag.classList.toggle('declined', !isAttending);
-      elements.showerSuccessStatusTag.textContent = isAttending 
-        ? `Zugesagt (${totalCount} Person${totalCount > 1 ? 'en' : ''})` 
+      elements.showerSuccessStatusTag.textContent = isAttending
+        ? `Zugesagt (${totalCount} Person${totalCount > 1 ? 'en' : ''})`
         : 'Abgesagt';
     }
 
@@ -4745,7 +4745,7 @@
 
   function generateIcsFile() {
     const shower = STATE.babyshower || {};
-    const dateStr = shower.date || '2026-01-08';
+    const dateStr = shower.date || '2027-01-08';
     const timeStr = shower.time || '14:30';
     const loc = shower.location || 'Bergstr. 33, 79539 Lörrach';
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`;
@@ -4799,7 +4799,7 @@
 
   function applyAppMode() {
     const isShower = (STATE.mode === 'babyshower');
-    try { localStorage.setItem('app_active_mode', STATE.mode); } catch (e) {}
+    try { localStorage.setItem('app_active_mode', STATE.mode); } catch (e) { }
 
     document.documentElement.classList.remove('mode-babyshower-init', 'has-shower-rsvp-init');
     document.body.classList.toggle('mode-babyshower', isShower);
@@ -4819,7 +4819,7 @@
       try {
         const raw = localStorage.getItem('baby_shower_rsvp');
         if (raw) existingRsvp = JSON.parse(raw);
-      } catch (e) {}
+      } catch (e) { }
 
       const isUserInteracting = STATE.isEditingRsvp ||
         (elements.pageShower1 && elements.pageShower1.classList.contains('active') &&
@@ -4841,7 +4841,7 @@
     } else {
       document.body.classList.remove('clean-bg');
       if (activeVid && activeVid.paused) {
-        activeVid.play().catch(() => {});
+        activeVid.play().catch(() => { });
       }
       if (elements.pageShower1) elements.pageShower1.classList.remove('active');
       if (elements.pageShower2) elements.pageShower2.classList.remove('active');
