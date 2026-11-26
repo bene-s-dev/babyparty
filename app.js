@@ -528,14 +528,6 @@
     devInputShowerTime: document.getElementById('devInputShowerTime'),
     devInputShowerLocation: document.getElementById('devInputShowerLocation'),
     devInputShowerMessage: document.getElementById('devInputShowerMessage'),
-    devRsvpAdminSection: document.getElementById('devRsvpAdminSection'),
-    btnRefreshRsvps: document.getElementById('btnRefreshRsvps'),
-    statAcceptedGuests: document.getElementById('statAcceptedGuests'),
-    statDeclinedGuests: document.getElementById('statDeclinedGuests'),
-    statTotalResponses: document.getElementById('statTotalResponses'),
-    devGuestList: document.getElementById('devGuestList'),
-    btnCopyGuestList: document.getElementById('btnCopyGuestList'),
-    btnDownloadGuestCsv: document.getElementById('btnDownloadGuestCsv'),
 
     // Developer Toolbar & Configuration Modal
     btnOpenDevSettings: document.getElementById('btnOpenDevSettings'),
@@ -3193,9 +3185,6 @@
     if (elements.devInputShowerLocation) elements.devInputShowerLocation.value = shower.location || 'Bergstr. 33, 79539 Lörrach';
     if (elements.devInputShowerMessage) elements.devInputShowerMessage.value = shower.message || '';
 
-    // Load Live RSVP guest list
-    loadAdminRsvps();
-
     // Query active server config to ensure dev mode matches cloud state
     const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
     if (devToken) {
@@ -4418,6 +4407,7 @@
           }
         }
 
+        STATE.isEditingRsvp = true;
         if (elements.showerCardFlow) elements.showerCardFlow.style.display = 'block';
         if (elements.showerSuccessView) elements.showerSuccessView.style.display = 'none';
         goToShowerStep(2);
@@ -4587,12 +4577,27 @@
   }
 
   async function submitRsvp() {
-    if (!STATE.showerGuestName || !STATE.showerChoice) return;
+    if (STATE.isSubmittingRsvp) return;
+
+    if (!STATE.showerGuestName && elements.showerGuestNameInput) {
+      STATE.showerGuestName = elements.showerGuestNameInput.value.trim();
+    }
+    if (!STATE.showerGuestName) {
+      showToast('Bitte gib zuerst deinen Namen ein.', 2500);
+      goToShowerStep(1);
+      return;
+    }
+    if (!STATE.showerChoice) {
+      showToast('Bitte wähle zuerst Zu- oder Absage aus.', 2500);
+      return;
+    }
+
     const isAttending = (STATE.showerChoice === 'accept');
     const note = elements.showerRsvpNote ? elements.showerRsvpNote.value.trim() : '';
 
     const btn = elements.btnSubmitRsvp;
     const btnText = elements.btnSubmitRsvpText;
+    STATE.isSubmittingRsvp = true;
     if (btn) btn.disabled = true;
     if (btnText) btnText.textContent = 'Wird gesendet...';
 
@@ -4613,6 +4618,7 @@
       if (res.ok && data && data.success) {
         const returnedId = (data.rsvp && data.rsvp.id) || STATE.showerRsvpId || null;
         STATE.showerRsvpId = returnedId;
+        STATE.isEditingRsvp = false;
 
         const savedData = {
           id: returnedId,
@@ -4633,14 +4639,15 @@
           showToast('Rückmeldung gespeichert. Vielen Dank!', 3000);
         }
       } else {
-        showToast((data && data.error) ? data.error : 'Fehler beim Senden', 3000);
+        showToast((data && data.error) ? data.error : 'Fehler beim Senden', 3500);
       }
     } catch (err) {
       console.warn('[RSVP error]', err);
-      showToast('Verbindungsfehler beim Absenden', 3000);
+      showToast('Verbindungsfehler beim Absenden', 3500);
     } finally {
+      STATE.isSubmittingRsvp = false;
       if (btn) btn.disabled = false;
-      if (btnText) btnText.textContent = (isAttending ? 'Zusage absenden' : 'Absage absenden');
+      if (btnText) btnText.textContent = STATE.showerRsvpId ? 'Änderung speichern' : 'Antwort absenden';
     }
   }
 
@@ -4815,7 +4822,15 @@
         if (raw) existingRsvp = JSON.parse(raw);
       } catch (e) {}
 
-      if (existingRsvp && existingRsvp.name) {
+      const isUserInteracting = STATE.isEditingRsvp ||
+        (elements.pageShower1 && elements.pageShower1.classList.contains('active') &&
+          elements.showerGuestNameInput && elements.showerGuestNameInput.value.trim().length > 0) ||
+        (elements.pageShower2 && elements.pageShower2.classList.contains('active') &&
+          elements.showerCardFlow && elements.showerCardFlow.style.display !== 'none');
+
+      if (isUserInteracting) {
+        updateShowerEventDetailsUI();
+      } else if (existingRsvp && existingRsvp.name) {
         STATE.showerGuestName = existingRsvp.name;
         STATE.showerPlusOnes = existingRsvp.plusOnes || [];
         STATE.showerRsvpId = existingRsvp.id || null;
@@ -4841,179 +4856,6 @@
     }
   }
 
-  // ==================== ADMIN DEV RSVP MANAGEMENT ====================
-  function initDevRsvpAdmin() {
-    if (elements.btnRefreshRsvps) {
-      elements.btnRefreshRsvps.addEventListener('click', () => {
-        audio.playClick();
-        loadAdminRsvps();
-      });
-    }
-
-    if (elements.btnCopyGuestList) {
-      elements.btnCopyGuestList.addEventListener('click', copyAdminGuestList);
-    }
-
-    if (elements.btnDownloadGuestCsv) {
-      elements.btnDownloadGuestCsv.addEventListener('click', downloadAdminGuestCsv);
-    }
-  }
-
-  async function loadAdminRsvps() {
-    const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
-    if (!devToken || !elements.devGuestList) return;
-
-    elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Lade Rückmeldungen...</div>';
-
-    try {
-      const res = await fetch('/api/rsvp', {
-        headers: { 'x-dev-token': devToken }
-      });
-      const data = await res.json().catch(() => null);
-      if (res.ok && data && data.success) {
-        STATE.cachedRsvps = data.rsvps || [];
-
-        const stats = data.stats || {};
-        if (elements.statAcceptedGuests) elements.statAcceptedGuests.textContent = stats.totalAttendingGuests || 0;
-        if (elements.statDeclinedGuests) elements.statDeclinedGuests.textContent = stats.declinedResponses || 0;
-        if (elements.statTotalResponses) elements.statTotalResponses.textContent = stats.totalResponses || 0;
-
-        renderAdminGuestList(STATE.cachedRsvps);
-      } else {
-        elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Keine Rückmeldungen oder Zugriff verweigert.</div>';
-      }
-    } catch (e) {
-      elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Fehler beim Laden der Gästeliste.</div>';
-    }
-  }
-
-  function renderAdminGuestList(list) {
-    if (!elements.devGuestList) return;
-    if (!list || list.length === 0) {
-      elements.devGuestList.innerHTML = '<div class="dev-guest-empty">Noch keine Rückmeldungen vorhanden.</div>';
-      return;
-    }
-
-    elements.devGuestList.innerHTML = '';
-    list.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'dev-guest-item';
-
-      const count = Number(item.total_persons) || (1 + (Array.isArray(item.plus_ones) ? item.plus_ones.length : 0));
-      const plusText = (item.plus_ones && item.plus_ones.length > 0)
-        ? `+ ${item.plus_ones.join(', ')}`
-        : '';
-      const noteHtml = item.note 
-        ? `<div class="dev-guest-note">„${escapeHtml(item.note)}“</div>` 
-        : '';
-
-      const statusClass = item.attending ? 'status-attending' : 'status-declined';
-      const statusText = item.attending ? `Zusage (${count} P.)` : 'Absage';
-
-      row.innerHTML = `
-        <div class="dev-guest-info">
-          <div class="dev-guest-name-row">
-            <span class="dev-guest-name">${escapeHtml(item.name)}</span>
-            <span class="dev-guest-count-badge">${count} P.</span>
-          </div>
-          ${plusText ? `<div class="dev-guest-plus">${escapeHtml(plusText)}</div>` : ''}
-          ${noteHtml}
-        </div>
-        <div class="dev-guest-right">
-          <span class="dev-guest-status ${statusClass}">${statusText}</span>
-          <button type="button" class="btn-delete-guest" data-id="${item.id}" title="Löschen">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-          </button>
-        </div>
-      `;
-
-      row.querySelector('.btn-delete-guest').addEventListener('click', async (e) => {
-        e.stopPropagation();
-        if (confirm(`Eintrag von "${item.name}" wirklich löschen?`)) {
-          await deleteAdminRsvp(item.id);
-        }
-      });
-
-      elements.devGuestList.appendChild(row);
-    });
-  }
-
-  async function deleteAdminRsvp(id) {
-    const devToken = STATE.devToken || sessionStorage.getItem('baby_dev_token');
-    if (!devToken || !id) return;
-    try {
-      const res = await fetch(`/api/rsvp?id=${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-        headers: { 'x-dev-token': devToken }
-      });
-      if (res.ok) {
-        showToast('Eintrag gelöscht', 2000);
-        loadAdminRsvps();
-      }
-    } catch (e) {
-      showToast('Fehler beim Löschen', 2000);
-    }
-  }
-
-  function copyAdminGuestList() {
-    const list = STATE.cachedRsvps || [];
-    if (list.length === 0) {
-      showToast('Keine Rückmeldungen vorhanden', 2000);
-      return;
-    }
-
-    let text = '💌 BABYSCHOWER GÄSTELISTE (Alina & Kevin)\n==============================\n\n';
-    let zusagen = list.filter(r => r.attending);
-    let absagen = list.filter(r => !r.attending);
-    let totalZusagenPersonen = zusagen.reduce((acc, r) => acc + (Number(r.total_persons) || 1), 0);
-
-    text += `🟢 ZUSAGEN (${totalZusagenPersonen} Personen):\n`;
-    zusagen.forEach((r, idx) => {
-      const plus = (r.plus_ones && r.plus_ones.length > 0) ? ` (+ ${r.plus_ones.join(', ')})` : '';
-      const note = r.note ? ` [Notiz: ${r.note}]` : '';
-      text += `${idx + 1}. ${r.name}${plus}${note}\n`;
-    });
-
-    text += `\n🔴 ABSAGEN (${absagen.length}):\n`;
-    absagen.forEach((r, idx) => {
-      const note = r.note ? ` [Notiz: ${r.note}]` : '';
-      text += `${idx + 1}. ${r.name}${note}\n`;
-    });
-
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('Gästeliste in Zwischenablage kopiert! 📋', 3000);
-    }).catch(() => {
-      showToast('Kopieren fehlgeschlagen', 2000);
-    });
-  }
-
-  function downloadAdminGuestCsv() {
-    const list = STATE.cachedRsvps || [];
-    if (list.length === 0) {
-      showToast('Keine Daten zum Exportieren', 2000);
-      return;
-    }
-
-    let csv = 'Name;Begleitpersonen;Gesamtanzahl;Status;Notiz;Datum\n';
-    list.forEach(r => {
-      const count = Number(r.total_persons) || 1;
-      const plus = (r.plus_ones || []).join(', ');
-      const status = r.attending ? 'Zusage' : 'Absage';
-      const cleanNote = (r.note || '').replace(/[\r\n;]/g, ' ');
-      const date = r.created_at ? new Date(r.created_at).toLocaleString('de-DE') : '';
-      csv += `"${r.name}";"${plus}";${count};"${status}";"${cleanNote}";"${date}"\n`;
-    });
-
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'babyshower-gaesteliste.csv';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast('CSV-Datei heruntergeladen!', 2500);
-  }
-
   // ==================== INITIALIZATION ====================
   function init() {
     // Instant initial target date fallback from local storage cache
@@ -5029,7 +4871,6 @@
     initPage3();
     initBabyshower();
     initDevSettingsModal();
-    initDevRsvpAdmin();
     initStoryModalHandlers();
     initDevAuthModal();
     initDevEasterEgg();

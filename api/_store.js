@@ -67,16 +67,18 @@ function getSupabaseConfig() {
 async function supabaseRequest(endpoint, options = {}) {
   const sb = getSupabaseConfig();
   if (!sb) return null;
+
+  const { throwOnError = false, ...fetchOptions } = options;
   const fullUrl = `${sb.url}/rest/v1/${endpoint.replace(/^\/+/, '')}`;
   const headers = {
     apikey: sb.key,
     Authorization: `Bearer ${sb.key}`,
     'Content-Type': 'application/json',
-    ...(options.headers || {})
+    ...(fetchOptions.headers || {})
   };
   try {
     const res = await fetch(fullUrl, {
-      ...options,
+      ...fetchOptions,
       headers
     });
     if (res.ok) {
@@ -84,10 +86,13 @@ async function supabaseRequest(endpoint, options = {}) {
       return text ? JSON.parse(text) : true;
     } else {
       const errText = await res.text().catch(() => '');
-      console.warn(`[DevStore] Supabase Error (${res.status}) ${endpoint}:`, errText);
+      const msg = `Supabase Error (${res.status}) ${endpoint}: ${errText}`;
+      console.warn(`[DevStore] ${msg}`);
+      if (throwOnError) throw new Error(msg);
     }
   } catch (err) {
     console.warn(`[DevStore] Supabase Network Error ${endpoint}:`, err.message);
+    if (throwOnError) throw err;
   }
   return null;
 }
@@ -377,6 +382,27 @@ function writeLocalRsvps(list) {
   }
 }
 
+const KV_RSVPS_KEY = 'babyparty:rsvps:v1';
+
+async function readKvRsvps() {
+  const raw = await kvExecute(['GET', KV_RSVPS_KEY]);
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.warn('[DevStore] Invalid KV RSVPs JSON:', e.message);
+    return [];
+  }
+}
+
+async function writeKvRsvps(list) {
+  const res = await kvExecute(['SET', KV_RSVPS_KEY, JSON.stringify(Array.isArray(list) ? list : [])]);
+  if (res === null) {
+    throw new Error('KV-Speicherung der Rückmeldungen fehlgeschlagen.');
+  }
+}
+
 async function saveRsvp({ id, name, plusOnes, attending, note }) {
   const cleanName = String(name || '').trim();
   if (!cleanName) {
@@ -398,66 +424,67 @@ async function saveRsvp({ id, name, plusOnes, attending, note }) {
     note: cleanNote
   };
 
-  // 1. Try Supabase Update if ID or existing name provided
-  if (id) {
-    try {
+  // 1. Primary: Supabase (strictly throw on errors when configured so we never silently lose RSVPs)
+  if (getSupabaseConfig()) {
+    if (id) {
       const sbUpdate = await supabaseRequest(`babyparty_rsvps?id=eq.${encodeURIComponent(id)}`, {
         method: 'PATCH',
         headers: { 'Prefer': 'return=representation' },
         body: JSON.stringify({
           ...rsvpPayload,
           updated_at: new Date().toISOString()
-        })
+        }),
+        throwOnError: true
       });
       if (Array.isArray(sbUpdate) && sbUpdate.length > 0) {
         return sbUpdate[0];
       }
-    } catch (e) {
-      console.warn('[Supabase update by ID error]', e.message);
+      // If ID was deleted on server, fall through cleanly to insert a fresh entry
     }
-  } else {
-    // Check if an entry with exact name already exists to prevent duplicates
-    try {
-      const existingByName = await supabaseRequest(`babyparty_rsvps?name=ilike.${encodeURIComponent(cleanName)}&limit=1`);
-      if (Array.isArray(existingByName) && existingByName.length > 0 && existingByName[0].id) {
-        const targetId = existingByName[0].id;
-        const sbUpdate = await supabaseRequest(`babyparty_rsvps?id=eq.${encodeURIComponent(targetId)}`, {
-          method: 'PATCH',
-          headers: { 'Prefer': 'return=representation' },
-          body: JSON.stringify({
-            ...rsvpPayload,
-            updated_at: new Date().toISOString()
-          })
-        });
-        if (Array.isArray(sbUpdate) && sbUpdate.length > 0) {
-          return sbUpdate[0];
-        }
-      }
-    } catch (e) {}
+
+    const sbResult = await supabaseRequest('babyparty_rsvps', {
+      method: 'POST',
+      headers: {
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(rsvpPayload),
+      throwOnError: true
+    });
+
+    if (Array.isArray(sbResult) && sbResult.length > 0) {
+      return sbResult[0];
+    }
+    throw new Error('Supabase hat keinen gespeicherten Eintrag zurückgegeben.');
   }
 
-  // If not updated, insert new in Supabase
-  const sbResult = await supabaseRequest('babyparty_rsvps', {
-    method: 'POST',
-    headers: {
-      'Prefer': 'return=representation'
-    },
-    body: JSON.stringify(rsvpPayload)
-  });
+  // 2. Secondary: Upstash KV (if configured without Supabase)
+  if (getKvConfig()) {
+    const kvList = await readKvRsvps();
+    const existingIndex = id ? kvList.findIndex(e => String(e.id) === String(id)) : -1;
+    if (existingIndex >= 0) {
+      kvList[existingIndex] = {
+        ...kvList[existingIndex],
+        ...rsvpPayload,
+        updated_at: new Date().toISOString()
+      };
+      await writeKvRsvps(kvList);
+      return kvList[existingIndex];
+    }
 
-  if (Array.isArray(sbResult) && sbResult.length > 0) {
-    return sbResult[0];
+    const newKvEntry = {
+      id: crypto.randomUUID(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      ...rsvpPayload
+    };
+    kvList.unshift(newKvEntry);
+    await writeKvRsvps(kvList);
+    return newKvEntry;
   }
 
-  // 2. Fallback: Local JSON & memory
+  // 3. Local Dev Fallback (only when neither Supabase nor KV is configured)
   const localList = readLocalRsvps();
-  let existingIndex = -1;
-  if (id) {
-    existingIndex = localList.findIndex(e => e.id === id);
-  }
-  if (existingIndex === -1) {
-    existingIndex = localList.findIndex(e => (e.name || '').toLowerCase() === cleanName.toLowerCase());
-  }
+  const existingIndex = id ? localList.findIndex(e => String(e.id) === String(id)) : -1;
 
   if (existingIndex >= 0) {
     localList[existingIndex] = {
@@ -484,12 +511,14 @@ async function saveRsvp({ id, name, plusOnes, attending, note }) {
 async function getRsvps() {
   let list = [];
 
-  // 1. Try Supabase
-  const sbRows = await supabaseRequest('babyparty_rsvps?select=*&order=created_at.desc');
-  if (Array.isArray(sbRows)) {
-    list = sbRows;
+  if (getSupabaseConfig()) {
+    const sbRows = await supabaseRequest('babyparty_rsvps?select=*&order=created_at.desc', {
+      throwOnError: true
+    });
+    list = Array.isArray(sbRows) ? sbRows : [];
+  } else if (getKvConfig()) {
+    list = await readKvRsvps();
   } else {
-    // 2. Fallback to local
     list = readLocalRsvps();
   }
 
@@ -526,12 +555,21 @@ async function getRsvps() {
 async function deleteRsvp(id) {
   if (!id) return false;
 
-  // 1. Try Supabase
-  await supabaseRequest(`babyparty_rsvps?id=eq.${encodeURIComponent(id)}`, {
-    method: 'DELETE'
-  });
+  if (getSupabaseConfig()) {
+    await supabaseRequest(`babyparty_rsvps?id=eq.${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      throwOnError: true
+    });
+    return true;
+  }
 
-  // 2. Also clean local
+  if (getKvConfig()) {
+    const kvList = await readKvRsvps();
+    const filtered = kvList.filter(item => String(item.id) !== String(id));
+    await writeKvRsvps(filtered);
+    return true;
+  }
+
   const localList = readLocalRsvps();
   const filtered = localList.filter(item => String(item.id) !== String(id));
   writeLocalRsvps(filtered);

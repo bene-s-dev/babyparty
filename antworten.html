@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Rückmeldungen • Babyshower Alina & Kevin</title>
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="PIN-geschützte Gästeliste &amp; Übersicht aller Zu- und Absagen zur Babyshower von Alina &amp; Kevin.">
+  <meta name="description" content="PIN-geschützte Gästeliste &amp; Übersicht aller Zu- und Absagen zur Babyshower.">
   <meta name="theme-color" content="#faf8f5">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/favicon.png">
@@ -13,8 +13,8 @@
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://babyparty.benedrive.de/antworten">
-  <meta property="og:title" content="Gästeliste &amp; Antworten • Alina &amp; Kevin">
-  <meta property="og:description" content="PIN-geschützte Übersicht aller Zu- und Absagen zur Babyshower von Alina &amp; Kevin.">
+  <meta property="og:title" content="Gästeliste &amp; Antworten">
+  <meta property="og:description" content="PIN-geschützte Übersicht aller Zu- und Absagen zur Babyshower.">
   <meta property="og:image" content="https://babyparty.benedrive.de/og-antworten.jpg?v=1">
   <meta property="og:image:secure_url" content="https://babyparty.benedrive.de/og-antworten.jpg?v=1">
   <meta property="og:image:type" content="image/jpeg">
@@ -1494,11 +1494,18 @@
             method: 'DELETE',
             headers: { 'x-pin': currentPin }
           });
-          if (res.ok) {
+          const data = await res.json().catch(() => null);
+          if (res.status === 401) {
+            sessionStorage.removeItem('guestlist_pin');
+            currentPin = '';
+            showPinScreen();
+            return;
+          }
+          if (res.ok && data && data.success) {
             showToast(`Eintrag von ${nameToDelete} gelöscht`);
             loadData();
           } else {
-            showToast('Fehler beim Löschen');
+            showToast((data && data.error) ? data.error : 'Fehler beim Löschen');
           }
         } catch (err) {
           console.error('Delete error:', err);
