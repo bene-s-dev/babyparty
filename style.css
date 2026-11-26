@@ -4049,6 +4049,17 @@ body.mode-babyshower .scaling-container {
   box-sizing: border-box;
 }
 
+.shower-event-card-title {
+  text-align: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: #1b3d68;
+  letter-spacing: 0.02em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(27, 61, 104, 0.08);
+}
+
 .event-detail-item {
   display: flex;
   align-items: center;

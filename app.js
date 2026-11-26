@@ -896,10 +896,9 @@
     refreshIcons();
   }
 
-  // AudioContext bereits beim allerersten Tippen/Tastendruck lautlos aufwecken,
-  // damit der erste Sound nicht abgehackt klingt.
+  // AudioContext bereits beim ersten Tippen/Klick lautlos aufwecken,
+  // damit der erste Button-Sound nicht abgehackt klingt.
   document.addEventListener('pointerdown', () => audio.init(), { once: true, passive: true });
-  document.addEventListener('keydown', () => audio.init(), { once: true, passive: true });
 
   // ==================== WARM ACOUSTIC CHIME & ASMR SYNTHESIZER ====================
   const audio = {
